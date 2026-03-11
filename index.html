@@ -102,7 +102,6 @@
   .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 20000; padding: 20px; display: flex; flex-direction: column; justify-content:center; align-items:center; }
   .hidden { display: none !important; }
   
-  /* Animacja Stopera */
   @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6); } 70% { box-shadow: 0 0 0 20px rgba(34, 197, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
   .btn-live { animation: pulse 2s infinite; background: linear-gradient(135deg, #10b981, #059669); color: #fff; border: 2px solid #34d399; font-size:1.2rem; padding:25px;}
   .highlight-input { border-color: var(--success) !important; background: rgba(34, 197, 94, 0.15) !important; transition: 0.5s; box-shadow: 0 0 15px rgba(34,197,94,0.4)!important;}
@@ -131,7 +130,7 @@ let defaultDb = {
     init: false, mainProfile: null, role: null, tab: 'term', filter: 'today', userName: '',
     drv: { 
         plat: 'apps', carType: 'rent', emp: 'partner', liveRideStart: null,
-        cfg: { fix: 0, tax: 0, fuelPx: 0.5, bC: 0, cC: 0, cType: 'month', eC: 0, iC: 0, eType: 'flat', ePct: 0, cardF: 0.015, goal: 350 }, 
+        cfg: { fix: 0, tax: 0.085, fuelPx: 0.5, bC: 0, cC: 0, cType: 'month', eC: 0, iC: 0, eType: 'flat', ePct: 0, cardF: 0.015, goal: 350 }, 
         odo: 0, q: {s:9, w:39, t1:3.2, t2:4, t3:6.4, t4:8}, 
         sh: {on: false, o: 0, tr: []}, 
         h: [], exp: [], fuel: [], clients: [] 
@@ -144,7 +143,7 @@ let defaultDb = {
 
 let db;
 try {
-    db = JSON.parse(localStorage.getItem('laptrans_v87_db')) || defaultDb;
+    db = JSON.parse(localStorage.getItem('laptrans_v88_db')) || defaultDb;
     if (!db.home || !db.drv || !db.drv.cfg) { db = defaultDb; }
 } catch(e) { db = defaultDb; }
 
@@ -152,7 +151,7 @@ let wData = { p: 'apps', c: 'rent', e: 'partner', mainProfile: null };
 window.hMem = null; 
 const APP = document.getElementById('app');
 
-function save() { localStorage.setItem('laptrans_v87_db', JSON.stringify(db)); }
+function save() { localStorage.setItem('laptrans_v88_db', JSON.stringify(db)); }
 
 let dTSrc = null; let dTPay = null; let dQM = 'taxi'; let dQN = false; let dQV=0; let dQK=0; let dQM_T=0;
 
@@ -278,8 +277,15 @@ function rWiz() {
             <div class="opt-card selected" onclick="dW('e','partner',this)"><div class="opt-icon">🤝</div><div class="opt-text"><h3>Podpięty pod Partnera</h3></div></div>
             <div class="opt-card" onclick="dW('e','jdg',this)"><div class="opt-icon">💼</div><div class="opt-text"><h3>Własna Działalność (JDG)</h3></div></div>
             <div id="wd-e-p" class="wiz-inputs" style="display:block; margin-top:5px; padding:0 5px;"><div class="inp-group" style="margin-bottom:15px;"><label>Rodzaj umowy z Partnerem</label><select id="wd-p-type" onchange="dTogglePType('wd')"><option value="flat">Stała kwota (np. 200 zł/mc)</option><option value="pct">Procent od utargu (np. 50/50)</option></select></div><div class="inp-group" id="wd-p-flat-box"><label>Koszt stały (zł/mc)</label><input type="number" id="wd-p-v" placeholder="np. 200"></div><div class="inp-group" id="wd-p-pct-box" style="display:none;"><label>Prowizja Partnera (%) z utargu</label><input type="number" id="wd-p-pct" placeholder="np. 50" style="color:var(--driver); font-weight:bold;"></div></div>
-            <div id="wd-e-j" class="wiz-inputs" style="display:none; margin-top:5px; padding:0 5px;"><div class="inp-group" style="margin-bottom:15px;"><label>Wysokość ZUS (zł/mc)</label><select id="wd-j-z"><option value="400">Ulga na Start (~400 zł/mc)</option><option value="650">Mały ZUS (~650 zł/mc)</option><option value="1600" selected>Pełny ZUS (~1600 zł/mc)</option></select></div><div class="inp-group"><label>Podatek Dochodowy</label><select id="wd-j-t"><option value="0.085">8.5% (Ryczałt)</option><option value="0.12">12% (Skala)</option></select></div></div>
-            <div class="wiz-inputs" style="display:block; margin-top:15px; border-color:var(--info); padding:0 5px;"><div class="inp-group"><label style="color:var(--info);">Inne Koszty Stałe (Księgowy itp.) zł/mc</label><input type="number" id="wd-i-v" placeholder="np. 350"></div></div>
+            <div id="wd-e-j" class="wiz-inputs" style="display:none; margin-top:5px; padding:0 5px;"><div class="inp-group" style="margin-bottom:15px;"><label>Wysokość ZUS (zł/mc)</label><select id="wd-j-z"><option value="400">Ulga na Start (~400 zł/mc)</option><option value="650">Mały ZUS (~650 zł/mc)</option><option value="1600" selected>Pełny ZUS (~1600 zł/mc)</option></select></div></div>
+            
+            <div class="wiz-inputs" style="display:block; margin-top:15px; padding:0 5px;">
+                <div class="inp-group" style="margin-bottom:15px;">
+                    <label style="color:var(--info);">Podatek Dochodowy / VAT (%)</label>
+                    <input type="number" id="wd-tx-v" placeholder="np. 8.5 dla ryczałtu" value="8.5" step="0.1" style="border-color:var(--info);">
+                </div>
+                <div class="inp-group"><label style="color:var(--muted);">Inne Koszty Stałe (Księgowy itp.) zł/mc</label><input type="number" id="wd-i-v" placeholder="np. 350"></div>
+            </div>
             <button class="btn btn-success" style="margin-top:20px; font-size:1.1rem; padding:20px; background:linear-gradient(135deg, var(--success), #059669); color:#000;" onclick="dFin()">URUCHOM SYSTEM TAXI</button>
         </div>
     `;
@@ -300,7 +306,11 @@ function dFin() {
     if(wData.e === 'partner') { let pTypeEl = document.getElementById('wd-p-type'); eTy = pTypeEl ? pTypeEl.value : 'flat'; if(eTy === 'flat') { e = safeVal('wd-p-v'); } else { ePct = safeVal('wd-p-pct') / 100; } } else { e = safeVal('wd-j-z'); } 
     db.drv.cfg.bC = b; db.drv.cfg.cC = c; db.drv.cfg.cType = cType; db.drv.cfg.eC = e; db.drv.cfg.iC = i; db.drv.cfg.eType = eTy; db.drv.cfg.ePct = ePct; 
     let dailyCar = (cType === 'week') ? (c / 7) : (c / 30); let dailyOther = (b + e + i) / 30; db.drv.cfg.fix = dailyCar + dailyOther;
-    db.drv.cfg.tax = (wData.e === 'partner') ? 0 : safeVal('wd-j-t'); db.drv.cfg.cardF = 0.015; db.drv.cfg.goal = 350;
+    
+    // Zawsze odczytujemy podatek
+    db.drv.cfg.tax = safeVal('wd-tx-v', 8.5) / 100; 
+    db.drv.cfg.cardF = 0.015; db.drv.cfg.goal = 350;
+    
     db.role = 'drv'; db.tab = 'term'; db.init = true; save(); dSessionInit(); render(); 
 }
 function fFin() { db.mainProfile = 'firm'; db.userName = document.getElementById('w-name').value || 'Szefie'; db.role='flt'; db.tab='dash'; db.init=true; save(); render(); }
@@ -309,7 +319,7 @@ function sFin() { db.mainProfile = 'firm'; db.userName = document.getElementById
 function hFin() { db.mainProfile = 'home'; db.userName = document.getElementById('w-name').value || 'Domownik'; db.home.sal = safeVal('wh-sal'); db.home.fix = safeVal('wh-fix'); db.home.members = [db.userName]; db.role = 'home'; db.tab = 'dash'; db.init = true; save(); render(); }
 
 // ==========================================
-// 3. BUDŻET DOMOWY 
+// 3. BUDŻET DOMOWY & ZAAWANSOWANE OSZCZĘDNOŚCI
 // ==========================================
 function rHome() { 
     let h = db.home; let t = db.tab; 
@@ -363,13 +373,35 @@ function rHome() {
     } 
 
     if(t === 'plan') {
-        APP.innerHTML = hdr + `<div class="dash-hero" style="padding-bottom:5px;"><p>ANALIZATOR I PLANOWANIE</p></div><div class="panel" style="border-color:var(--info);"><div class="p-title" style="color:var(--info)">Kondycja Budżetu</div><div class="grid-2" style="margin-bottom:0;"><div class="box"><small>Do końca m-ca</small><strong>${daysLeft} dni</strong></div><div class="box"><small>Możesz wydawać</small><strong style="color:var(--success)">${safeDaily} zł / dzień</strong></div></div></div><div class="panel" style="border-color:var(--plan);"><div class="p-title" style="color:var(--plan)">Kalkulator Celu (Oszczędności)</div><div class="inp-row"><div class="inp-group"><label>Cel (zł)</label><input type="number" id="hc-v" oninput="hCalcS()" placeholder="np. 5000"></div><div class="inp-group"><label>Czas (miesiące)</label><input type="number" id="hc-m" oninput="hCalcS()" placeholder="np. 6"></div></div><div style="text-align:center; padding:15px; background:rgba(168, 85, 247, 0.1); border-radius:12px; margin-top:10px; color:var(--plan); font-weight:bold; font-size:1.1rem;" id="hc-res">Wpisz kwotę i czas.</div></div><div class="panel" style="border-color:var(--warning);"><div class="p-title" style="color:var(--warning)">Zeszyt Planowanych Wydatków</div><div class="inp-row"><div class="inp-group" style="flex:2"><label>Co to będzie?</label><input type="text" id="hp-d" placeholder="np. Kredyt, Netflix"></div><div class="inp-group"><label>Kwota (zł)</label><input type="number" id="hp-v" placeholder="0.00"></div></div><div class="inp-group" style="margin-bottom:15px;"><label>Na kiedy to zaplanować?</label><select id="hp-m"><option value="1">Styczeń</option><option value="2">Luty</option><option value="3">Marzec</option><option value="4">Kwiecień</option><option value="5">Maj</option><option value="6">Czerwiec</option><option value="7">Lipiec</option><option value="8">Sierpień</option><option value="9">Wrzesień</option><option value="10">Październik</option><option value="11">Listopad</option><option value="12">Grudzień</option></select></div><button class="btn" style="background:var(--warning); color:#000;" onclick="hAddPlan()">ZAPISZ DO KALENDARZA</button><div style="margin-top:20px;">${[...h.planned].sort((a,b)=>a.m - b.m).map(x=> { let isCurrent = x.m === currentMonthNum; let btn = isCurrent ? `<button class="btn-success" style="padding:8px 12px; font-size:0.75rem; border:none; border-radius:8px; background:var(--success); color:#000; font-weight:bold; margin-top:5px;" onclick="hPayPlan(${x.id})">✔️ OPŁAĆ TERAZ</button>` : `<button class="btn-danger" style="padding:8px 12px; font-size:0.75rem; border:none; border-radius:8px; background:rgba(239,68,68,0.15); color:var(--danger);" onclick="hDelPlan(${x.id})">✖ Usuń</button>`; return `<div class="log-item" style="border-left-color:${isCurrent ? 'var(--warning)' : 'var(--border)'}; padding:15px; flex-direction:column; align-items:flex-start;"><div style="display:flex; justify-content:space-between; width:100%; align-items:flex-start;"><div><strong style="color:#fff; font-size:1.1rem;">${x.d}</strong><br><small style="color:var(--muted)">Zaplanowane na miesiąc: ${x.m}</small></div><strong style="color:var(--warning); font-size:1.1rem;">${x.v.toFixed(2)} zł</strong></div><div style="width:100%; display:flex; justify-content:flex-end; margin-top:5px;">${btn}</div></div>`; }).join('') || '<div style="text-align:center; color:var(--muted); font-size:0.8rem; padding:15px;">Twój kalendarz jest czysty.</div>'}</div></div>` + nav;
+        APP.innerHTML = hdr + `
+        <div class="dash-hero" style="padding-bottom:5px;"><p>KONTROLA FINANSÓW</p></div>
+        <div class="grid-2" style="margin-bottom:0;"><div class="box"><small>Do końca m-ca</small><strong>${daysLeft} dni</strong></div><div class="box"><small>Zostało na dzień</small><strong style="color:var(--success)">${safeDaily} zł</strong></div></div>
+        
+        <div class="panel" style="border-color:var(--plan);">
+            <div class="p-title" style="color:var(--plan)">🎯 Cel Oszczędnościowy</div>
+            <div class="inp-group" style="margin-bottom:12px;"><label>Na co zbierasz?</label><input type="text" id="hc-n" placeholder="np. Nowe auto, Wakacje"></div>
+            <div class="inp-row">
+                <div class="inp-group"><label>Kwota docelowa (zł)</label><input type="number" id="hc-v" oninput="hCalcS()" placeholder="np. 10000"></div>
+                <div class="inp-group"><label>Już odłożone (zł)</label><input type="number" id="hc-saved" oninput="hCalcS()" placeholder="np. 2000" value="0"></div>
+            </div>
+            <div class="inp-group" style="margin-bottom:15px;"><label>Za ile miesięcy chcesz to kupić?</label><input type="number" id="hc-m" oninput="hCalcS()" placeholder="np. 12"></div>
+            <div id="hc-res" style="display:none; background:rgba(168, 85, 247, 0.05); border:1px solid rgba(168, 85, 247, 0.3); border-radius:16px; padding:20px; margin-top:15px;"></div>
+        </div>
+        
+        <div class="panel" style="border-color:var(--warning);">
+            <div class="p-title" style="color:var(--warning)">Zeszyt Planowanych Wydatków</div>
+            <div class="inp-row"><div class="inp-group" style="flex:2"><label>Co to będzie?</label><input type="text" id="hp-d" placeholder="np. Kredyt, Netflix"></div><div class="inp-group"><label>Kwota (zł)</label><input type="number" id="hp-v" placeholder="0.00"></div></div>
+            <div class="inp-group" style="margin-bottom:15px;"><label>Na kiedy to zaplanować?</label><select id="hp-m"><option value="1">Styczeń</option><option value="2">Luty</option><option value="3">Marzec</option><option value="4">Kwiecień</option><option value="5">Maj</option><option value="6">Czerwiec</option><option value="7">Lipiec</option><option value="8">Sierpień</option><option value="9">Wrzesień</option><option value="10">Październik</option><option value="11">Listopad</option><option value="12">Grudzień</option></select></div>
+            <button class="btn" style="background:var(--warning); color:#000;" onclick="hAddPlan()">ZAPISZ DO KALENDARZA</button>
+            <div style="margin-top:20px;">${[...h.planned].sort((a,b)=>a.m - b.m).map(x=> { let isCurrent = x.m === currentMonthNum; let btn = isCurrent ? `<button class="btn-success" style="padding:8px 12px; font-size:0.75rem; border:none; border-radius:8px; background:var(--success); color:#000; font-weight:bold; margin-top:5px;" onclick="hPayPlan(${x.id})">✔️ OPŁAĆ TERAZ</button>` : `<button class="btn-danger" style="padding:8px 12px; font-size:0.75rem; border:none; border-radius:8px; background:rgba(239,68,68,0.15); color:var(--danger);" onclick="hDelPlan(${x.id})">✖ Usuń</button>`; return `<div class="log-item" style="border-left-color:${isCurrent ? 'var(--warning)' : 'var(--border)'}; padding:15px; flex-direction:column; align-items:flex-start;"><div style="display:flex; justify-content:space-between; width:100%; align-items:flex-start;"><div><strong style="color:#fff; font-size:1.1rem;">${x.d}</strong><br><small style="color:var(--muted)">Zaplanowane na miesiąc: ${x.m}</small></div><strong style="color:var(--warning); font-size:1.1rem;">${x.v.toFixed(2)} zł</strong></div><div style="width:100%; display:flex; justify-content:flex-end; margin-top:5px;">${btn}</div></div>`; }).join('') || '<div style="text-align:center; color:var(--muted); font-size:0.8rem; padding:15px;">Twój kalendarz jest czysty.</div>'}</div>
+        </div>` + nav;
     }
 
     if(t === 'set') { 
         APP.innerHTML = hdr + `<div class="section-lbl" style="color:var(--info); border-color:var(--info);">👨‍👩‍👦 Zarządzaj Rodziną</div><div class="panel" style="border-color:var(--info);"><div class="inp-row" style="align-items:flex-end;"><div class="inp-group" style="flex:2"><label>Dodaj osobę</label><input type="text" id="h-new-mem" placeholder="Imię domownika"></div><button class="btn" style="background:var(--info); color:#fff; width:auto; margin-top:0; padding:16px 20px;" onclick="hAddMem()">DODAJ</button></div><div style="margin-top:15px;">${h.members.map(m => `<div style="display:inline-block; background:rgba(255,255,255,0.05); margin:5px 5px 5px 0; padding:10px 15px; border-radius:12px; font-weight:bold; font-size:0.9rem;">${m} <span style="color:var(--danger); cursor:pointer; margin-left:10px; padding:5px;" onclick="hDelMem('${m}')">✖</span></div>`).join('')}</div><small style="color:var(--muted); display:block; margin-top:10px; line-height:1.4;">Osoby dodane tutaj będą widoczne przy dodawaniu wydatków i wpływów, aby budować wspólne statystyki.</small></div><div class="section-lbl" style="color:var(--life); border-color:var(--life);">🏠 Parametry Budżetu</div><div class="panel" style="border-color:rgba(20,184,166,0.4)"><div class="inp-group" style="margin-bottom:15px;"><label>Stała Wypłata z etatu (zł)</label><input type="number" id="hs-sal" value="${h.sal}"></div><div class="inp-group"><label>Stałe Opłaty na start msc (zł)</label><input type="number" id="hs-fix" value="${h.fix}"></div><button class="btn btn-home" style="margin-top:20px;" onclick="hSaveUS()">ZAKTUALIZUJ</button></div><div class="section-lbl" style="color:var(--danger); border-color:var(--danger);">⚠️ Strefa Niebezpieczna</div><div class="panel" style="border-color:rgba(239,68,68,0.4)"><button class="btn btn-danger" style="background:rgba(239,68,68,0.15); color:var(--danger); border:none; box-shadow:none;" onclick="hardReset()">TWARDY RESET DANYCH</button></div>` + nav; 
     } 
 } 
+
 function hAction(type) { 
     let v = safeVal('h-v'); let dEl = document.getElementById('h-d'); let d = dEl ? dEl.value : ''; let who = window.hMem || db.home.members[0]; 
     let dVal = document.getElementById('h-date') ? document.getElementById('h-date').value : '';
@@ -391,7 +423,50 @@ function hAction(type) {
         } 
     } 
 } 
-function hCalcS() { let v = safeVal('hc-v'); let m = safeVal('hc-m'); let el = document.getElementById('hc-res'); if(v > 0 && m > 0) { let res = v / m; el.innerText = `Odkładaj ${res.toFixed(2)} zł co miesiąc.`; } else { el.innerText = "Wpisz kwotę i czas."; } }
+
+function hCalcS() { 
+    let v = safeVal('hc-v'); let saved = safeVal('hc-saved'); let m = safeVal('hc-m'); 
+    let resEl = document.getElementById('hc-res'); 
+    
+    if(v > 0 && m > 0) { 
+        let left = v - saved;
+        if(left <= 0) {
+            resEl.innerHTML = `<h3 style="color:var(--success); margin:0; text-align:center;">Cel osiągnięty! 🎉</h3>`;
+        } else {
+            let perMonth = left / m;
+            let perWeek = left / (m * 4.33);
+            let perDay = left / (m * 30);
+            let pct = Math.min((saved / v) * 100, 100);
+            
+            resEl.innerHTML = `
+                <div style="margin-bottom:15px;">
+                    <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:var(--muted); margin-bottom:5px;"><span>Postęp (${pct.toFixed(0)}%)</span><span>Brak: ${left.toFixed(0)} zł</span></div>
+                    <div style="width:100%; height:12px; background:rgba(255,255,255,0.05); border-radius:6px; overflow:hidden;">
+                        <div style="width:${pct}%; background:var(--plan); height:100%;"></div>
+                    </div>
+                </div>
+                <div style="display:flex; justify-content:space-between; text-align:center; gap:10px;">
+                    <div style="flex:1; background:#000; padding:10px; border-radius:12px;">
+                        <span style="font-size:0.65rem; color:var(--muted); text-transform:uppercase;">Co miesiąc</span><br>
+                        <strong style="color:var(--plan); font-size:1.1rem;">${perMonth.toFixed(0)} zł</strong>
+                    </div>
+                    <div style="flex:1; background:#000; padding:10px; border-radius:12px;">
+                        <span style="font-size:0.65rem; color:var(--muted); text-transform:uppercase;">Co tydzień</span><br>
+                        <strong style="color:#fff; font-size:1.1rem;">${perWeek.toFixed(0)} zł</strong>
+                    </div>
+                    <div style="flex:1; background:#000; padding:10px; border-radius:12px;">
+                        <span style="font-size:0.65rem; color:var(--muted); text-transform:uppercase;">Dziennie</span><br>
+                        <strong style="color:#fff; font-size:1.1rem;">${perDay.toFixed(0)} zł</strong>
+                    </div>
+                </div>
+            `;
+        }
+        resEl.style.display = 'block';
+    } else { 
+        resEl.style.display = 'none'; 
+    } 
+}
+
 function hAddPlan() { let dEl=document.getElementById('hp-d'); let d = dEl?dEl.value:'Plan'; let v = safeVal('hp-v'); let mEl=document.getElementById('hp-m'); let m = mEl?parseInt(mEl.value):1; if(d && v) { db.home.planned.push({id:Date.now(), d, v, m}); save(); render(); } }
 function hDelPlan(id) { db.home.planned = db.home.planned.filter(x=>x.id!==id); save(); render(); }
 function hPayPlan(id) { let plan = db.home.planned.find(x => x.id === id); if(plan) { let who = window.hMem || db.home.members[0]; db.home.exp.push({ id: Date.now(), ty: 'exp', cat: '🏠 Dom / Rachunki', d: `Opłacono: ${plan.d}`, v: plan.v, who: who, dt: new Date().toLocaleDateString(), rD: new Date().toISOString() }); db.home.exp.sort((a,b) => new Date(b.rD) - new Date(a.rD)); db.home.planned = db.home.planned.filter(x => x.id !== id); save(); db.tab = 'dash'; render(); } }
@@ -475,7 +550,7 @@ function rDrv() {
             <button class="btn btn-home" onclick="dTransferToHomeUI()">💸 PRZELEJ ZYSKI DO BUDŻETU DOMOWEGO</button>
         </div>
 
-        <div class="panel" style="padding:25px;"><div class="p-title">Wodospad Finansowy (P&L)</div><div class="fin-row"><span class="fin-label">Utarg Brutto z aplikacji</span><span class="fin-val" style="color:var(--success)">${g.toFixed(2)} zł</span></div><div class="fin-row"><span class="fin-label">Wydatki Garażowe</span><span class="fin-val" style="color:var(--danger)">-${ex.toFixed(2)} zł</span></div><div class="fin-row"><span class="fin-label">Paliwo z tras</span><span class="fin-val" style="color:var(--fuel)">-${fc.toFixed(2)} zł</span></div>${cf > 0 ? `<div class="fin-row"><span class="fin-label" style="color:var(--info)">Terminal</span><span class="fin-val" style="color:var(--danger)">-${cf.toFixed(2)} zł</span></div>` : ''}${pf > 0 ? `<div class="fin-row"><span class="fin-label">Prowizja Partnera</span><span class="fin-val" style="color:var(--danger)">-${pf.toFixed(2)} zł</span></div>` : ''}<div class="fin-row" style="align-items:flex-start;"><div style="display:flex; flex-direction:column; max-width:70%;"><span class="fin-label" style="color:#fff;">Koszty Stałe (Odpis)</span><small style="color:var(--muted); font-size:0.7rem; margin-top:4px; line-height:1.4;">Za przepracowane: <strong>${uniqueDays} dni</strong><br>Odpis: <strong>${d.cfg.fix.toFixed(2)} zł/dzień</strong><br>Auto: ${d.cfg.cC} | Baza: ${d.cfg.bC} | Inne: ${d.cfg.eC + d.cfg.iC}</small></div><span class="fin-val" style="color:var(--danger); padding-top:2px;">-${fix.toFixed(2)} zł</span></div><div class="fin-row" style="background:#000; margin-top:15px; padding:20px; border-radius:14px; border:1px solid rgba(255,255,255,0.05);"><span class="fin-label" style="color:#fff; font-size:1.1rem;">CZYSTY ZYSK</span><span class="fin-val" style="font-size:1.5rem; color:${n>=0?'var(--success)':'var(--danger)'}">${n.toFixed(2)} zł</span></div></div><div class="panel"><div class="p-title">Struktura Kosztów</div><div style="height:200px; position:relative;"><canvas id="ch-doughnut"></canvas></div></div><div class="panel"><div class="p-title">Dziennik Zmian</div>${fs.map(x=>`<div class="log-item" style="border-left-color:${x.n>=0?'var(--success)':'var(--danger)'}; flex-direction:column; align-items:flex-start; padding:15px;"><div style="display:flex; justify-content:space-between; width:100%; margin-bottom:5px;"><strong style="font-size:1.1rem;">${x.dt}</strong><strong style="color:${x.n>=0?'var(--success)':'var(--danger)'}; font-size:1.2rem;">${x.n.toFixed(2)} zł</strong></div><small style="color:var(--muted)">Utarg: ${x.g.toFixed(2)} zł | Przebieg: ${x.k}km</small></div>`).join('')||'<div style="text-align:center;color:var(--muted);font-size:0.85rem;padding:20px 0;">Brak danych w tym przedziale.</div>'}</div>` + nav;
+        <div class="panel" style="padding:25px;"><div class="p-title">Wodospad Finansowy (P&L)</div><div class="fin-row"><span class="fin-label">Utarg Brutto z aplikacji</span><span class="fin-val" style="color:var(--success)">${g.toFixed(2)} zł</span></div><div class="fin-row"><span class="fin-label">Wydatki Garażowe</span><span class="fin-val" style="color:var(--danger)">-${ex.toFixed(2)} zł</span></div><div class="fin-row"><span class="fin-label">Paliwo z tras</span><span class="fin-val" style="color:var(--fuel)">-${fc.toFixed(2)} zł</span></div>${cf > 0 ? `<div class="fin-row"><span class="fin-label" style="color:var(--info)">Terminal</span><span class="fin-val" style="color:var(--danger)">-${cf.toFixed(2)} zł</span></div>` : ''}${pf > 0 ? `<div class="fin-row"><span class="fin-label">Prowizja Partnera</span><span class="fin-val" style="color:var(--danger)">-${pf.toFixed(2)} zł</span></div>` : ''}<div class="fin-row"><span class="fin-label">Podatek (VAT/Ryczałt)</span><span class="fin-val" style="color:var(--danger)">-${tx.toFixed(2)} zł</span></div><div class="fin-row" style="align-items:flex-start;"><div style="display:flex; flex-direction:column; max-width:70%;"><span class="fin-label" style="color:#fff;">Koszty Stałe (Odpis)</span><small style="color:var(--muted); font-size:0.7rem; margin-top:4px; line-height:1.4;">Za przepracowane: <strong>${uniqueDays} dni</strong><br>Odpis: <strong>${d.cfg.fix.toFixed(2)} zł/dzień</strong><br>Auto: ${d.cfg.cC} | Baza: ${d.cfg.bC} | Inne: ${d.cfg.eC + d.cfg.iC}</small></div><span class="fin-val" style="color:var(--danger); padding-top:2px;">-${fix.toFixed(2)} zł</span></div><div class="fin-row" style="background:#000; margin-top:15px; padding:20px; border-radius:14px; border:1px solid rgba(255,255,255,0.05);"><span class="fin-label" style="color:#fff; font-size:1.1rem;">CZYSTY ZYSK</span><span class="fin-val" style="font-size:1.5rem; color:${n>=0?'var(--success)':'var(--danger)'}">${n.toFixed(2)} zł</span></div></div><div class="panel"><div class="p-title">Struktura Kosztów</div><div style="height:200px; position:relative;"><canvas id="ch-doughnut"></canvas></div></div><div class="panel"><div class="p-title">Dziennik Zmian</div>${fs.map(x=>`<div class="log-item" style="border-left-color:${x.n>=0?'var(--success)':'var(--danger)'}; flex-direction:column; align-items:flex-start; padding:15px;"><div style="display:flex; justify-content:space-between; width:100%; margin-bottom:5px;"><strong style="font-size:1.1rem;">${x.dt}</strong><strong style="color:${x.n>=0?'var(--success)':'var(--danger)'}; font-size:1.2rem;">${x.n.toFixed(2)} zł</strong></div><small style="color:var(--muted)">Utarg: ${x.g.toFixed(2)} zł | Przebieg: ${x.k}km</small></div>`).join('')||'<div style="text-align:center;color:var(--muted);font-size:0.85rem;padding:20px 0;">Brak danych w tym przedziale.</div>'}</div>` + nav;
         
         setTimeout(() => { 
             if(window.dCh1) window.dCh1.destroy(); 
@@ -505,29 +580,11 @@ function rDrv() {
     }
 
     if(t === 'set') {
-        APP.innerHTML = hdr + `
-        <div class="dash-hero" style="padding-bottom:0; padding-top:20px;"><p>KONTROLA TWOJEJ FIRMY</p></div>
-        
-        <div class="section-lbl" style="color:var(--success); border-color:var(--success);">👤 Personalizacja</div>
-        <div class="panel"><div class="inp-row"><div class="inp-group"><label>Twoje Imię</label><input type="text" id="us-name" value="${db.userName}"></div><div class="inp-group"><label>Cel Dzienny (zł)</label><input type="number" id="us-goal" value="${d.cfg.goal}"></div></div></div>
-        
-        <div class="section-lbl" style="color:var(--driver); border-color:var(--driver);">🚗 Auto i Baza</div>
-        <div class="panel"><div class="inp-row"><div class="inp-group"><label>Koszt Auta (zł)</label><input type="number" id="us-cc" value="${d.cfg.cC}"></div><div class="inp-group"><label>Okres</label><select id="us-ctype"><option value="week" ${d.cfg.cType==='week'?'selected':''}>Tygodniowo</option><option value="month" ${d.cfg.cType==='month'?'selected':''}>Miesięcznie</option></select></div></div><div class="inp-row"><div class="inp-group"><label>Baza / Korpo zł/mc</label><input type="number" id="us-bc" value="${d.cfg.bC}"></div><div class="inp-group"><label>Inne Stałe zł/mc</label><input type="number" id="us-ic" value="${d.cfg.iC || 0}"></div></div></div>
-        
-        <div class="section-lbl" style="color:var(--info); border-color:var(--info);">⚖️ Podatki i Prowizje</div>
-        <div class="panel"><div class="inp-group" style="margin-bottom:15px;"><label>Rodzaj Rozliczenia (ZUS / Partner)</label><select id="us-etype" onchange="dTogglePType('us')"><option value="flat" ${d.cfg.eType==='flat'?'selected':''}>Stała kwota (np. ZUS 1600zł)</option><option value="pct" ${d.cfg.eType==='pct'?'selected':''}>Procent (np. 50% dla Partnera)</option></select></div><div id="us-p-flat-box" style="display:${d.cfg.eType==='flat'?'block':'none'}; margin-bottom:15px;"><div class="inp-group"><label>Kwota stała zł/mc</label><input type="number" id="us-ec" value="${d.cfg.eC}"></div></div><div id="us-p-pct-box" style="display:${d.cfg.eType==='pct'?'block':'none'}; margin-bottom:15px;"><div class="inp-group"><label>Prowizja Partnera (%)</label><input type="number" id="us-epct" value="${(d.cfg.ePct*100).toFixed(0)}" style="color:var(--driver); border-color:var(--driver);"></div></div><div class="inp-row"><div class="inp-group"><label>Podatek (%)</label><input type="number" id="us-tx" value="${(d.cfg.tax*100).toFixed(1)}" step="0.1"></div><div class="inp-group"><label>Prow. Terminala (%)</label><input type="number" id="us-cf" value="${(d.cfg.cardF*100).toFixed(1)}" step="0.1"></div></div><div style="background:#000; padding:15px; border-radius:12px; margin-top:15px; text-align:center; border:1px solid rgba(255,255,255,0.05);"><small style="color:var(--muted)">Wyliczona Dniówka Stała (Odpis):</small><br><strong style="color:var(--danger); font-size:1.5rem;">${d.cfg.fix.toFixed(2)} zł / dzień</strong></div></div>
-        
-        <div style="padding: 0 15px;"><button class="btn btn-driver" style="margin-bottom:30px;" onclick="dSaveUS()">💾 ZAKTUALIZUJ KOSZTY</button></div>
-        
-        <div class="section-lbl" style="color:var(--muted); border-color:var(--muted);">⚙️ System</div>
-        <div class="panel" style="margin-bottom:40px;"><div class="grid-2" style="margin-bottom:0;"><button class="btn" style="background:rgba(255,255,255,0.05); color:#fff; box-shadow:none; font-size:0.8rem;" onclick="exportDb()">Pobierz Kopię</button><button class="btn" style="background:rgba(255,255,255,0.05); color:#fff; box-shadow:none; font-size:0.8rem;" onclick="importDb()">Wgraj Kopię</button></div></div>
-        ` + nav;
+        APP.innerHTML = hdr + `<button class="btn" style="background:#222; color:#fff; border:1px solid #333; margin: 15px; width:calc(100% - 30px);" onclick="db.tab='term';render()">Powrót do aplikacji</button><div class="dash-hero" style="padding-bottom:0; padding-top:10px;"><p>KONTROLA TWOJEJ FIRMY</p></div><div class="section-lbl" style="color:var(--success); border-color:var(--success);">👤 Personalizacja</div><div class="panel"><div class="inp-row"><div class="inp-group"><label>Twoje Imię</label><input type="text" id="us-name" value="${db.userName}"></div><div class="inp-group"><label>Cel Dzienny (zł)</label><input type="number" id="us-goal" value="${d.cfg.goal}"></div></div></div><div class="section-lbl" style="color:var(--driver); border-color:var(--driver);">🚗 Auto i Baza</div><div class="panel"><div class="inp-row"><div class="inp-group"><label>Koszt Auta (zł)</label><input type="number" id="us-cc" value="${d.cfg.cC}"></div><div class="inp-group"><label>Okres</label><select id="us-ctype"><option value="week" ${d.cfg.cType==='week'?'selected':''}>Tygodniowo</option><option value="month" ${d.cfg.cType==='month'?'selected':''}>Miesięcznie</option></select></div></div><div class="inp-row"><div class="inp-group"><label>Baza / Korpo zł/mc</label><input type="number" id="us-bc" value="${d.cfg.bC}"></div><div class="inp-group"><label>Inne Stałe zł/mc</label><input type="number" id="us-ic" value="${d.cfg.iC || 0}"></div></div></div><div class="section-lbl" style="color:var(--info); border-color:var(--info);">⚖️ Podatki i Prowizje</div><div class="panel"><div class="inp-group" style="margin-bottom:15px;"><label>Rodzaj Rozliczenia (ZUS / Partner)</label><select id="us-etype" onchange="dTogglePType('us')"><option value="flat" ${d.cfg.eType==='flat'?'selected':''}>Stała kwota (np. ZUS 1600zł)</option><option value="pct" ${d.cfg.eType==='pct'?'selected':''}>Procent (np. 50% dla Partnera)</option></select></div><div id="us-p-flat-box" style="display:${d.cfg.eType==='flat'?'block':'none'}; margin-bottom:15px;"><div class="inp-group"><label>Kwota stała zł/mc</label><input type="number" id="us-ec" value="${d.cfg.eC}"></div></div><div id="us-p-pct-box" style="display:${d.cfg.eType==='pct'?'block':'none'}; margin-bottom:15px;"><div class="inp-group"><label>Prowizja Partnera (%)</label><input type="number" id="us-epct" value="${(d.cfg.ePct*100).toFixed(0)}" style="color:var(--driver); border-color:var(--driver);"></div></div><div class="inp-row"><div class="inp-group"><label>Podatek (%)</label><input type="number" id="us-tx" value="${(d.cfg.tax*100).toFixed(1)}" step="0.1"></div><div class="inp-group"><label>Prow. Terminala (%)</label><input type="number" id="us-cf" value="${(d.cfg.cardF*100).toFixed(1)}" step="0.1"></div></div><div style="background:#000; padding:15px; border-radius:12px; margin-top:15px; text-align:center; border:1px solid rgba(255,255,255,0.05);"><small style="color:var(--muted)">Wyliczona Dniówka Stała (Odpis):</small><br><strong style="color:var(--danger); font-size:1.5rem;">${d.cfg.fix.toFixed(2)} zł / dzień</strong></div></div><div style="padding: 0 15px;"><button class="btn btn-driver" style="margin-bottom:30px;" onclick="dSaveUS()">💾 ZAKTUALIZUJ KOSZTY</button></div><div class="section-lbl" style="color:var(--muted); border-color:var(--muted);">⚙️ System</div><div class="panel" style="margin-bottom:40px;"><div class="grid-2" style="margin-bottom:0;"><button class="btn" style="background:rgba(255,255,255,0.05); color:#fff; box-shadow:none; font-size:0.8rem;" onclick="exportDb()">Pobierz Kopię</button><button class="btn" style="background:rgba(255,255,255,0.05); color:#fff; box-shadow:none; font-size:0.8rem;" onclick="importDb()">Wgraj Kopię</button></div></div>` + nav;
     }
 }
 
-// ==========================================
 // LOGIKA MODALÓW - TRANSFER I PODSUMOWANIE
-// ==========================================
 function dTransferToHomeUI() {
     let mHtml = `
     <div id="m-transfer" class="modal-overlay" style="z-index: 30000; animation: fadeIn 0.3s;">
@@ -570,17 +627,7 @@ window.execTransfer = function() {
     }
 }
 
-// LOGIKA TAXI & STOPERA (Brak błędu Focusu)
-function startLiveRide(){db.drv.liveRideStart=Date.now();save();render();}
-function stopLiveRide(){
-    let m=Math.round((Date.now()-db.drv.liveRideStart)/60000); if(m<1)m=1;
-    db.drv.liveRideStart=null; save(); render();
-    setTimeout(()=>{
-        let iM=document.getElementById('dt-m'); 
-        if(iM){iM.value=m; iM.classList.add('highlight-input'); setTimeout(()=>iM.classList.remove('highlight-input'),1500);}
-    },50);
-}
-
+// TAXI LOGIC
 function dTC(t,v,el) { if(t==='s') dTSrc=v; else dTPay=v; el.parentElement.querySelectorAll('.chip').forEach(c=>{ c.style.background='rgba(255,255,255,0.03)'; c.style.color='var(--muted)'; }); if(v==='Gotówka') { el.style.background='var(--success)'; el.style.color='#000'; } else if(v==='Karta') { el.style.background='var(--info)'; el.style.color='#fff'; } else { el.style.background='var(--driver)'; el.style.color='#fff'; } }
 function dStartS() { let o=safeVal('ds-o'); if(!o) return; db.drv.odo=o; db.drv.sh={on:true, o, t:Date.now(), tr:[]}; db.drv.liveRideStart=null; save(); render(); }
 function dQC() { let q=db.drv.q; let fC=db.drv.cfg.fuelPx; let tax=db.drv.cfg.tax; let v=0,k=0,m=0,f=0; if(dQM==='taxi') { let k1=safeVal('dqk1'); let k2=safeVal('dqk2'); m=safeVal('dqm'); let disc=safeVal('dqd'); k=k1+k2; let base=q.s+(k1*(dQN?q.t2:q.t1))+(k2*(dQN?q.t4:q.t3))+(m*(q.w/60)); v=base-(base*(disc/100)); } else { k=safeVal('dqfk'); let r=safeVal('dqfr', 3.00); v=k*r; } dQK=k; dQM_T=m; dQV=v; let elT=document.getElementById('dqt'); if(elT)elT.innerText=v.toFixed(2)+" zł"; }
@@ -616,7 +663,6 @@ function dAF() {
     let dVal = document.getElementById('df-date').value;
     let dObj = dVal ? new Date(dVal) : new Date(); if(dVal) dObj.setHours(12,0,0);
     
-    // Obliczanie spalania dla tego konkretnego tankowania względem poprzedniego
     let dist = 0, l100 = 0, cpkm = 0;
     let prevF = db.drv.fuel.filter(x => x.o < o).sort((a,b) => b.o - a.o)[0];
     if (prevF) {
@@ -724,7 +770,7 @@ function dEndS() {
     document.body.insertAdjacentHTML('beforeend', mHtml);
 }
 
-function dSaveUS() { db.userName = document.getElementById('us-name').value; db.drv.cfg.goal = safeVal('us-goal', 350); db.drv.cfg.cC = safeVal('us-cc'); db.drv.cfg.cType = document.getElementById('us-ctype').value; db.drv.cfg.bC = safeVal('us-bc'); db.drv.cfg.iC = safeVal('us-ic'); db.drv.cfg.tax = safeVal('us-tx') / 100; db.drv.cfg.cardF = safeVal('us-cf') / 100; let eTy = document.getElementById('us-etype').value; db.drv.cfg.eType = eTy; if(eTy === 'flat') { db.drv.cfg.eC = safeVal('us-ec'); db.drv.cfg.ePct = 0; } else { db.drv.cfg.eC = 0; db.drv.cfg.ePct = safeVal('us-epct') / 100; } let dailyCar = (db.drv.cfg.cType === 'week') ? (db.drv.cfg.cC / 7) : (db.drv.cfg.cC / 30); let dailyOther = (db.drv.cfg.eC + db.drv.cfg.bC + db.drv.cfg.iC) / 30; db.drv.cfg.fix = dailyCar + dailyOther; save(); alert('Zaktualizowano Koszty Firmy!'); render(); }
+function dSaveUS() { db.userName = document.getElementById('us-name').value; db.drv.cfg.goal = safeVal('us-goal', 350); db.drv.cfg.cC = safeVal('us-cc'); db.drv.cfg.cType = document.getElementById('us-ctype').value; db.drv.cfg.bC = safeVal('us-bc'); db.drv.cfg.iC = safeVal('us-ic'); db.drv.cfg.tax = safeVal('us-tx') / 100; db.drv.cfg.cardF = safeVal('us-cf') / 100; let eTy = document.getElementById('us-etype').value; db.drv.cfg.eType = eTy; if(eTy === 'flat') { db.drv.cfg.eC = safeVal('us-ec'); db.drv.cfg.ePct = 0; } else { db.drv.cfg.eC = 0; db.drv.cfg.ePct = safeVal('us-epct') / 100; } let dailyCar = (db.drv.cfg.cType === 'week') ? (db.drv.cfg.cC / 7) : (db.drv.cfg.cC / 30); let dailyOther = (db.drv.cfg.eC + db.drv.cfg.bC + db.drv.cfg.iC) / 30; db.drv.cfg.fix = dailyCar + dailyOther; save(); render(); alert('Zaktualizowano Koszty Firmy!'); }
 function dAddCrm() { let n = document.getElementById('dc-n').value; let ph = document.getElementById('dc-p').value; let d = safeVal('dc-d'); if(n) { db.drv.clients.unshift({id:Date.now(), n, ph, d, bl: false}); save(); render(); } }
 function dCrmDel(id) { if(confirm("Usunąć klienta z bazy?")) { db.drv.clients = db.drv.clients.filter(x=>x.id!==id); save(); render(); } }
 
