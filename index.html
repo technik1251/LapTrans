@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>ŁAPTRANS OS</title>
+
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -11,9 +12,12 @@
 <link rel="manifest" href='data:application/manifest+json,{"name":"ŁAPTRANS OS","short_name":"ŁapTrans","start_url":".","display":"standalone","background_color":"#09090b","theme_color":"#09090b","icons":[{"src":"https://cdn-icons-png.flaticon.com/512/758/758488.png","sizes":"512x512","type":"image/png"}]}'>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
+  
   :root {
+    color-scheme: dark;
     --bg: #09090b; --card: #18181b; --border: #27272a; --text: #f8fafc; --muted: #a1a1aa;
     --taxi: #eab308; --life: #14b8a6; --driver: #3b82f6; --fleet: #10b981; --cargo: #8b5cf6; 
     --sped: #f59e0b; --quote: #d946ef; --fuel: #f59e0b; --home: #14b8a6; --plan: #a855f7;
@@ -57,7 +61,8 @@
   .opt-text p { margin: 0; font-size: 0.85rem; color: var(--muted); line-height: 1.4;}
 
   header { padding: 15px 20px; background: rgba(9, 9, 11, 0.85); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(12px); }
-  .logo { font-weight: 900; font-size: 1.2rem; cursor:pointer; display:flex; align-items:center; gap:8px; padding:5px 10px; background:rgba(255,255,255,0.05); border-radius:12px; transition:0.2s; }
+  .logo { font-weight: 900; font-size: 1.2rem; cursor:pointer; display:flex; align-items:center; gap:8px; padding:8px 12px; background:rgba(255,255,255,0.05); border-radius:12px; transition:0.2s; }
+  .logo:active { transform: scale(0.95); background:rgba(255,255,255,0.1); }
   .badge { background: rgba(255,255,255,0.05); border: 1px solid var(--border); padding: 6px 12px; border-radius: 12px; font-weight: 800; }
   .settings-btn { font-size: 1.3rem; cursor: pointer; background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 4px 10px; border-radius: 12px; display:flex; align-items:center; justify-content:center; }
   
@@ -102,16 +107,16 @@
 <div id="app" class="app-container"></div>
 
 <div id="m-switcher" class="modal-overlay hidden">
-    <div class="panel" style="width:100%; max-width:400px; border-color:var(--driver);">
-        <div class="p-title" style="justify-content:center; font-size:1rem; color:#fff;">Przełącz Aplikację</div>
+    <div class="panel" style="width:100%; max-width:400px; border-color:var(--muted);">
+        <div class="p-title" style="justify-content:center; font-size:1rem; color:#fff;">Przełącz Moduł Zadań</div>
         <div id="switcher-btns" style="display:flex; flex-direction:column;"></div>
-        <button class="btn" style="background:#222; color:#fff; margin-top:10px;" onclick="document.getElementById('m-switcher').classList.add('hidden')">Zamknij Menu</button>
+        <button class="btn" style="background:#222; color:#fff; margin-top:20px;" onclick="document.getElementById('m-switcher').classList.add('hidden')">Zamknij Menu</button>
     </div>
 </div>
 
 <script>
 // ==========================================
-// 1. INICJALIZACJA I BAZA DANYCH
+// 1. BAZA DANYCH
 // ==========================================
 let defaultDb = {
     init: false, mainProfile: null, role: null, tab: 'term', filter: 'today', userName: '',
@@ -130,7 +135,7 @@ let defaultDb = {
 
 let db;
 try {
-    db = JSON.parse(localStorage.getItem('laptrans_v83_db')) || defaultDb;
+    db = JSON.parse(localStorage.getItem('laptrans_v85_db')) || defaultDb;
     if (!db.home || !db.drv || !db.drv.cfg) { db = defaultDb; }
 } catch(e) { db = defaultDb; }
 
@@ -138,11 +143,10 @@ let wData = { p: 'apps', c: 'rent', e: 'partner', mainProfile: null };
 window.hMem = null; 
 const APP = document.getElementById('app');
 
-function save() { localStorage.setItem('laptrans_v83_db', JSON.stringify(db)); }
+function save() { localStorage.setItem('laptrans_v85_db', JSON.stringify(db)); }
 
 let dTSrc = null; let dTPay = null; let dQM = 'taxi'; let dQN = false; let dQV=0; let dQK=0; let dQM_T=0;
 
-// Poprawa błędu Uber / Korporacja
 function dSessionInit() { 
     if(!db || !db.drv) return;
     if(db.drv.plat === 'apps') {
@@ -166,27 +170,37 @@ function hardReset() {
     } 
 }
 
+// Globalna funkcja Switchera - naprawiono blokowanie menu
 function openSwitcher() {
     let s = document.getElementById('m-switcher');
     let sBtns = document.getElementById('switcher-btns');
     let html = '';
+    
+    // Zawsze budujemy opcje w oparciu o to, jaki był wybrany profil przy starcie
     if (db.mainProfile === 'driver') {
-        html += `<button class="btn btn-driver" style="margin-bottom:10px; font-size:0.9rem;" onclick="switchApp('drv')">🚕 Mój Panel Taxi</button>`;
-        html += `<button class="btn btn-home" style="margin-bottom:10px; font-size:0.9rem;" onclick="switchApp('home')">🏠 Budżet Domowy</button>`;
+        html += `<button class="btn btn-driver" style="margin-bottom:10px; font-size:0.9rem;" onclick="switchApp('drv')">🚕 Twój Panel Taxi</button>`;
+        html += `<button class="btn btn-home" style="margin-bottom:10px; font-size:0.9rem;" onclick="switchApp('home')">🏠 Twój Budżet Domowy</button>`;
     } else if (db.mainProfile === 'firm') {
-        html += `<button class="btn btn-fleet" style="margin-bottom:10px; font-size:0.9rem;" onclick="switchApp('flt')">🏢 Partner Flotowy</button>`;
-        html += `<button class="btn btn-cargo" style="margin-bottom:10px; font-size:0.9rem;" onclick="switchApp('crg')">🚚 Transport / Giełda</button>`;
+        html += `<button class="btn btn-fleet" style="margin-bottom:10px; font-size:0.9rem;" onclick="switchApp('flt')">🏢 Panel Floty</button>`;
+        html += `<button class="btn btn-cargo" style="margin-bottom:10px; font-size:0.9rem;" onclick="switchApp('crg')">🚚 Transport / TMS</button>`;
         html += `<button class="btn btn-sped" style="margin-bottom:10px; font-size:0.9rem;" onclick="switchApp('spd')">📈 Agencja Spedycyjna</button>`;
         html += `<button class="btn btn-home" style="margin-bottom:10px; font-size:0.9rem;" onclick="switchApp('home')">🏠 Budżet Domowy</button>`;
     } else {
-        html += `<button class="btn btn-home" style="margin-bottom:10px; font-size:0.9rem;" onclick="switchApp('home')">🏠 Budżet Domowy</button>`;
+        // Zabezpieczenie dla pewności
+        html += `<button class="btn btn-home" style="margin-bottom:10px; font-size:0.9rem;" onclick="switchApp('home')">🏠 Twój Budżet Domowy</button>`;
+        html += `<button class="btn btn-driver" style="margin-bottom:10px; font-size:0.9rem;" onclick="switchApp('drv')">🚕 Wejdź do modułu Taxi</button>`;
     }
-    sBtns.innerHTML = html; s.classList.remove('hidden');
+    
+    sBtns.innerHTML = html; 
+    s.classList.remove('hidden');
 }
 
 function switchApp(newRole) { 
-    db.role = newRole; db.tab = (newRole==='drv') ? 'term' : 'dash'; 
-    save(); document.getElementById('m-switcher').classList.add('hidden'); render(); 
+    db.role = newRole; 
+    db.tab = (newRole==='drv') ? 'term' : 'dash'; 
+    save(); 
+    document.getElementById('m-switcher').classList.add('hidden'); 
+    render(); 
 }
 
 function render() {
@@ -200,9 +214,10 @@ function render() {
     return rWiz();
 }
 
-function rFlt() { APP.innerHTML = `<header><div class="logo" onclick="openSwitcher()">ŁAPTRANS <span style="color:var(--fleet)">⏷</span></div></header><div class="dash-hero"><h1 style="color:var(--fleet)">Moduł Floty</h1><p>Wkrótce tutaj pełne zarządzanie flotą.</p></div><button class="btn" style="margin:20px; width:calc(100% - 40px);" onclick="openSwitcher()">Wróć do wyboru</button>`; }
-function rCrg() { APP.innerHTML = `<header><div class="logo" onclick="openSwitcher()">ŁAPTRANS <span style="color:var(--cargo)">⏷</span></div></header><div class="dash-hero"><h1 style="color:var(--cargo)">Moduł Przewoźnika</h1><p>Wkrótce tutaj pełny system TMS.</p></div><button class="btn" style="margin:20px; width:calc(100% - 40px);" onclick="openSwitcher()">Wróć do wyboru</button>`; }
-function rSped() { APP.innerHTML = `<header><div class="logo" onclick="openSwitcher()">ŁAPTRANS <span style="color:var(--sped)">⏷</span></div></header><div class="dash-hero"><h1 style="color:var(--sped)">Agencja Spedycyjna</h1><p>Wkrótce tutaj giełda i zlecenia.</p></div><button class="btn" style="margin:20px; width:calc(100% - 40px);" onclick="openSwitcher()">Wróć do wyboru</button>`; }
+// MOCKUPY Z ZAKŁADKI FIRMA
+function rFlt() { APP.innerHTML = `<header><div class="logo" onclick="openSwitcher()">ŁAPTRANS <span style="color:var(--fleet)">⏷</span></div></header><div class="dash-hero"><h1 style="color:var(--fleet)">Moduł Floty</h1><p>Rozbudowa panelu trw...</p></div>`; }
+function rCrg() { APP.innerHTML = `<header><div class="logo" onclick="openSwitcher()">ŁAPTRANS <span style="color:var(--cargo)">⏷</span></div></header><div class="dash-hero"><h1 style="color:var(--cargo)">Przewoźnik TMS</h1><p>Rozbudowa panelu trwa...</p></div>`; }
+function rSped() { APP.innerHTML = `<header><div class="logo" onclick="openSwitcher()">ŁAPTRANS <span style="color:var(--sped)">⏷</span></div></header><div class="dash-hero"><h1 style="color:var(--sped)">Spedycja</h1><p>Rozbudowa panelu trwa...</p></div>`; }
 
 // ==========================================
 // 2. KREATOR STARTOWY (WIZARD)
@@ -211,11 +226,11 @@ function rWiz() {
     let html = `
         <div id="w-main" class="wiz-screen active">
             <div class="w-title" style="color:#fff; font-size:3rem; margin-bottom:0;">ŁAPTRANS OS</div>
-            <div class="w-sub" style="margin-bottom:20px;">System Zarządzania i Księgowości</div>
+            <div class="w-sub" style="margin-bottom:20px;">Inteligentny Asystent Księgowości</div>
             <div class="wiz-inputs" style="display:block; padding:0; background:transparent; border:none; margin-bottom:20px;">
                 <div class="inp-group"><label style="text-align:center; font-size:0.8rem;">Jak masz na imię?</label><input type="text" id="w-name" placeholder="Twoje Imię" style="text-align:center; font-size:1.5rem; font-weight:900;" value="${db.userName||''}"></div>
             </div>
-            <div class="opt-card" style="border-color:var(--driver)" onclick="wMainProfile('driver')"><div class="opt-icon">🚕</div><div class="opt-text"><h3 style="color:var(--driver)">Kierowca Taxi</h3><p>Zarobki, terminal, koszty własne.</p></div></div>
+            <div class="opt-card" style="border-color:var(--driver)" onclick="wMainProfile('driver')"><div class="opt-icon">🚕</div><div class="opt-text"><h3 style="color:var(--driver)">Kierowca Taxi</h3><p>Zarobki, stoper, koszty własne.</p></div></div>
             <div class="opt-card" style="border-color:var(--fleet)" onclick="wMainProfile('firm')"><div class="opt-icon">🏢</div><div class="opt-text"><h3 style="color:var(--fleet)">Moja Firma</h3><p>Flota, przewoźnik, spedycja.</p></div></div>
             <div class="opt-card" style="border-color:var(--life)" onclick="wMainProfile('home')"><div class="opt-icon">🏠</div><div class="opt-text"><h3 style="color:var(--life)">Budżet Domowy</h3><p>Zarządzaj prywatnymi wydatkami.</p></div></div>
         </div>
@@ -229,14 +244,14 @@ function rWiz() {
         </div>
         
         <div id="w-home" class="wiz-screen">
-            <div class="w-title" style="color:var(--life)">Budżet Rodzinny</div><div class="w-sub">Twoje osobiste finanse domowe</div>
-            <div class="wiz-inputs" style="display:block;border-color:var(--life);background:transparent;padding:0;"><div class="inp-group" style="margin-bottom:15px;"><label>Stała Miesięczna Wypłata (Na rękę) zł</label><input type="number" id="wh-sal" placeholder="np. 5000"></div><div class="inp-group"><label>Wspólne Opłaty (Czynsz, kredyt) zł/msc</label><input type="number" id="wh-fix" placeholder="np. 2500"></div></div>
+            <div class="w-title" style="color:var(--life)">Budżet Rodzinny</div><div class="w-sub">Krok 1 z 1</div>
+            <div class="wiz-inputs" style="display:block;border-color:var(--life);background:transparent;padding:0;"><div class="inp-group" style="margin-bottom:15px;"><label>Stała Miesięczna Wypłata z etatu (zł)</label><input type="number" id="wh-sal" placeholder="np. 5000"></div><div class="inp-group"><label>Wspólne Opłaty stałe (Czynsz, kredyt) zł/msc</label><input type="number" id="wh-fix" placeholder="np. 2500"></div></div>
             <button class="btn btn-home" onclick="hFin()">Otwórz Portfel</button>
             <button class="btn btn-danger" style="background:transparent; margin-top:15px;" onclick="wS('w-main')">Wróć</button>
         </div>
         
         <div id="w-d1" class="wiz-screen">
-            <div class="w-title">Gdzie pracujesz?</div><div class="w-sub">Krok 1 z 3</div>
+            <div class="w-title">System Pracy</div><div class="w-sub">Krok 1 z 3</div>
             <div class="opt-card selected" onclick="dW('p','apps',this)"><div class="opt-icon">📱</div><div class="opt-text"><h3>Aplikacje (Uber/Bolt)</h3></div></div>
             <div class="opt-card" onclick="dW('p','corp',this)"><div class="opt-icon">📻</div><div class="opt-text"><h3>Korporacja / Prywatnie</h3></div></div>
             <div id="wd-b" class="wiz-inputs" style="display:none; margin-top:5px; padding:0 5px;"><div class="inp-group"><label>Opłata za bazę/korporację (zł/mc)</label><input type="number" id="wd-b-v" placeholder="np. 400"></div></div>
@@ -253,13 +268,13 @@ function rWiz() {
         </div>
         
         <div id="w-d3" class="wiz-screen">
-            <div class="w-title">Podatki i Umowy</div><div class="w-sub">Krok 3 z 3</div>
+            <div class="w-title">Koszty Stałe</div><div class="w-sub">Krok 3 z 3</div>
             <div class="opt-card selected" onclick="dW('e','partner',this)"><div class="opt-icon">🤝</div><div class="opt-text"><h3>Podpięty pod Partnera</h3></div></div>
             <div class="opt-card" onclick="dW('e','jdg',this)"><div class="opt-icon">💼</div><div class="opt-text"><h3>Własna Działalność (JDG)</h3></div></div>
             <div id="wd-e-p" class="wiz-inputs" style="display:block; margin-top:5px; padding:0 5px;"><div class="inp-group" style="margin-bottom:15px;"><label>Rodzaj umowy z Partnerem</label><select id="wd-p-type" onchange="dTogglePType('wd')"><option value="flat">Stała kwota (np. 200 zł/mc)</option><option value="pct">Procent od utargu (np. 50/50)</option></select></div><div class="inp-group" id="wd-p-flat-box"><label>Koszt stały (zł/mc)</label><input type="number" id="wd-p-v" placeholder="np. 200"></div><div class="inp-group" id="wd-p-pct-box" style="display:none;"><label>Prowizja Partnera (%) z utargu</label><input type="number" id="wd-p-pct" placeholder="np. 50" style="color:var(--driver); font-weight:bold;"></div></div>
             <div id="wd-e-j" class="wiz-inputs" style="display:none; margin-top:5px; padding:0 5px;"><div class="inp-group" style="margin-bottom:15px;"><label>Wysokość ZUS (zł/mc)</label><select id="wd-j-z"><option value="400">Ulga na Start (~400 zł/mc)</option><option value="650">Mały ZUS (~650 zł/mc)</option><option value="1600" selected>Pełny ZUS (~1600 zł/mc)</option></select></div><div class="inp-group"><label>Podatek Dochodowy</label><select id="wd-j-t"><option value="0.085">8.5% (Ryczałt)</option><option value="0.12">12% (Skala)</option></select></div></div>
             <div class="wiz-inputs" style="display:block; margin-top:15px; border-color:var(--info); padding:0 5px;"><div class="inp-group"><label style="color:var(--info);">Inne Koszty Stałe (Księgowy itp.) zł/mc</label><input type="number" id="wd-i-v" placeholder="np. 350"></div></div>
-            <button class="btn btn-success" style="margin-top:20px; font-size:1.1rem; padding:20px;" onclick="dFin()">Uruchom Aplikację</button>
+            <button class="btn btn-success" style="margin-top:20px; font-size:1.1rem; padding:20px;" onclick="dFin()">Uruchom System Taxi</button>
         </div>
     `;
     APP.innerHTML = html;
@@ -288,17 +303,110 @@ function sFin() { db.mainProfile = 'firm'; db.userName = document.getElementById
 function hFin() { db.mainProfile = 'home'; db.userName = document.getElementById('w-name').value || 'Domownik'; db.home.sal = safeVal('wh-sal'); db.home.fix = safeVal('wh-fix'); db.home.members = [db.userName]; db.role = 'home'; db.tab = 'dash'; db.init = true; save(); render(); }
 
 // ==========================================
-// 3. KIEROWCA TAXI
+// 3. BUDŻET DOMOWY 
+// ==========================================
+function rHome() { 
+    let h = db.home; let t = db.tab; 
+    if(!h.members) h.members = [db.userName || 'Rodzic'];
+    if(!window.hMem && h.members.length > 0) window.hMem = h.members[0];
+
+    let nav = `<div class="nav"><div class="nav-item ${t==='dash'?'act-home':''}" onclick="db.tab='dash';render()"><i>🏠</i>Portfel</div><div class="nav-item ${t==='exp'?'act-home':''}" onclick="db.tab='exp';render()"><i>💸</i>Wydatki</div><div class="nav-item ${t==='inc'?'act-home':''}" onclick="db.tab='inc';render()"><i>💵</i>Wpływy</div><div class="nav-item ${t==='stats'?'act-home':''}" onclick="db.tab='stats';render()"><i>📊</i>Ranking</div><div class="nav-item ${t==='plan'?'act-home':''}" onclick="db.tab='plan';render()"><i>🔮</i>Plany</div></div>`; 
+    
+    // Kluczowa naprawa: Logo ZAWSZE pozwala otworzyć Switcher
+    let hdr = `<header><div class="logo" onclick="openSwitcher()">ŁAPTRANS <span style="color:var(--life)">⏷</span></div><div class="header-actions"><div class="badge" style="color:var(--life); border-color:rgba(20,184,166,0.3); background:rgba(20,184,166,0.1);">Budżet domowy</div><div class="settings-btn" onclick="db.tab='set';render()">⚙️</div></div></header>`; 
+    
+    let now = new Date(); let currentMonthNum = now.getMonth() + 1;
+    let currExp=0; let currInc=0; 
+    
+    h.exp.forEach(x => { let d=new Date(x.rD); if(d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear()) currExp+=x.v; }); 
+    h.inc.forEach(x => { let d=new Date(x.rD); if(d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear()) currInc+=x.v; }); 
+    
+    let totalAvail = h.sal + currInc - h.fix - currExp; 
+    let daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    let daysLeft = daysInMonth - now.getDate() + 1;
+    let safeDaily = totalAvail > 0 ? (totalAvail / daysLeft).toFixed(0) : 0;
+
+    let pendingPlans = h.planned ? h.planned.filter(x => x.m === currentMonthNum) : [];
+    let reminderHtml = '';
+    if(pendingPlans.length > 0 && t === 'dash') {
+        reminderHtml = `<div class="panel" style="border-color:var(--warning); background:rgba(245,158,11,0.05); padding:15px; margin-top:0; margin-bottom:15px;"><div style="display:flex; align-items:center; gap:12px;"><div style="font-size:2rem;">🔔</div><div><strong style="color:var(--warning); font-size:0.9rem;">ZAPLANOWANE OPŁATY</strong><br><small style="color:var(--muted)">Czekają na opłacenie: ${pendingPlans.map(x=>x.d).join(', ')}.</small></div></div><button class="btn" style="background:var(--warning); color:#000; padding:12px; margin-top:12px; font-size:0.85rem;" onclick="db.tab='plan';render()">Przejdź do opłacenia</button></div>`;
+    }
+    
+    if(t === 'dash') { 
+        APP.innerHTML = hdr + reminderHtml + `
+        <div class="dash-hero" style="padding-bottom:5px;"><p>DO WYDANIA W TYM MIESIĄCU</p><h1 style="color:${totalAvail>=0?'var(--life)':'var(--danger)'}; font-size:4.5rem;">${totalAvail.toFixed(0)} zł</h1></div>
+        <div style="text-align:center; margin-bottom:15px; color:var(--muted); font-size:0.8rem;">💡 Bezpieczny limit: <strong style="color:var(--life); font-size:1.1rem;">${safeDaily} zł / dzień</strong></div>
+        <div class="grid-2"><div class="box" style="border-color:rgba(34,197,94,0.3);"><span style="color:var(--success)">Przychody i premie</span><strong style="color:#fff">${(h.sal + currInc).toFixed(0)} zł</strong></div><div class="box" style="border-color:rgba(239,68,68,0.3);"><span style="color:var(--danger)">Wydatki (ze stałymi)</span><strong style="color:#fff">-${(h.fix + currExp).toFixed(0)} zł</strong></div></div>
+        <div class="panel" style="border-color:rgba(20,184,166,0.4);"><div class="p-title" style="color:var(--life); margin-bottom:5px;">Szybka Akcja</div><div class="grid-2" style="margin-bottom:0;"><button class="btn btn-danger" style="margin-top:0;" onclick="db.tab='exp';render()">ZAPISZ WYDATEK</button><button class="btn" style="background:rgba(34,197,94,0.15); color:var(--success); margin-top:0; border:1px solid var(--success);" onclick="db.tab='inc';render()">DODAJ WPŁYW</button></div></div>
+        <div class="panel"><div class="p-title">Historia operacji (Ostatnie)</div>${[...h.exp, ...h.inc].sort((a,b)=>new Date(b.rD)-new Date(a.rD)).slice(0,8).map(x=>{ let isExp = x.ty === 'exp'; return `<div class="log-item" style="border-left-color:${isExp?'var(--danger)':'var(--success)'}; padding:15px;"><div><div style="display:flex; align-items:center; gap:8px;"><strong style="font-size:1.1rem">${x.d}</strong><span style="background:rgba(255,255,255,0.1); padding:2px 8px; border-radius:6px; font-size:0.65rem; font-weight:bold; color:var(--muted)">👤 ${x.who || 'Nieznany'}</span></div><small style="color:var(--muted); display:block; margin-top:4px;">${x.dt} ${isExp?`• ${x.cat}`:''}</small></div><strong style="color:${isExp?'var(--danger)':'var(--success)'}; font-size:1.1rem;">${isExp?'-':'+'}${x.v.toFixed(2)} zł</strong></div>`}).join('')||'<div style="text-align:center;color:var(--muted);padding:20px 0;font-size:0.8rem;">Brak operacji na koncie.</div>'}</div>
+        ` + nav; 
+    } 
+    
+    if(t === 'exp' || t === 'inc') { 
+        let isExp = t==='exp'; let col = isExp?'var(--danger)':'var(--success)';
+        let todayStr = new Date().toISOString().split('T')[0];
+        let memChips = h.members.map(m => `<div class="chip" style="${window.hMem===m?`background:${col};color:${isExp?'#fff':'#000'}; border-color:${col}`:'background:rgba(255,255,255,0.05);color:var(--muted)'}" onclick="window.hMem='${m}';render()">${m}</div>`).join(''); 
+        APP.innerHTML = hdr + `<div class="panel" style="border-color:${isExp?'rgba(239,68,68,0.4)':'rgba(34,197,94,0.4)'}"><div class="p-title" style="color:${col}">${isExp?'Zaksięguj Nowy Wydatek':'Dodaj Ekstra Przychód'}</div><div class="fs-title" style="margin-bottom:8px;">Kto to zapisuje?</div><div class="chip-box" style="margin-bottom:20px;">${memChips}</div>${isExp?`<div class="inp-group" style="margin-bottom:15px;"><label>Kategoria Wydatku</label><select id="h-c"><option value="🛒 Jedzenie / Zakupy">🛒 Jedzenie / Zakupy codzienne</option><option value="🚗 Auto / Transport">🚗 Auto / Paliwo / Transport</option><option value="🏠 Dom / Rachunki">🏠 Dom / Środki / Wyposażenie</option><option value="🎉 Rozrywka / Wyjścia">🎉 Rozrywka / Restauracje</option><option value="💊 Zdrowie / Uroda">💊 Zdrowie / Apteka / Uroda</option><option value="👗 Ubrania">👗 Ubrania / Buty</option><option value="📦 Inne wydatki">📦 Inne wydatki</option></select></div>`:''}<div class="inp-row"><div class="inp-group" style="flex:2"><label>Opis</label><input type="text" id="h-d" placeholder="${isExp?'np. Biedronka':'np. Premia, sprzedaż'}"></div><div class="inp-group"><label style="color:${col}">Kwota (zł)</label><input type="number" id="h-v" class="big-inp" style="color:${col}; border-color:${col}; padding:10px!important; font-size:1.5rem!important;" placeholder="0.00"></div></div><div class="inp-group" style="margin-bottom:15px; margin-top:5px;"><label>Data operacji (Zmień, by dodać stary wpis)</label><input type="date" id="h-date" value="${todayStr}"></div><button class="btn" style="background:${col}; color:${isExp?'#fff':'#000'}; margin-top:10px;" onclick="hAction('${t}')">${isExp?'WYDAJ Z BUDŻETU':'ZASIL BUDŻET'}</button></div>` + nav; 
+    } 
+    
+    if(t === 'stats') { 
+        let cats = {}; let sum = 0; let membersSum = {}; 
+        h.exp.forEach(x=>{ let d=new Date(x.rD); if(d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear()) { if(!cats[x.cat]) cats[x.cat] = 0; cats[x.cat] += x.v; sum += x.v; let who = x.who || 'Nieznany'; if(!membersSum[who]) membersSum[who] = 0; membersSum[who] += x.v; } }); 
+        let cLabels = Object.keys(cats); let cData = Object.values(cats); 
+        APP.innerHTML = hdr + `<div class="dash-hero" style="padding-bottom:0;"><p>WSPÓLNIE WYDANO W TYM MIESIĄCU</p><h1 style="color:var(--danger); font-size:3.5rem;">${sum.toFixed(2)} zł</h1></div><div class="panel" style="border-color:var(--info);"><div class="p-title" style="color:var(--info)">🏆 Ranking Wydatków Rodziny</div>${Object.keys(membersSum).sort((a,b)=>membersSum[b]-membersSum[a]).map((m, idx) => `<div class="fin-row" style="border-bottom:1px solid rgba(255,255,255,0.05);"><span class="fin-label" style="color:#fff; font-size:1.1rem;">${idx===0?'🥇':(idx===1?'🥈':'🥉')} ${m}</span><span class="fin-val" style="color:var(--danger)">${membersSum[m].toFixed(2)} zł</span></div>`).join('') || '<small style="color:var(--muted)">Brak danych członków rodziny w tym miesiącu.</small>'}</div><div class="panel"><div class="p-title">Analiza Kategorii</div><div style="height:220px; position:relative;"><canvas id="h-chart"></canvas></div></div><div class="panel"><div class="p-title">Pełna Historia (Ten Miesiąc)</div>${h.exp.filter(x=>new Date(x.rD).getMonth()===now.getMonth()).map(x=>`<div class="log-item" style="border-left-color:var(--danger)"><div><strong>${x.d} <span style="background:rgba(255,255,255,0.1); padding:2px 6px; border-radius:4px; font-size:0.6rem; color:var(--muted)">👤 ${x.who}</span></strong><br><small>${x.dt} • ${x.cat}</small></div><strong style="color:var(--danger)">-${x.v.toFixed(2)} zł</strong></div>`).join('')||'<div style="text-align:center;color:var(--muted);padding:10px;font-size:0.8rem;">Brak wydatków.</div>'}</div>` + nav; 
+        setTimeout(() => { if(window.hCh) window.hCh.destroy(); let ctx = document.getElementById('h-chart').getContext('2d'); window.hCh = new Chart(ctx, { type: 'doughnut', data: { labels: cLabels, datasets: [{ data: cData, backgroundColor: ['#ef4444', '#f59e0b', '#3b82f6', '#10b981', '#a855f7', '#ec4899', '#64748b'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: '#a1a1aa', font: {size: 10, family:'Inter'} } } }, cutout: '70%' } }); }, 100); 
+    } 
+
+    if(t === 'plan') {
+        APP.innerHTML = hdr + `<div class="dash-hero" style="padding-bottom:5px;"><p>ANALIZATOR I PLANOWANIE</p></div><div class="panel" style="border-color:var(--info);"><div class="p-title" style="color:var(--info)">Kondycja Budżetu</div><div class="grid-2" style="margin-bottom:0;"><div class="box"><small>Do końca m-ca</small><strong>${daysLeft} dni</strong></div><div class="box"><small>Możesz wydawać</small><strong style="color:var(--success)">${safeDaily} zł / dzień</strong></div></div></div><div class="panel" style="border-color:var(--plan);"><div class="p-title" style="color:var(--plan)">Kalkulator Celu (Oszczędności)</div><div class="inp-row"><div class="inp-group"><label>Cel (zł)</label><input type="number" id="hc-v" oninput="hCalcS()" placeholder="np. 5000"></div><div class="inp-group"><label>Czas (miesiące)</label><input type="number" id="hc-m" oninput="hCalcS()" placeholder="np. 6"></div></div><div style="text-align:center; padding:15px; background:rgba(168, 85, 247, 0.1); border-radius:12px; margin-top:10px; color:var(--plan); font-weight:bold; font-size:1.1rem;" id="hc-res">Wpisz kwotę i czas.</div></div><div class="panel" style="border-color:var(--warning);"><div class="p-title" style="color:var(--warning)">Zeszyt Planowanych Wydatków</div><div class="inp-row"><div class="inp-group" style="flex:2"><label>Co to będzie?</label><input type="text" id="hp-d" placeholder="np. Kredyt, Netflix"></div><div class="inp-group"><label>Kwota (zł)</label><input type="number" id="hp-v" placeholder="0.00"></div></div><div class="inp-group" style="margin-bottom:15px;"><label>Na kiedy to zaplanować?</label><select id="hp-m"><option value="1">Styczeń</option><option value="2">Luty</option><option value="3">Marzec</option><option value="4">Kwiecień</option><option value="5">Maj</option><option value="6">Czerwiec</option><option value="7">Lipiec</option><option value="8">Sierpień</option><option value="9">Wrzesień</option><option value="10">Październik</option><option value="11">Listopad</option><option value="12">Grudzień</option></select></div><button class="btn" style="background:var(--warning); color:#000;" onclick="hAddPlan()">ZAPISZ DO KALENDARZA</button><div style="margin-top:20px;">${[...h.planned].sort((a,b)=>a.m - b.m).map(x=> { let isCurrent = x.m === currentMonthNum; let btn = isCurrent ? `<button class="btn-success" style="padding:8px 12px; font-size:0.75rem; border:none; border-radius:8px; background:var(--success); color:#000; font-weight:bold; margin-top:5px;" onclick="hPayPlan(${x.id})">✔️ OPŁAĆ TERAZ</button>` : `<button class="btn-danger" style="padding:8px 12px; font-size:0.75rem; border:none; border-radius:8px; background:rgba(239,68,68,0.15); color:var(--danger);" onclick="hDelPlan(${x.id})">✖ Usuń</button>`; return `<div class="log-item" style="border-left-color:${isCurrent ? 'var(--warning)' : 'var(--border)'}; padding:15px; flex-direction:column; align-items:flex-start;"><div style="display:flex; justify-content:space-between; width:100%; align-items:flex-start;"><div><strong style="color:#fff; font-size:1.1rem;">${x.d}</strong><br><small style="color:var(--muted)">Zaplanowane na miesiąc: ${x.m}</small></div><strong style="color:var(--warning); font-size:1.1rem;">${x.v.toFixed(2)} zł</strong></div><div style="width:100%; display:flex; justify-content:flex-end; margin-top:5px;">${btn}</div></div>`; }).join('') || '<div style="text-align:center; color:var(--muted); font-size:0.8rem; padding:15px;">Twój kalendarz jest czysty.</div>'}</div></div>` + nav;
+    }
+
+    if(t === 'set') { 
+        APP.innerHTML = hdr + `<div class="panel" style="border-color:var(--info);"><div class="p-title" style="color:var(--info)">👨‍👩‍👦 Zarządzaj Rodziną</div><div class="inp-row" style="align-items:flex-end;"><div class="inp-group" style="flex:2"><label>Dodaj osobę</label><input type="text" id="h-new-mem" placeholder="Imię domownika"></div><button class="btn" style="background:var(--info); color:#fff; width:auto; margin-top:0; padding:16px 20px;" onclick="hAddMem()">DODAJ</button></div><div style="margin-top:15px;">${h.members.map(m => `<div style="display:inline-block; background:rgba(255,255,255,0.05); margin:5px 5px 5px 0; padding:10px 15px; border-radius:12px; font-weight:bold; font-size:0.9rem;">${m} <span style="color:var(--danger); cursor:pointer; margin-left:10px; padding:5px;" onclick="hDelMem('${m}')">✖</span></div>`).join('')}</div><small style="color:var(--muted); display:block; margin-top:10px; line-height:1.4;">Osoby dodane tutaj będą widoczne przy dodawaniu wydatków i wpływów, aby budować wspólne statystyki.</small></div><div class="panel" style="border-color:rgba(20,184,166,0.4)"><div class="p-title" style="color:var(--life)">Parametry Budżetu</div><div class="inp-group" style="margin-bottom:15px;"><label>Stała Wypłata z etatu (zł)</label><input type="number" id="hs-sal" value="${h.sal}"></div><div class="inp-group"><label>Stałe Opłaty na start msc (zł)</label><input type="number" id="hs-fix" value="${h.fix}"></div><button class="btn btn-home" style="margin-top:20px;" onclick="hSaveUS()">ZAKTUALIZUJ</button></div><div class="panel" style="border-color:rgba(239,68,68,0.2)"><div class="p-title" style="color:var(--danger)">Zarządzanie</div><button class="btn btn-danger" style="background:rgba(239,68,68,0.15); color:var(--danger); border:none;" onclick="hardReset()">TWARDY RESET DANYCH</button></div>` + nav; 
+    } 
+} 
+function hAction(type) { 
+    let v = safeVal('h-v'); let dEl = document.getElementById('h-d'); let d = dEl ? dEl.value : ''; let who = window.hMem || db.home.members[0]; 
+    let dVal = document.getElementById('h-date') ? document.getElementById('h-date').value : '';
+    let dObj = dVal ? new Date(dVal) : new Date(); if(dVal) dObj.setHours(12,0,0);
+
+    if(type === 'exp') { 
+        let c = document.getElementById('h-c').value; if(!d) d = c; 
+        if(v) { 
+            db.home.exp.push({id:Date.now(), ty:'exp', cat:c, d, v, who, dt:dObj.toLocaleDateString('pl-PL'), rD:dObj.toISOString()}); 
+            db.home.exp.sort((a,b) => new Date(b.rD) - new Date(a.rD));
+            save(); db.tab='dash'; render(); 
+        } 
+    } else { 
+        if(!d) d = 'Przychód dodany ręcznie'; 
+        if(v) { 
+            db.home.inc.push({id:Date.now(), ty:'inc', d, v, who, dt:dObj.toLocaleDateString('pl-PL'), rD:dObj.toISOString()}); 
+            db.home.inc.sort((a,b) => new Date(b.rD) - new Date(a.rD));
+            save(); db.tab='dash'; render(); 
+        } 
+    } 
+} 
+function hCalcS() { let v = safeVal('hc-v'); let m = safeVal('hc-m'); let el = document.getElementById('hc-res'); if(v > 0 && m > 0) { let res = v / m; el.innerText = `Odkładaj ${res.toFixed(2)} zł co miesiąc.`; } else { el.innerText = "Wpisz kwotę i czas."; } }
+function hAddPlan() { let dEl=document.getElementById('hp-d'); let d = dEl?dEl.value:'Plan'; let v = safeVal('hp-v'); let mEl=document.getElementById('hp-m'); let m = mEl?parseInt(mEl.value):1; if(d && v) { db.home.planned.push({id:Date.now(), d, v, m}); save(); render(); } }
+function hDelPlan(id) { db.home.planned = db.home.planned.filter(x=>x.id!==id); save(); render(); }
+function hPayPlan(id) { let plan = db.home.planned.find(x => x.id === id); if(plan) { let who = window.hMem || db.home.members[0]; db.home.exp.unshift({ id: Date.now(), ty: 'exp', cat: '🏠 Dom / Rachunki', d: `Opłacono: ${plan.d}`, v: plan.v, who: who, dt: new Date().toLocaleDateString(), rD: new Date().toISOString() }); db.home.planned = db.home.planned.filter(x => x.id !== id); save(); db.tab = 'dash'; render(); alert(`Sukces! Kwota ${plan.v} zł za "${plan.d}" została odjęta z budżetu.`); } }
+function hAddMem() { let mEl=document.getElementById('h-new-mem'); let m = mEl?mEl.value.trim():''; if(m && !db.home.members.includes(m)) { db.home.members.push(m); save(); render(); } }
+function hDelMem(m) { if(db.home.members.length === 1) return alert("Musi zostać przynajmniej jeden domownik!"); if(confirm(`Usunąć profil: ${m}?`)) { db.home.members = db.home.members.filter(x=>x!==m); save(); render(); } }
+function hSaveUS() { db.home.sal = safeVal('hs-sal'); db.home.fix = safeVal('hs-fix'); save(); alert('Zaktualizowano budżet domowy!'); render(); }
+
+
+// ==========================================
+// 4. KIEROWCA TAXI 
 // ==========================================
 function rDrv() {
     let d=db.drv; let t=db.tab;
     
     let nav = `<div class="nav"><div class="nav-item ${t==='term'?'active':''}" onclick="db.tab='term';render()"><i>🚕</i>Panel</div><div class="nav-item ${t==='quote'?'active':''}" onclick="db.tab='quote';render()"><i>🧮</i>Wycena</div><div class="nav-item ${t==='garage'?'active':''}" onclick="db.tab='garage';render()"><i>⛽</i>Garaż</div><div class="nav-item ${t==='stats'?'active':''}" onclick="db.tab='stats';render()"><i>📊</i>Wyniki</div><div class="nav-item ${t==='crm'?'active':''}" onclick="db.tab='crm';render()"><i>👥</i>Klienci</div></div>`;
-    let isSwitcherValid = db.mainProfile !== 'home'; let hdrAction = isSwitcherValid ? `onclick="openSwitcher()"` : ''; let hdrIcon = isSwitcherValid ? `<span style="color:var(--driver)">⏷</span>` : `<span style="color:var(--driver)">TAXI</span>`;
-    let hdr = `<header><div class="logo" ${hdrAction}>ŁAPTRANS ${hdrIcon}</div><div class="header-actions"><div class="badge" style="color:var(--fuel); border-color:rgba(245,158,11,0.3); background:rgba(245,158,11,0.1);">${d.odo} KM</div><div class="settings-btn" onclick="db.tab='set';render()">⚙️</div></div></header>`;
+    
+    // Kluczowa naprawa: Zawsze wywołuje openSwitcher
+    let hdr = `<header><div class="logo" onclick="openSwitcher()">ŁAPTRANS <span style="color:var(--driver)">⏷</span></div><div class="header-actions"><div class="badge" style="color:var(--fuel); border-color:rgba(245,158,11,0.3); background:rgba(245,158,11,0.1);">${d.odo} KM</div><div class="settings-btn" onclick="db.tab='set';render()">⚙️</div></div></header>`;
 
     if(t === 'term') { 
-        // Dynamiczne generowanie chipów Uber/Bolt vs Centrala/Postój na podstawie d.plat
         let ch1 = d.plat === 'apps' 
             ? `<div class="chip ${dTSrc==='Uber'?'active':''}" style="${dTSrc==='Uber'?'background:var(--driver);color:#fff':'color:var(--muted)'}" onclick="dTC('s','Uber',this)">Uber</div><div class="chip ${dTSrc==='Bolt'?'active':''}" style="${dTSrc==='Bolt'?'background:var(--driver);color:#fff':'color:var(--muted)'}" onclick="dTC('s','Bolt',this)">Bolt</div><div class="chip ${dTSrc==='Prywatny'?'active':''}" style="${dTSrc==='Prywatny'?'background:var(--driver);color:#fff':'color:var(--muted)'}" onclick="dTC('s','Prywatny',this)">Prywatny</div>`
             : `<div class="chip ${dTSrc==='Centrala'?'active':''}" style="${dTSrc==='Centrala'?'background:var(--driver);color:#fff':'color:var(--muted)'}" onclick="dTC('s','Centrala',this)">Centrala</div><div class="chip ${dTSrc==='Postój'?'active':''}" style="${dTSrc==='Postój'?'background:var(--driver);color:#fff':'color:var(--muted)'}" onclick="dTC('s','Postój',this)">Postój</div><div class="chip ${dTSrc==='Prywatny'?'active':''}" style="${dTSrc==='Prywatny'?'background:var(--driver);color:#fff':'color:var(--muted)'}" onclick="dTC('s','Prywatny',this)">Prywatny</div>`;
@@ -312,27 +420,25 @@ function rDrv() {
         let g=0, cf=0; if(d.sh.on) { d.sh.tr.forEach(x=>{ g+=x.v; if(x.p==='Karta') cf += x.v * d.cfg.cardF; }); }
         let pFee = d.cfg.eType === 'pct' ? g * d.cfg.ePct : 0; let n = g - (g * d.cfg.tax) - pFee - cf - d.cfg.fix; 
         
-        // Logika Stopera
         let stoperHtml = '';
         if(d.sh.on) {
             if(d.liveRideStart) {
                 let minsElapsed = Math.floor((Date.now() - d.liveRideStart) / 60000);
-                stoperHtml = `<div class="panel" style="border-color:var(--danger); text-align:center; background:rgba(239,68,68,0.05); padding:30px 20px;"><div style="font-size:3rem; margin-bottom:10px;">⏳</div><h3 style="color:var(--danger); margin:0 0 5px 0; text-transform:uppercase;">Kurs w toku!</h3><p style="color:var(--muted); font-size:0.85rem; margin-bottom:20px;">Stoper włączony. Możesz zablokować ekran.</p><button class="btn btn-live" style="font-size:1.2rem; padding:25px;" onclick="stopLiveRide()">🔴 ZAKOŃCZ KURS</button></div>`;
+                stoperHtml = `<div class="panel" style="border-color:var(--danger); text-align:center; background:rgba(239,68,68,0.05); padding:30px 20px;"><div style="font-size:3rem; margin-bottom:10px;">⏳</div><h3 style="color:var(--danger); margin:0 0 5px 0; text-transform:uppercase;">Kurs w toku!</h3><p style="color:var(--muted); font-size:0.85rem; margin-bottom:20px;">Stoper liczy czas. Możesz zablokować telefon.</p><button class="btn btn-live" style="font-size:1.2rem; padding:25px;" onclick="stopLiveRide()">🔴 ZAKOŃCZ KURS</button></div>`;
             } else {
-                stoperHtml = `<div class="panel" style="border-color:var(--success); text-align:center;"><button class="btn" style="background:var(--success); color:#000; font-size:1.2rem; padding:25px;" onclick="startLiveRide()">🟢 ROZPOCZNIJ KURS (STOPER)</button><p style="color:var(--muted); font-size:0.75rem; margin-top:15px;">Kliknij, gdy klient wsiądzie. Apka sama policzy czas.</p></div>`;
+                stoperHtml = `<div class="panel" style="border-color:var(--success); text-align:center;"><button class="btn" style="background:var(--success); color:#000; font-size:1.2rem; padding:25px;" onclick="startLiveRide()">🟢 ROZPOCZNIJ KURS (STOPER)</button><p style="color:var(--muted); font-size:0.75rem; margin-top:15px;">Kliknij, gdy klient wsiądzie. System sam wyliczy minuty.</p></div>`;
             }
         }
 
         let act = d.sh.on ? `<div class="dash-hero" style="padding-bottom:5px;"><p>ZYSK NETTO ZMIANY</p><h1 style="font-size:4rem; color:${n>=0?'var(--success)':'var(--danger)'};">${n.toFixed(2)} zł</h1></div>
         ${stoperHtml}
-        <div class="panel" style="border-color:rgba(59, 130, 246, 0.4);"><div class="p-title" style="color:var(--driver);">➕ Zaksięguj nowy kurs</div><div class="form-section" style="padding:12px; margin-bottom:15px;"><div class="fs-title" style="margin-bottom:8px;">Źródło & Płatność</div><div class="chip-box" style="margin-bottom:10px; padding-bottom:0;">${ch1}</div><div class="chip-box" style="margin-bottom:0; padding-bottom:0;">${ch2}</div></div><div class="inp-group" style="margin-bottom:15px;"><label>Klient VIP (Opcjonalnie)</label><select id="dt-cid"><option value="">-- Zwykły kurs --</option>${clientOpts}</select></div><div class="form-section" style="padding:20px 15px; border-color:rgba(59,130,246,0.3); background:rgba(59,130,246,0.05);"><div class="fs-title" style="color:var(--driver); text-align:center; margin-bottom:15px;">Kwota (Brutto)</div><input type="number" id="dt-v" class="big-inp" placeholder="0.00" style="color:var(--driver); border:none; background:rgba(0,0,0,0.5); border-radius:16px;"></div><div class="inp-row"><div class="inp-group"><label>Czas (Min)</label><input type="number" id="dt-m" placeholder="np. 15"></div><div class="inp-group"><label>Dystans (KM)</label><input type="number" id="dt-k" placeholder="np. 8.5"></div></div><button class="btn btn-driver" style="margin-top:15px; font-size:1.1rem; padding:20px;" onclick="dAddT()">DODAJ KURS DO PORTFELA</button></div><div class="panel"><div class="p-title">Historia Zmiany</div>${d.sh.tr.map(x=>{ let icon = x.p==='Gotówka'?'💵':(x.p==='Karta'?'💳':'📱'); return `<div class="log-item" style="border-left-color:var(--driver); padding:15px;"><div style="display:flex; align-items:center; gap:15px;"><div style="font-size:1.5rem; background:rgba(255,255,255,0.05); padding:10px; border-radius:12px;">${icon}</div><div><strong style="font-size:1.2rem">${x.v.toFixed(2)} zł</strong><br><small style="color:var(--muted)">${x.s} • ${x.m||0} min • ${x.k||0}km</small></div></div><button class="btn-danger" style="padding:8px 12px; border:none; border-radius:8px; font-weight:bold; background:rgba(239,68,68,0.15);" onclick="dDelT(${x.id})">Cofnij</button></div>` }).join('')||'<div style="text-align:center;color:var(--muted);padding:30px 0;font-size:0.9rem;">Brak kursów.</div>'}</div><div class="panel" style="border-color:rgba(239,68,68,0.3); background:rgba(239,68,68,0.02)"><div class="p-title" style="color:var(--danger)">Zakończenie Dnia Pracy</div><div class="inp-group" style="margin-bottom:15px;"><label style="color:var(--danger)">Licznik po zjeździe (KM)</label><input type="number" id="de-o" class="big-inp" style="color:var(--danger); border-color:rgba(239,68,68,0.4); background:#000;"></div><button class="btn btn-danger" style="background:linear-gradient(135deg, #ef4444, #b91c1c); color:#fff; border:none; padding:20px;" onclick="dEndS()">ZAKOŃCZ ZMIANĘ</button></div>` : `<div class="dash-hero" style="padding-top:40px;"><div style="width:80px;height:80px;background:linear-gradient(135deg,var(--success),#059669);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:2.5rem;box-shadow:0 10px 25px rgba(34,197,94,0.3);">🚗</div><h1 style="font-size:2.5rem;">Cześć, ${db.userName}!</h1><p style="margin-top:10px;">Podaj stan licznika, aby otworzyć zmianę</p></div><div class="panel" style="border-color:var(--success); box-shadow:0 10px 30px rgba(34,197,94,0.1);"><div class="inp-group"><input type="number" id="ds-o" class="big-inp" placeholder="Licznik (KM)" style="font-size:2.5rem; padding:30px;"></div><button class="btn" style="background:linear-gradient(135deg, var(--success), #059669); color:#fff; font-size:1.2rem; padding:20px; margin-top:20px;" onclick="dStartS()">ROZPOCZNIJ PRACĘ</button></div>`;
+        <div class="panel" style="border-color:rgba(59, 130, 246, 0.4);"><div class="p-title" style="color:var(--driver);">➕ Zaksięguj nowy kurs</div><div class="form-section" style="padding:12px; margin-bottom:15px;"><div class="fs-title" style="margin-bottom:8px;">Źródło & Płatność</div><div class="chip-box" style="margin-bottom:10px; padding-bottom:0;">${ch1}</div><div class="chip-box" style="margin-bottom:0; padding-bottom:0;">${ch2}</div></div><div class="inp-group" style="margin-bottom:15px;"><label>Zwiąż z Klientem VIP (Opcjonalnie)</label><select id="dt-cid"><option value="">-- Zwykły kurs --</option>${clientOpts}</select></div><div class="form-section" style="padding:20px 15px; border-color:rgba(59,130,246,0.3); background:rgba(59,130,246,0.05);"><div class="fs-title" style="color:var(--driver); text-align:center; margin-bottom:15px;">Kwota (Brutto z taksometru / apki)</div><input type="number" id="dt-v" class="big-inp" placeholder="0.00" style="color:var(--driver); border:none; background:rgba(0,0,0,0.5); border-radius:16px;"></div><div class="inp-row"><div class="inp-group"><label>Czas (Min)</label><input type="number" id="dt-m" placeholder="np. 15"></div><div class="inp-group"><label>Dystans (KM)</label><input type="number" id="dt-k" placeholder="np. 8.5"></div></div><button class="btn btn-driver" style="margin-top:15px; font-size:1.1rem; padding:20px;" onclick="dAddT()">DODAJ KURS DO PORTFELA</button></div><div class="panel"><div class="p-title">Historia Zmiany</div>${d.sh.tr.map(x=>{ let icon = x.p==='Gotówka'?'💵':(x.p==='Karta'?'💳':'📱'); return `<div class="log-item" style="border-left-color:var(--driver); padding:15px;"><div style="display:flex; align-items:center; gap:15px;"><div style="font-size:1.5rem; background:rgba(255,255,255,0.05); padding:10px; border-radius:12px;">${icon}</div><div><strong style="font-size:1.2rem">${x.v.toFixed(2)} zł</strong><br><small style="color:var(--muted)">${x.s} • ${x.m||0} min • ${x.k||0}km</small></div></div><button class="btn-danger" style="padding:8px 12px; border:none; border-radius:8px; font-weight:bold; background:rgba(239,68,68,0.15);" onclick="dDelT(${x.id})">Cofnij</button></div>` }).join('')||'<div style="text-align:center;color:var(--muted);padding:30px 0;font-size:0.9rem;">Brak kursów.</div>'}</div><div class="panel" style="border-color:rgba(239,68,68,0.3); background:rgba(239,68,68,0.02)"><div class="p-title" style="color:var(--danger)">Zakończenie Dnia Pracy</div><div class="inp-group" style="margin-bottom:15px;"><label style="color:var(--danger)">Licznik po zjeździe (KM)</label><input type="number" id="de-o" class="big-inp" style="color:var(--danger); border-color:rgba(239,68,68,0.4); background:#000;"></div><button class="btn btn-danger" style="background:linear-gradient(135deg, #ef4444, #b91c1c); color:#fff; border:none; padding:20px;" onclick="dEndS()">ZAKOŃCZ ZMIANĘ</button></div>` : `<div class="dash-hero" style="padding-top:40px;"><div style="width:80px;height:80px;background:linear-gradient(135deg,var(--success),#059669);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:2.5rem;box-shadow:0 10px 25px rgba(34,197,94,0.3);">🚗</div><h1 style="font-size:2.5rem;">Cześć, ${db.userName}!</h1><p style="margin-top:10px;">Podaj stan licznika, aby otworzyć zmianę</p></div><div class="panel" style="border-color:var(--success); box-shadow:0 10px 30px rgba(34,197,94,0.1);"><div class="inp-group"><input type="number" id="ds-o" class="big-inp" placeholder="Licznik (KM)" style="font-size:2.5rem; padding:30px;"></div><button class="btn" style="background:linear-gradient(135deg, var(--success), #059669); color:#fff; font-size:1.2rem; padding:20px; margin-top:20px;" onclick="dStartS()">ROZPOCZNIJ PRACĘ</button></div>`;
         APP.innerHTML = hdr + act + nav;
     }
 
     if(t === 'stats') {
         let fM = db.filter || 'all'; let now = new Date(); let fs=[], fe=[];
         
-        // Funkcja pomocnicza aby porownac daty w zaleznosci od wybranego filtra
         d.h.forEach(s => { 
             let sd=new Date(s.rD); 
             if(fM==='all') fs.push(s); 
@@ -353,15 +459,20 @@ function rDrv() {
         fs.forEach(x=>{g+=x.g; k+=x.k; fc+=x.fc; tx+=x.tx; pf+=(x.pF||0); cf+=(x.cF||0);}); 
         fe.forEach(x=> { if(x.ty !== 'amort') ex+=x.v; });
         
-        // Naprawione wyliczanie kosztów stałych - tylko za unikalne dni
         let uniqueDays = new Set(fs.map(s => new Date(s.rD).toLocaleDateString())).size;
-        if(uniqueDays === 0 && d.sh.on && fM === 'today') uniqueDays = 1; // wlicza dzisiejszy dzien jesli zmiana otwarta
+        if(uniqueDays === 0 && d.sh.on && fM === 'today') uniqueDays = 1; 
         let fix = uniqueDays * d.cfg.fix; 
 
         let n = g - fc - tx - fix - pf - cf - ex; 
         let rKm = k>0?(n/k):0;
 
-        APP.innerHTML = hdr + `<div class="mode-switch" style="margin:15px; border-color:var(--border);"><div class="m-btn ${fM==='today'?'active':''}" onclick="db.filter='today';render()">Dziś</div><div class="m-btn ${fM==='week'?'active':''}" onclick="db.filter='week';render()">Tydzień</div><div class="m-btn ${fM==='month'?'active':''}" onclick="db.filter='month';render()">Miesiąc</div><div class="m-btn ${fM==='all'?'active':''}" onclick="db.filter='all';render()">Całość</div></div><div class="dash-hero" style="padding-top:0;"><p>TWOJE PRAWDZIWE NETTO</p><h1 style="color:${n>=0?'var(--success)':'var(--danger)'}; font-size:3.8rem;">${n.toFixed(2)} zł</h1></div><div class="grid-2"><div class="box"><span style="color:var(--info)">Zysk na 1 kilometr</span><strong style="color:#fff">${rKm.toFixed(2)} zł/km</strong></div><div class="box"><span style="color:var(--success)">Przepracowano</span><strong style="color:#fff">${uniqueDays} dni</strong></div></div><div class="panel" style="border-color:var(--border); padding:25px;"><div class="p-title">Wodospad Finansowy (P&L)</div><div class="fin-row"><span class="fin-label">Utarg Brutto z aplikacji</span><span class="fin-val" style="color:var(--success)">${g.toFixed(2)} zł</span></div><div class="fin-row"><span class="fin-label">Wydatki Garażowe</span><span class="fin-val" style="color:var(--danger)">-${ex.toFixed(2)} zł</span></div><div class="fin-row"><span class="fin-label">Paliwo z tras</span><span class="fin-val" style="color:var(--fuel)">-${fc.toFixed(2)} zł</span></div>${cf > 0 ? `<div class="fin-row"><span class="fin-label" style="color:var(--info)">Terminal</span><span class="fin-val" style="color:var(--danger)">-${cf.toFixed(2)} zł</span></div>` : ''}${pf > 0 ? `<div class="fin-row"><span class="fin-label">Prowizja Partnera</span><span class="fin-val" style="color:var(--danger)">-${pf.toFixed(2)} zł</span></div>` : ''}<div class="fin-row" style="align-items:flex-start;"><div style="display:flex; flex-direction:column; max-width:70%;"><span class="fin-label" style="color:#fff;">Koszty Stałe (Odpis)</span><small style="color:var(--muted); font-size:0.7rem; margin-top:4px; line-height:1.4;">Za przepracowane: <strong>${uniqueDays} dni</strong><br>Odpis: <strong>${d.cfg.fix.toFixed(2)} zł/dzień</strong><br>Auto: ${d.cfg.cC} | Baza: ${d.cfg.bC} | Inne: ${d.cfg.eC + d.cfg.iC}</small></div><span class="fin-val" style="color:var(--danger); padding-top:2px;">-${fix.toFixed(2)} zł</span></div><div class="fin-row" style="background:#09090b; margin-top:15px; padding:20px; border-radius:14px; border:1px solid var(--border);"><span class="fin-label" style="color:#fff; font-size:1.1rem;">CZYSTY ZYSK</span><span class="fin-val" style="font-size:1.5rem; color:${n>=0?'var(--success)':'var(--danger)'}">${n.toFixed(2)} zł</span></div></div><div class="panel"><div class="p-title">Struktura Kosztów</div><div style="height:200px; position:relative;"><canvas id="ch-doughnut"></canvas></div></div><div class="panel"><div class="p-title">Dziennik Zmian</div>${fs.map(x=>`<div class="log-item" style="border-left-color:${x.n>=0?'var(--success)':'var(--danger)'}; flex-direction:column; align-items:flex-start; padding:15px;"><div style="display:flex; justify-content:space-between; width:100%; margin-bottom:5px;"><strong style="font-size:1.1rem;">${x.dt}</strong><strong style="color:${x.n>=0?'var(--success)':'var(--danger)'}; font-size:1.2rem;">${x.n.toFixed(2)} zł</strong></div><small style="color:var(--muted)">Utarg: ${x.g.toFixed(2)} zł | Przebieg: ${x.k}km</small></div>`).join('')||'<div style="text-align:center;color:var(--muted);font-size:0.85rem;padding:20px 0;">Brak danych w tym przedziale.</div>'}</div>` + nav;
+        APP.innerHTML = hdr + `<div class="mode-switch" style="margin:15px; border-color:var(--border);"><div class="m-btn ${fM==='today'?'active':''}" onclick="db.filter='today';render()">Dziś</div><div class="m-btn ${fM==='week'?'active':''}" onclick="db.filter='week';render()">Tydzień</div><div class="m-btn ${fM==='month'?'active':''}" onclick="db.filter='month';render()">Miesiąc</div><div class="m-btn ${fM==='all'?'active':''}" onclick="db.filter='all';render()">Całość</div></div><div class="dash-hero" style="padding-top:0;"><p>TWOJE PRAWDZIWE NETTO</p><h1 style="color:${n>=0?'var(--success)':'var(--danger)'}; font-size:3.8rem;">${n.toFixed(2)} zł</h1></div><div class="grid-2"><div class="box"><span style="color:var(--info)">Zysk na 1 kilometr</span><strong style="color:#fff">${rKm.toFixed(2)} zł/km</strong></div><div class="box"><span style="color:var(--success)">Przepracowano</span><strong style="color:#fff">${uniqueDays} dni</strong></div></div>
+        
+        <div style="padding: 0 15px; margin-bottom: 20px;">
+            <button class="btn btn-home" style="margin:0; box-shadow: 0 10px 25px rgba(20, 184, 166, 0.3);" onclick="dTransferToHome()">💸 PRZELEJ ZYSKI DO DOMU</button>
+        </div>
+
+        <div class="panel" style="border-color:var(--border); padding:25px;"><div class="p-title">Wodospad Finansowy (P&L)</div><div class="fin-row"><span class="fin-label">Utarg Brutto z aplikacji</span><span class="fin-val" style="color:var(--success)">${g.toFixed(2)} zł</span></div><div class="fin-row"><span class="fin-label">Wydatki Garażowe</span><span class="fin-val" style="color:var(--danger)">-${ex.toFixed(2)} zł</span></div><div class="fin-row"><span class="fin-label">Paliwo z tras</span><span class="fin-val" style="color:var(--fuel)">-${fc.toFixed(2)} zł</span></div>${cf > 0 ? `<div class="fin-row"><span class="fin-label" style="color:var(--info)">Terminal</span><span class="fin-val" style="color:var(--danger)">-${cf.toFixed(2)} zł</span></div>` : ''}${pf > 0 ? `<div class="fin-row"><span class="fin-label">Prowizja Partnera</span><span class="fin-val" style="color:var(--danger)">-${pf.toFixed(2)} zł</span></div>` : ''}<div class="fin-row" style="align-items:flex-start;"><div style="display:flex; flex-direction:column; max-width:70%;"><span class="fin-label" style="color:#fff;">Koszty Stałe (Odpis)</span><small style="color:var(--muted); font-size:0.7rem; margin-top:4px; line-height:1.4;">Za przepracowane: <strong>${uniqueDays} dni</strong><br>Odpis: <strong>${d.cfg.fix.toFixed(2)} zł/dzień</strong><br>Auto: ${d.cfg.cC} | Baza: ${d.cfg.bC} | Inne: ${d.cfg.eC + d.cfg.iC}</small></div><span class="fin-val" style="color:var(--danger); padding-top:2px;">-${fix.toFixed(2)} zł</span></div><div class="fin-row" style="background:#09090b; margin-top:15px; padding:20px; border-radius:14px; border:1px solid var(--border);"><span class="fin-label" style="color:#fff; font-size:1.1rem;">CZYSTY ZYSK</span><span class="fin-val" style="font-size:1.5rem; color:${n>=0?'var(--success)':'var(--danger)'}">${n.toFixed(2)} zł</span></div></div><div class="panel"><div class="p-title">Struktura Kosztów</div><div style="height:200px; position:relative;"><canvas id="ch-doughnut"></canvas></div></div><div class="panel"><div class="p-title">Dziennik Zmian</div>${fs.map(x=>`<div class="log-item" style="border-left-color:${x.n>=0?'var(--success)':'var(--danger)'}; flex-direction:column; align-items:flex-start; padding:15px;"><div style="display:flex; justify-content:space-between; width:100%; margin-bottom:5px;"><strong style="font-size:1.1rem;">${x.dt}</strong><strong style="color:${x.n>=0?'var(--success)':'var(--danger)'}; font-size:1.2rem;">${x.n.toFixed(2)} zł</strong></div><small style="color:var(--muted)">Utarg: ${x.g.toFixed(2)} zł | Przebieg: ${x.k}km</small></div>`).join('')||'<div style="text-align:center;color:var(--muted);font-size:0.85rem;padding:20px 0;">Brak danych w tym przedziale.</div>'}</div>` + nav;
         
         setTimeout(() => { 
             if(window.dCh1) window.dCh1.destroy(); 
@@ -382,7 +493,8 @@ function rDrv() {
 
     if(t === 'garage') {
         let fS = calcFuelioStats();
-        APP.innerHTML = hdr + `<div class="dash-hero" style="padding-bottom:5px;"><p>ŚREDNIE SPALANIE AUTA</p><h1 style="color:var(--fuel); font-size:3.5rem;">${fS.l1.toFixed(1)} <span style="font-size:1.5rem; color:var(--muted)">L/100</span></h1></div><div class="grid-2" style="padding:0 15px; margin-bottom:20px;"><div class="box" style="border-color:rgba(245,158,11,0.3); background:rgba(245,158,11,0.05); align-items:center;"><span style="color:var(--fuel)">Koszt 100 KM</span><strong style="color:#fff">${fS.c1.toFixed(2)} zł</strong></div><div class="box" style="border-color:rgba(245,158,11,0.3); background:rgba(245,158,11,0.05); align-items:center;"><span style="color:var(--fuel)">Bieżący Koszt 1 KM</span><strong style="color:#fff">${d.cfg.fuelPx.toFixed(2)} zł</strong></div></div><div class="panel" style="border-color:var(--fuel)"><div class="p-title" style="color:var(--fuel)">Dziennik Tankowań</div><div class="inp-row"><div class="inp-group"><label>Licznik Główny (KM)</label><input type="number" id="df-o"></div><div class="inp-group"><label>Wlane Litry</label><input type="number" id="df-l" step="0.1"></div></div><div class="inp-row"><div class="inp-group"><label>Rachunek (zł)</label><input type="number" id="df-v"></div><div class="inp-group"><label>Pod korek?</label><select id="df-f"><option value="1">Tak (Przelicz spalanie)</option><option value="0">Nie</option></select></div></div><button class="btn" style="background:var(--fuel); color:#000;" onclick="dAF()">ZAPISZ PARAGON</button></div><div class="panel" style="border-color:rgba(239,68,68,0.4)"><div class="p-title" style="color:var(--danger)">Inne Wydatki Operacyjne</div><div class="inp-row"><div class="inp-group" style="flex:2"><label>Kategoria Wydatku</label><select id="de-c"><option value="✨ Myjnia / Kosmetyka">✨ Myjnia / Kosmetyka</option><option value="🛠️ Serwis / Części">🛠️ Serwis / Części</option><option value="🛡️ Ubezpieczenie">🛡️ Ubezpieczenie</option><option value="📦 Inne koszty">📦 Inne koszty</option></select></div><div class="inp-group"><label>Kwota (zł)</label><input type="number" id="de-v" placeholder="0.00"></div></div><button class="btn btn-danger" style="background:var(--danger); color:#fff;" onclick="dAE()">ZAPISZ WYDATEK</button></div><div class="panel"><div class="p-title">Historia Garażu</div>${renderGarageHistory()}</div>` + nav;
+        let todayStr = new Date().toISOString().split('T')[0];
+        APP.innerHTML = hdr + `<div class="dash-hero" style="padding-bottom:5px;"><p>ŚREDNIE SPALANIE AUTA</p><h1 style="color:var(--fuel); font-size:3.5rem;">${fS.l1.toFixed(1)} <span style="font-size:1.5rem; color:var(--muted)">L/100</span></h1></div><div class="grid-2" style="padding:0 15px; margin-bottom:20px;"><div class="box" style="border-color:rgba(245,158,11,0.3); background:rgba(245,158,11,0.05); align-items:center;"><span style="color:var(--fuel)">Koszt 100 KM</span><strong style="color:#fff">${fS.c1.toFixed(2)} zł</strong></div><div class="box" style="border-color:rgba(245,158,11,0.3); background:rgba(245,158,11,0.05); align-items:center;"><span style="color:var(--fuel)">Bieżący Koszt 1 KM</span><strong style="color:#fff">${d.cfg.fuelPx.toFixed(2)} zł</strong></div></div><div class="panel" style="border-color:var(--fuel)"><div class="p-title" style="color:var(--fuel)">Dziennik Tankowań</div><div class="inp-row"><div class="inp-group"><label>Licznik Główny (KM)</label><input type="number" id="df-o"></div><div class="inp-group"><label>Wlane Litry</label><input type="number" id="df-l" step="0.1"></div></div><div class="inp-row"><div class="inp-group"><label>Rachunek (zł)</label><input type="number" id="df-v"></div><div class="inp-group"><label>Data</label><input type="date" id="df-date" value="${todayStr}"></div></div><div class="inp-group" style="margin-bottom:15px;"><label>Pod korek?</label><select id="df-f"><option value="1">Tak (Przelicz spalanie)</option><option value="0">Nie</option></select></div><button class="btn" style="background:var(--fuel); color:#000;" onclick="dAF()">ZAPISZ PARAGON</button></div><div class="panel" style="border-color:rgba(239,68,68,0.4)"><div class="p-title" style="color:var(--danger)">Inne Wydatki Operacyjne</div><div class="inp-row"><div class="inp-group" style="flex:2"><label>Kategoria Wydatku</label><select id="de-c"><option value="✨ Myjnia / Kosmetyka">✨ Myjnia / Kosmetyka</option><option value="🛠️ Serwis / Części">🛠️ Serwis / Części</option><option value="🛡️ Ubezpieczenie">🛡️ Ubezpieczenie</option><option value="📦 Inne koszty">📦 Inne koszty</option></select></div><div class="inp-group"><label>Kwota (zł)</label><input type="number" id="de-v" placeholder="0.00"></div></div><div class="inp-group" style="margin-bottom:15px;"><label>Data Wydatku</label><input type="date" id="de-date" value="${todayStr}"></div><button class="btn btn-danger" style="background:var(--danger); color:#fff;" onclick="dAE()">ZAPISZ WYDATEK</button></div><div class="panel"><div class="p-title">Historia Garażu</div>${renderGarageHistory()}</div>` + nav;
     }
 
     if(t === 'crm') {
@@ -394,7 +506,20 @@ function rDrv() {
     }
 }
 
-// STOPPER LOGIC (BEZ ROZSYPYWANIA)
+// LOGIKA NOWEGO PRZELEWU DO BUDŻETU DOMOWEGO
+function dTransferToHome() {
+    let amt = prompt("Ile gotówki z wypłaty na Taxi chcesz przelać i wpisać do domowego budżetu?");
+    if(amt && !isNaN(amt) && parseFloat(amt) > 0) {
+        let v = parseFloat(amt);
+        let todayStr = new Date().toISOString();
+        db.home.inc.push({id:Date.now(), ty:'inc', d:'Wypłata z Taxi', v:v, who:db.userName, dt:new Date().toLocaleDateString('pl-PL'), rD:todayStr});
+        db.home.inc.sort((a,b) => new Date(b.rD) - new Date(a.rD));
+        save();
+        alert(`Sukces! Kwota ${v.toFixed(2)} zł wylądowała w Twoim Budżecie Domowym.`);
+    }
+}
+
+// STOPPER LOGIC (BEZ ROZSYPYWANIA UI)
 function startLiveRide(){db.drv.liveRideStart=Date.now();save();render();}
 function stopLiveRide(){
     let m=Math.round((Date.now()-db.drv.liveRideStart)/60000); if(m<1)m=1;
@@ -402,7 +527,7 @@ function stopLiveRide(){
     setTimeout(()=>{
         let iM=document.getElementById('dt-m'); let iV=document.getElementById('dt-v');
         if(iM){iM.value=m; iM.classList.add('highlight-input'); setTimeout(()=>iM.classList.remove('highlight-input'),1500);}
-        if(iV) { iV.focus(); } // Usunięto agresywny scroll powodujący błędy UI
+        if(iV) { iV.focus(); } 
     },50);
 }
 
@@ -413,12 +538,60 @@ function dQC() { let q=db.drv.q; let fC=db.drv.cfg.fuelPx; let tax=db.drv.cfg.ta
 function dQB() { if(!db.drv.sh.on) return alert("Otwórz zmianę!"); if(dQV>0) { db.drv.sh.tr.unshift({id:Date.now(),v:dQV,k:dQK,m:dQM_T,s:'Wycena',p:'Gotówka'}); save(); db.tab='term'; render(); } }
 function dSaveQC() { db.drv.q = { s:safeVal('dcs'), w:safeVal('dcw'), t1:safeVal('dct1'), t2:safeVal('dct2'), t3:safeVal('dct3'), t4:safeVal('dct4') }; save(); alert("Zapisano Taryfy!"); }
 function calcFuelioStats() { let l=db.drv.fuel; let s={l1:0,c1:0,ck:db.drv.cfg.fuelPx}; if(l.length>=2){ let lF=l.findIndex(x=>x.isF===1); if(lF!==-1){ let pF=l.findIndex((x,i)=>i>lF&&x.isF===1); if(pF!==-1){ let d=l[lF].o-l[pF].o; if(d>0){ let tL=0,tC=0; for(let i=lF;i<pF;i++){tL+=l[i].l;tC+=l[i].v;} s.l1=(tL/d)*100; s.c1=(tC/d)*100; s.ck=tC/d; db.drv.cfg.fuelPx=s.ck; save(); } } } } return s; }
-function dAF() { let o=safeVal('df-o'); let l=safeVal('df-l'); let v=safeVal('df-v'); let fEl=document.getElementById('df-f'); let f=fEl?parseInt(fEl.value):1; if(!o||!l||!v)return alert("Wypełnij dane!"); db.drv.odo=o; db.drv.fuel.unshift({o,l,v,isF:f}); db.drv.exp.unshift({id:Date.now(), rD:new Date().toISOString(), d:`⛽ Paliwo ${l}L`, v, dt:new Date().toLocaleDateString(), ty:'f'}); save(); render(); }
-function dAE() { let v=safeVal('de-v'); let cEl=document.getElementById('de-c'); let c=cEl?cEl.value:'Wydatki'; if(v) { db.drv.exp.unshift({id:Date.now(), rD:new Date().toISOString(), d:c, v, dt:new Date().toLocaleDateString(), ty:'e'}); save(); render(); } }
+
+// Zapis wydatków i tankowania z datą (Garaż)
+function dAF() { 
+    let o=safeVal('df-o'); let l=safeVal('df-l'); let v=safeVal('df-v'); let fEl=document.getElementById('df-f'); let f=fEl?parseInt(fEl.value):1; 
+    if(!o||!l||!v) return alert("Wypełnij dane ze stacji!"); 
+    let dVal = document.getElementById('df-date').value;
+    let dObj = dVal ? new Date(dVal) : new Date(); if(dVal) dObj.setHours(12,0,0);
+    db.drv.odo=o; 
+    db.drv.fuel.push({o,l,v,isF:f, rD:dObj.toISOString()});
+    db.drv.exp.push({id:Date.now(), rD:dObj.toISOString(), d:`⛽ Paliwo ${l}L`, v, dt:dObj.toLocaleDateString('pl-PL'), ty:'f'}); 
+    db.drv.exp.sort((a,b) => new Date(b.rD) - new Date(a.rD));
+    save(); render(); 
+}
+
+function dAE() { 
+    let v=safeVal('de-v'); let cEl=document.getElementById('de-c'); let c=cEl?cEl.value:'Wydatki'; 
+    if(v) { 
+        let dVal = document.getElementById('de-date').value;
+        let dObj = dVal ? new Date(dVal) : new Date(); if(dVal) dObj.setHours(12,0,0);
+        db.drv.exp.push({id:Date.now(), rD:dObj.toISOString(), d:c, v, dt:dObj.toLocaleDateString('pl-PL'), ty:'e'}); 
+        db.drv.exp.sort((a,b) => new Date(b.rD) - new Date(a.rD));
+        save(); render(); 
+    } 
+}
+
 function renderGarageHistory() { return db.drv.exp.map(x => { let isF = x.ty==='f'; let col = isF ? 'var(--fuel)' : 'var(--danger)'; return `<div class="log-item" style="border-left-color:${col}"><div><strong style="color:#fff; font-size:1.05rem;">${x.d}</strong><br><small style="color:var(--muted)">${x.dt}</small></div><strong style="color:${col}">-${x.v.toFixed(2)} zł</strong></div>`; }).join('') || '<div style="text-align:center;color:var(--muted);padding:10px;font-size:0.8rem;">Brak wpisów.</div>'; }
+
 function dAddT() { let v=safeVal('dt-v'); let k=safeVal('dt-k'); let m=safeVal('dt-m'); let cIdel=document.getElementById('dt-cid'); let cId=cIdel ? parseInt(cIdel.value)||null : null; if(!v)return; db.drv.sh.tr.unshift({id:Date.now(),v,k,m,s:dTSrc,p:dTPay,c:cId}); save(); render(); }
 function dDelT(id) { db.drv.sh.tr=db.drv.sh.tr.filter(x=>x.id!==id); save(); render(); }
-function dEndS() { let e=safeVal('de-o'); if(!e||e<=db.drv.sh.o) return alert("Sprawdź licznik końcowy!"); let g=0; let pk=0; let cf=0; db.drv.sh.tr.forEach(x=>{ g+=x.v; pk+=x.k; if(x.p==='Karta') cf += x.v * db.drv.cfg.cardF; }); let k=e-db.drv.sh.o; let fc=k*db.drv.cfg.fuelPx; let tax=g*db.drv.cfg.tax; let pFee = db.drv.cfg.eType === 'pct' ? g * db.drv.cfg.ePct : 0; let n=g-fc-tax-pFee-cf-db.drv.cfg.fix; db.drv.odo=e; db.drv.h.unshift({id:Date.now(), rD:new Date().toISOString(), dt:new Date().toLocaleDateString(), g, n, k, pk, fc, tx:tax, pF:pFee, cF:cf, tr:[...db.drv.sh.tr]}); db.drv.sh.on=false; db.drv.sh.tr=[]; db.drv.liveRideStart=null; save(); db.tab='stats'; render(); }
+
+// NOWOŚĆ: Alert podsumowujący koniec zmiany
+function dEndS() { 
+    let e=safeVal('de-o'); 
+    if(!e||e<=db.drv.sh.o) return alert("Sprawdź licznik końcowy!"); 
+    let g=0; let pk=0; let cf=0; 
+    db.drv.sh.tr.forEach(x=>{ g+=x.v; pk+=x.k; if(x.p==='Karta') cf += x.v * db.drv.cfg.cardF; }); 
+    let k=e-db.drv.sh.o; 
+    let fc=k*db.drv.cfg.fuelPx; 
+    let tax=g*db.drv.cfg.tax; 
+    let pFee = db.drv.cfg.eType === 'pct' ? g * db.drv.cfg.ePct : 0; 
+    let n=g-fc-tax-pFee-cf-db.drv.cfg.fix; 
+    
+    db.drv.odo=e; 
+    db.drv.h.unshift({id:Date.now(), rD:new Date().toISOString(), dt:new Date().toLocaleDateString(), g, n, k, pk, fc, tx:tax, pF:pFee, cF:cf, tr:[...db.drv.sh.tr]}); 
+    db.drv.sh.on=false; 
+    db.drv.sh.tr=[]; 
+    db.drv.liveRideStart=null; 
+    save(); 
+    db.tab='stats'; 
+    render(); 
+    
+    alert(`ZMIANA ZAKOŃCZONA Pomyślnie!\n\nUtarg Brutto: ${g.toFixed(2)} zł\nPrzejechano łącznie: ${k} km\n\nDobra robota, czas na odpoczynek!`);
+}
+
 function dSaveUS() { db.userName = document.getElementById('us-name').value; db.drv.cfg.goal = safeVal('us-goal', 350); db.drv.cfg.cC = safeVal('us-cc'); db.drv.cfg.cType = document.getElementById('us-ctype').value; db.drv.cfg.bC = safeVal('us-bc'); db.drv.cfg.iC = safeVal('us-ic'); db.drv.cfg.tax = safeVal('us-tx') / 100; db.drv.cfg.cardF = safeVal('us-cf') / 100; let eTy = document.getElementById('us-etype').value; db.drv.cfg.eType = eTy; if(eTy === 'flat') { db.drv.cfg.eC = safeVal('us-ec'); db.drv.cfg.ePct = 0; } else { db.drv.cfg.eC = 0; db.drv.cfg.ePct = safeVal('us-epct') / 100; } let dailyCar = (db.drv.cfg.cType === 'week') ? (db.drv.cfg.cC / 7) : (db.drv.cfg.cC / 30); let dailyOther = (db.drv.cfg.eC + db.drv.cfg.bC + db.drv.cfg.iC) / 30; db.drv.cfg.fix = dailyCar + dailyOther; save(); render(); alert('Ustawienia zapisane!'); }
 function dAddCrm() { let n = document.getElementById('dc-n').value; let ph = document.getElementById('dc-p').value; let d = safeVal('dc-d'); if(n) { db.drv.clients.unshift({id:Date.now(), n, ph, d, bl: false}); save(); render(); } }
 function dCrmDel(id) { if(confirm("Usunąć klienta z bazy?")) { db.drv.clients = db.drv.clients.filter(x=>x.id!==id); save(); render(); } }
