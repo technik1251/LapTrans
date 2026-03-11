@@ -26,81 +26,88 @@
   
   body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
   .app-container { max-width: 500px; margin: 0 auto; min-height: 100vh; padding-bottom: 90px; position: relative; }
-  .panel { background: var(--card); border: 1px solid var(--border); border-radius: 24px; margin: 15px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-  .p-title { font-size: 0.8rem; font-weight: 800; color: var(--muted); text-transform: uppercase; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 12px; display: flex; justify-content: space-between; align-items: center; letter-spacing: 1px;}
-  .form-section { background: rgba(255,255,255,0.02); border: 1px solid var(--border); padding: 18px; border-radius: 16px; margin-bottom: 15px; }
+  
+  /* Nowoczesne, szklane panele */
+  .panel { background: linear-gradient(145deg, #18181b, #121214); border: 1px solid var(--border); border-radius: 24px; margin: 15px; padding: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.4); }
+  .p-title { font-size: 0.8rem; font-weight: 800; color: var(--muted); text-transform: uppercase; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px; display: flex; justify-content: space-between; align-items: center; letter-spacing: 1px;}
+  .form-section { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 18px; border-radius: 16px; margin-bottom: 15px; }
   .fs-title { font-size: 0.75rem; text-transform: uppercase; font-weight: 800; margin-bottom: 12px; color: var(--muted); display:flex; align-items:center; gap:8px;}
 
-  .btn { width: 100%; padding: 18px; border-radius: 16px; border: none; font-weight: 900; font-size: 1rem; cursor: pointer; text-transform: uppercase; transition: all 0.2s; margin-top: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-  .btn:active { transform: scale(0.97); }
-  .btn-driver { background: linear-gradient(135deg, #3b82f6, #2563eb); color: #fff; } 
+  /* Przyciski 3D */
+  .btn { width: 100%; padding: 18px; border-radius: 16px; border: none; font-weight: 900; font-size: 1rem; cursor: pointer; text-transform: uppercase; transition: all 0.2s; margin-top: 10px; box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+  .btn:active { transform: translateY(2px) scale(0.98); box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+  .btn-driver { background: linear-gradient(135deg, #3b82f6, #2563eb); color: #fff; box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3); } 
   .btn-fleet { background: linear-gradient(135deg, #10b981, #059669); color: #000; }
   .btn-cargo { background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: #fff; } 
   .btn-sped { background: linear-gradient(135deg, #f59e0b, #d97706); color: #000; }
-  .btn-home { background: linear-gradient(135deg, #14b8a6, #0f766e); color: #fff; } 
+  .btn-home { background: linear-gradient(135deg, #14b8a6, #0f766e); color: #fff; box-shadow: 0 6px 20px rgba(20, 184, 166, 0.3);} 
   .btn-quote { background: linear-gradient(135deg, #d946ef, #c026d3); color: #fff; } 
-  .btn-danger { background: rgba(239,68,68,0.1); border: 1px solid var(--danger); color: var(--danger); box-shadow: none;}
+  .btn-danger { background: linear-gradient(135deg, #ef4444, #b91c1c); color: #fff; box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3);}
   
   .inp-row { display: flex; gap: 12px; margin-bottom: 12px; }
   .inp-group { flex: 1; display: flex; flex-direction: column; }
-  .inp-group label { font-size: 0.7rem; color: var(--muted); font-weight: 600; margin-bottom: 6px; padding-left: 4px;}
-  .inp-group input, .inp-group select { background: #09090b; border: 1px solid var(--border); color: #fff; padding: 16px; border-radius: 14px; text-align: left; font-size: 1.1rem; font-weight: 600; outline: none; width: 100%; box-sizing: border-box; transition: 0.3s; }
-  .inp-group input:focus, .inp-group select:focus { border-color: var(--driver); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); }
-  .big-inp { font-size: 2rem !important; padding: 20px !important; font-weight: 900 !important; text-align: center !important; width: 100% !important; box-sizing: border-box !important; }
+  .inp-group label { font-size: 0.7rem; color: var(--muted); font-weight: 600; margin-bottom: 6px; padding-left: 4px; text-transform: uppercase; letter-spacing: 0.5px;}
+  .inp-group input, .inp-group select { background: #000; border: 1px solid var(--border); color: #fff; padding: 16px; border-radius: 14px; text-align: left; font-size: 1.1rem; font-weight: 600; outline: none; width: 100%; box-sizing: border-box; transition: 0.3s; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);}
+  .inp-group input:focus, .inp-group select:focus { border-color: var(--driver); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
+  .big-inp { font-size: 2rem !important; padding: 20px !important; font-weight: 900 !important; text-align: center !important; width: 100% !important; box-sizing: border-box !important; letter-spacing:-1px;}
 
   .wiz-screen { display: none; padding: 30px 20px; min-height: 90vh; flex-direction: column; justify-content: center; animation: fadeIn 0.4s; }
   .wiz-screen.active { display: flex; }
   @keyframes fadeIn { from {opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
-  .w-title { font-size: 2.5rem; font-weight: 900; text-align: center; margin-bottom: 8px; letter-spacing: -1.5px; }
+  .w-title { font-size: 2.8rem; font-weight: 900; text-align: center; margin-bottom: 8px; letter-spacing: -2px; }
   .w-sub { color: var(--muted); text-align: center; margin-bottom: 35px; font-size: 1rem; font-weight: 400;}
-  .opt-card { background: var(--card); border: 2px solid var(--border); border-radius: 20px; padding: 24px; margin-bottom: 15px; cursor: pointer; display: flex; align-items: center; transition: 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.2);}
+  .opt-card { background: linear-gradient(145deg, #18181b, #121214); border: 2px solid var(--border); border-radius: 20px; padding: 24px; margin-bottom: 15px; cursor: pointer; display: flex; align-items: center; transition: 0.2s; box-shadow: 0 6px 15px rgba(0,0,0,0.3);}
   .opt-card:active { transform: scale(0.98); }
   .opt-card.selected { border-width: 2px; background: rgba(255,255,255,0.03); }
   .opt-icon { font-size: 2.8rem; margin-right: 20px; }
   .opt-text h3 { margin: 0 0 5px 0; font-size: 1.2rem; font-weight: 800;}
   .opt-text p { margin: 0; font-size: 0.85rem; color: var(--muted); line-height: 1.4;}
 
-  header { padding: 15px 20px; background: rgba(9, 9, 11, 0.85); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(12px); }
-  .logo { font-weight: 900; font-size: 1.2rem; cursor:pointer; display:flex; align-items:center; gap:8px; padding:8px 12px; background:rgba(255,255,255,0.05); border-radius:12px; transition:0.2s; }
+  header { padding: 15px 20px; background: rgba(9, 9, 11, 0.85); border-bottom: 1px solid rgba(255,255,255,0.05); position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);}
+  .logo { font-weight: 900; font-size: 1.2rem; cursor:pointer; display:flex; align-items:center; gap:8px; padding:8px 14px; background:rgba(255,255,255,0.05); border-radius:14px; transition:0.2s; border:1px solid rgba(255,255,255,0.05);}
   .logo:active { transform: scale(0.95); background:rgba(255,255,255,0.1); }
-  .badge { background: rgba(255,255,255,0.05); border: 1px solid var(--border); padding: 6px 12px; border-radius: 12px; font-weight: 800; }
-  .settings-btn { font-size: 1.3rem; cursor: pointer; background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 4px 10px; border-radius: 12px; display:flex; align-items:center; justify-content:center; }
+  .badge { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.05); padding: 8px 14px; border-radius: 12px; font-weight: 800; font-size:0.85rem; }
+  .settings-btn { font-size: 1.3rem; cursor: pointer; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 6px 12px; border-radius: 12px; display:flex; align-items:center; justify-content:center; transition:0.2s;}
+  .settings-btn:active { background:rgba(255,255,255,0.1); }
   
-  .dash-hero { text-align: center; padding: 30px 0 20px; }
-  .dash-hero p { margin: 0 0 8px 0; font-size: 0.75rem; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; }
-  .dash-hero h1 { margin: 0; font-size: 4rem; font-weight: 900; letter-spacing: -2.5px; line-height: 1; }
+  .dash-hero { text-align: center; padding: 40px 0 25px; }
+  .dash-hero p { margin: 0 0 8px 0; font-size: 0.75rem; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 2px; }
+  .dash-hero h1 { margin: 0; font-size: 4.5rem; font-weight: 900; letter-spacing: -2.5px; line-height: 1; text-shadow: 0 10px 30px rgba(0,0,0,0.5);}
   
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; padding: 0 15px;}
   .grid-4 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; padding: 0 15px;}
-  .box { background: var(--card); border: 1px solid var(--border); padding: 16px; border-radius: 16px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2);}
-  .box span { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; font-weight: 800; margin-bottom: 6px; }
-  .box strong { font-size: 1.3rem; font-weight: 900;}
+  .box { background: linear-gradient(145deg, #18181b, #121214); border: 1px solid rgba(255,255,255,0.05); padding: 18px; border-radius: 18px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 8px 20px rgba(0,0,0,0.3);}
+  .box span { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; font-weight: 800; margin-bottom: 8px; letter-spacing: 0.5px;}
+  .box strong { font-size: 1.4rem; font-weight: 900; letter-spacing: -0.5px;}
   
-  .log-item { background: var(--bg); border: 1px solid var(--border); border-left: 5px solid var(--border); border-radius: 16px; padding: 18px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; transition: 0.2s;}
-  .chip-box { display: flex; gap: 10px; overflow-x: auto; margin-bottom: 20px; padding-bottom: 5px; }
+  .log-item { background: #000; border: 1px solid rgba(255,255,255,0.05); border-left: 5px solid var(--border); border-radius: 16px; padding: 18px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; transition: 0.2s;}
+  .chip-box { display: flex; gap: 10px; overflow-x: auto; margin-bottom: 20px; padding-bottom: 5px; scrollbar-width: none;}
   .chip-box::-webkit-scrollbar { display: none; }
-  .chip { padding: 12px 18px; background: rgba(255,255,255,0.03); border: 1px solid transparent; color: var(--muted); border-radius: 12px; font-size: 0.85rem; font-weight: 800; cursor: pointer; white-space: nowrap; flex: 1; text-align: center;}
-  .mode-switch { display: flex; background: var(--bg); border-radius: 14px; border: 1px solid var(--border); padding: 5px; margin-bottom: 20px; }
+  .chip { padding: 14px 20px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); color: var(--muted); border-radius: 14px; font-size: 0.85rem; font-weight: 800; cursor: pointer; white-space: nowrap; flex: 1; text-align: center; transition: all 0.2s;}
+  
+  .mode-switch { display: flex; background: #000; border-radius: 14px; border: 1px solid rgba(255,255,255,0.05); padding: 6px; margin-bottom: 20px; }
   .mode-switch .m-btn { flex: 1; text-align: center; padding: 12px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; cursor: pointer; border-radius: 10px; color: var(--muted); transition: 0.3s; }
-  .mode-switch .m-btn.active { background: var(--driver); color: #fff; }
+  .mode-switch .m-btn.active { background: var(--driver); color: #fff; box-shadow:0 4px 10px rgba(59,130,246,0.3);}
 
-  .fin-row { display: flex; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.95rem; align-items: center;}
+  .fin-row { display: flex; justify-content: space-between; padding: 16px 0; border-bottom: 1px dashed rgba(255,255,255,0.1); font-size: 0.95rem; align-items: center;}
   .fin-row:last-child { border-bottom: none; }
   .fin-label { color: var(--muted); font-weight: 600;}
-  .fin-val { font-weight: 800; font-size: 1.1rem;}
+  .fin-val { font-weight: 800; font-size: 1.15rem;}
 
-  .nav { position: fixed; bottom: 0; width: 100%; max-width: 500px; background: rgba(24, 24, 27, 0.95); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 10px 0 20px 0; z-index: 1000; backdrop-filter: blur(20px); box-shadow: 0 -5px 20px rgba(0,0,0,0.4);}
-  .nav-item { color: var(--muted); text-align: center; font-size: 0.55rem; font-weight: 800; cursor: pointer; text-transform: uppercase; flex: 1; transition: 0.2s;}
-  .nav-item.active { color: var(--driver); transform: translateY(-2px);}
-  .nav-item i { font-size: 1.25rem; display: block; margin-bottom: 5px; font-style: normal; }
+  .nav { position: fixed; bottom: 0; width: 100%; max-width: 500px; background: rgba(18, 18, 20, 0.95); border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-around; padding: 12px 0 24px 0; z-index: 1000; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: 0 -10px 30px rgba(0,0,0,0.6);}
+  .nav-item { color: var(--muted); text-align: center; font-size: 0.55rem; font-weight: 800; cursor: pointer; text-transform: uppercase; flex: 1; transition: 0.2s; letter-spacing:0.5px;}
+  .nav-item.active { color: var(--driver); transform: translateY(-3px);}
+  .nav-item i { font-size: 1.4rem; display: block; margin-bottom: 6px; font-style: normal; }
   
-  /* Przestrzeń i styl Modalów Pop-up */
   .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 20000; padding: 20px; display: flex; flex-direction: column; justify-content:center; align-items:center; }
   .hidden { display: none !important; }
   
-  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6); } 70% { box-shadow: 0 0 0 15px rgba(34, 197, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
-  .btn-live { animation: pulse 2s infinite; background: linear-gradient(135deg, #10b981, #059669); color: #fff; border: 2px solid #34d399; }
-  .highlight-input { border-color: var(--success) !important; background: rgba(34, 197, 94, 0.1) !important; transition: 0.5s; }
+  /* Animacja Stopera */
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6); } 70% { box-shadow: 0 0 0 20px rgba(34, 197, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
+  .btn-live { animation: pulse 2s infinite; background: linear-gradient(135deg, #10b981, #059669); color: #fff; border: 2px solid #34d399; font-size:1.2rem; padding:25px;}
+  .highlight-input { border-color: var(--success) !important; background: rgba(34, 197, 94, 0.15) !important; transition: 0.5s; box-shadow: 0 0 15px rgba(34,197,94,0.4)!important;}
+  
+  .section-lbl { font-size: 0.75rem; color: var(--driver); font-weight: 900; text-transform: uppercase; letter-spacing: 1px; margin: 30px 15px 10px; border-bottom: 1px solid rgba(59,130,246,0.3); padding-bottom: 8px;}
 </style>
 </head>
 <body>
@@ -108,16 +115,17 @@
 <div id="app" class="app-container"></div>
 
 <div id="m-switcher" class="modal-overlay hidden">
-    <div class="panel" style="width:100%; max-width:400px; border-color:var(--muted);">
-        <div class="p-title" style="justify-content:center; font-size:1rem; color:#fff;">Przełącz Moduł Zadań</div>
-        <div id="switcher-btns" style="display:flex; flex-direction:column;"></div>
-        <button class="btn" style="background:#222; color:#fff; margin-top:20px;" onclick="document.getElementById('m-switcher').classList.add('hidden')">Zamknij Menu</button>
+    <div class="panel" style="width:100%; max-width:380px; border-color:var(--muted); text-align:center;">
+        <div style="font-size:3rem; margin-bottom:10px;">🎛️</div>
+        <h3 style="color:#fff; margin:0 0 20px 0; font-size:1.3rem;">Zarządzanie Profilami</h3>
+        <div id="switcher-btns" style="display:flex; flex-direction:column; gap:10px;"></div>
+        <button class="btn" style="background:transparent; color:var(--muted); border:1px solid rgba(255,255,255,0.1); margin-top:20px;" onclick="document.getElementById('m-switcher').classList.add('hidden')">Zamknij</button>
     </div>
 </div>
 
 <script>
 // ==========================================
-// 1. BAZA DANYCH
+// 1. INICJALIZACJA BAZY DANYCH
 // ==========================================
 let defaultDb = {
     init: false, mainProfile: null, role: null, tab: 'term', filter: 'today', userName: '',
@@ -136,7 +144,7 @@ let defaultDb = {
 
 let db;
 try {
-    db = JSON.parse(localStorage.getItem('laptrans_v86_db')) || defaultDb;
+    db = JSON.parse(localStorage.getItem('laptrans_v87_db')) || defaultDb;
     if (!db.home || !db.drv || !db.drv.cfg) { db = defaultDb; }
 } catch(e) { db = defaultDb; }
 
@@ -144,7 +152,7 @@ let wData = { p: 'apps', c: 'rent', e: 'partner', mainProfile: null };
 window.hMem = null; 
 const APP = document.getElementById('app');
 
-function save() { localStorage.setItem('laptrans_v86_db', JSON.stringify(db)); }
+function save() { localStorage.setItem('laptrans_v87_db', JSON.stringify(db)); }
 
 let dTSrc = null; let dTPay = null; let dQM = 'taxi'; let dQN = false; let dQV=0; let dQK=0; let dQM_T=0;
 
@@ -166,7 +174,7 @@ function safeVal(id, fallback = 0) {
 }
 
 function hardReset() { 
-    if(confirm("UWAGA! Usunąć wszystkie dane z aplikacji? Tego nie da się cofnąć!")) { 
+    if(confirm("⚠️ UWAGA! Trwałe usunięcie wszystkich danych i powrót do ustawień fabrycznych. Kontynuować?")) { 
         localStorage.clear(); location.reload(); 
     } 
 }
@@ -177,16 +185,16 @@ function openSwitcher() {
     let html = '';
     
     if (db.mainProfile === 'driver') {
-        html += `<button class="btn btn-driver" style="margin-bottom:10px; font-size:0.9rem;" onclick="switchApp('drv')">🚕 Twój Panel Taxi</button>`;
-        html += `<button class="btn btn-home" style="margin-bottom:10px; font-size:0.9rem;" onclick="switchApp('home')">🏠 Twój Budżet Domowy</button>`;
+        html += `<button class="btn btn-driver" style="margin:0;" onclick="switchApp('drv')">🚕 Mój Panel Taxi</button>`;
+        html += `<button class="btn btn-home" style="margin:0;" onclick="switchApp('home')">🏠 Budżet Domowy</button>`;
     } else if (db.mainProfile === 'firm') {
-        html += `<button class="btn btn-fleet" style="margin-bottom:10px; font-size:0.9rem;" onclick="switchApp('flt')">🏢 Panel Floty</button>`;
-        html += `<button class="btn btn-cargo" style="margin-bottom:10px; font-size:0.9rem;" onclick="switchApp('crg')">🚚 Transport / TMS</button>`;
-        html += `<button class="btn btn-sped" style="margin-bottom:10px; font-size:0.9rem;" onclick="switchApp('spd')">📈 Agencja Spedycyjna</button>`;
-        html += `<button class="btn btn-home" style="margin-bottom:10px; font-size:0.9rem;" onclick="switchApp('home')">🏠 Budżet Domowy</button>`;
+        html += `<button class="btn btn-fleet" style="margin:0;" onclick="switchApp('flt')">🏢 Panel Floty</button>`;
+        html += `<button class="btn btn-cargo" style="margin:0;" onclick="switchApp('crg')">🚚 Transport / TMS</button>`;
+        html += `<button class="btn btn-sped" style="margin:0;" onclick="switchApp('spd')">📈 Agencja Spedycyjna</button>`;
+        html += `<button class="btn btn-home" style="margin:0;" onclick="switchApp('home')">🏠 Budżet Domowy</button>`;
     } else {
-        html += `<button class="btn btn-home" style="margin-bottom:10px; font-size:0.9rem;" onclick="switchApp('home')">🏠 Twój Budżet Domowy</button>`;
-        html += `<button class="btn btn-driver" style="margin-bottom:10px; font-size:0.9rem;" onclick="switchApp('drv')">🚕 Wejdź do modułu Taxi</button>`;
+        html += `<button class="btn btn-home" style="margin:0;" onclick="switchApp('home')">🏠 Budżet Domowy</button>`;
+        html += `<button class="btn btn-driver" style="margin:0;" onclick="switchApp('drv')">🚕 Moduł Taxi</button>`;
     }
     
     sBtns.innerHTML = html; 
@@ -212,12 +220,13 @@ function render() {
     return rWiz();
 }
 
+// MOCKUPY FIRMOWE
 function rFlt() { APP.innerHTML = `<header><div class="logo" onclick="openSwitcher()">ŁAPTRANS <span style="color:var(--fleet)">⏷</span></div></header><div class="dash-hero"><h1 style="color:var(--fleet)">Moduł Floty</h1><p>Rozbudowa panelu trw...</p></div>`; }
 function rCrg() { APP.innerHTML = `<header><div class="logo" onclick="openSwitcher()">ŁAPTRANS <span style="color:var(--cargo)">⏷</span></div></header><div class="dash-hero"><h1 style="color:var(--cargo)">Przewoźnik TMS</h1><p>Rozbudowa panelu trwa...</p></div>`; }
 function rSped() { APP.innerHTML = `<header><div class="logo" onclick="openSwitcher()">ŁAPTRANS <span style="color:var(--sped)">⏷</span></div></header><div class="dash-hero"><h1 style="color:var(--sped)">Spedycja</h1><p>Rozbudowa panelu trwa...</p></div>`; }
 
 // ==========================================
-// 2. KREATOR STARTOWY (WIZARD)
+// 2. KREATOR STARTOWY 
 // ==========================================
 function rWiz() {
     let html = `
@@ -225,11 +234,11 @@ function rWiz() {
             <div class="w-title" style="color:#fff; font-size:3rem; margin-bottom:0;">ŁAPTRANS OS</div>
             <div class="w-sub" style="margin-bottom:20px;">Inteligentny Asystent Księgowości</div>
             <div class="wiz-inputs" style="display:block; padding:0; background:transparent; border:none; margin-bottom:20px;">
-                <div class="inp-group"><label style="text-align:center; font-size:0.8rem;">Jak masz na imię?</label><input type="text" id="w-name" placeholder="Twoje Imię" style="text-align:center; font-size:1.5rem; font-weight:900;" value="${db.userName||''}"></div>
+                <div class="inp-group"><label style="text-align:center;">Jak masz na imię?</label><input type="text" id="w-name" placeholder="Twoje Imię" style="text-align:center; font-size:1.5rem; font-weight:900;" value="${db.userName||''}"></div>
             </div>
-            <div class="opt-card" style="border-color:var(--driver)" onclick="wMainProfile('driver')"><div class="opt-icon">🚕</div><div class="opt-text"><h3 style="color:var(--driver)">Kierowca Taxi</h3><p>Zarobki, stoper, koszty własne.</p></div></div>
+            <div class="opt-card" style="border-color:var(--driver)" onclick="wMainProfile('driver')"><div class="opt-icon">🚕</div><div class="opt-text"><h3 style="color:var(--driver)">Kierowca Taxi</h3><p>Zarobki, stoper, inteligentny garaż.</p></div></div>
             <div class="opt-card" style="border-color:var(--fleet)" onclick="wMainProfile('firm')"><div class="opt-icon">🏢</div><div class="opt-text"><h3 style="color:var(--fleet)">Moja Firma</h3><p>Flota, przewoźnik, spedycja.</p></div></div>
-            <div class="opt-card" style="border-color:var(--life)" onclick="wMainProfile('home')"><div class="opt-icon">🏠</div><div class="opt-text"><h3 style="color:var(--life)">Budżet Domowy</h3><p>Zarządzaj prywatnymi wydatkami.</p></div></div>
+            <div class="opt-card" style="border-color:var(--life)" onclick="wMainProfile('home')"><div class="opt-icon">🏠</div><div class="opt-text"><h3 style="color:var(--life)">Budżet Domowy</h3><p>Zarządzaj prywatnymi finansami.</p></div></div>
         </div>
 
         <div id="w-firm" class="wiz-screen">
@@ -271,7 +280,7 @@ function rWiz() {
             <div id="wd-e-p" class="wiz-inputs" style="display:block; margin-top:5px; padding:0 5px;"><div class="inp-group" style="margin-bottom:15px;"><label>Rodzaj umowy z Partnerem</label><select id="wd-p-type" onchange="dTogglePType('wd')"><option value="flat">Stała kwota (np. 200 zł/mc)</option><option value="pct">Procent od utargu (np. 50/50)</option></select></div><div class="inp-group" id="wd-p-flat-box"><label>Koszt stały (zł/mc)</label><input type="number" id="wd-p-v" placeholder="np. 200"></div><div class="inp-group" id="wd-p-pct-box" style="display:none;"><label>Prowizja Partnera (%) z utargu</label><input type="number" id="wd-p-pct" placeholder="np. 50" style="color:var(--driver); font-weight:bold;"></div></div>
             <div id="wd-e-j" class="wiz-inputs" style="display:none; margin-top:5px; padding:0 5px;"><div class="inp-group" style="margin-bottom:15px;"><label>Wysokość ZUS (zł/mc)</label><select id="wd-j-z"><option value="400">Ulga na Start (~400 zł/mc)</option><option value="650">Mały ZUS (~650 zł/mc)</option><option value="1600" selected>Pełny ZUS (~1600 zł/mc)</option></select></div><div class="inp-group"><label>Podatek Dochodowy</label><select id="wd-j-t"><option value="0.085">8.5% (Ryczałt)</option><option value="0.12">12% (Skala)</option></select></div></div>
             <div class="wiz-inputs" style="display:block; margin-top:15px; border-color:var(--info); padding:0 5px;"><div class="inp-group"><label style="color:var(--info);">Inne Koszty Stałe (Księgowy itp.) zł/mc</label><input type="number" id="wd-i-v" placeholder="np. 350"></div></div>
-            <button class="btn btn-success" style="margin-top:20px; font-size:1.1rem; padding:20px;" onclick="dFin()">Uruchom System Taxi</button>
+            <button class="btn btn-success" style="margin-top:20px; font-size:1.1rem; padding:20px; background:linear-gradient(135deg, var(--success), #059669); color:#000;" onclick="dFin()">URUCHOM SYSTEM TAXI</button>
         </div>
     `;
     APP.innerHTML = html;
@@ -279,7 +288,7 @@ function rWiz() {
 
 function wS(id) { document.querySelectorAll('.wiz-screen').forEach(e=>e.classList.remove('active')); let t = document.getElementById(id); if(t) t.classList.add('active'); }
 function wMainProfile(prof) { wData.mainProfile = prof; if(prof==='driver') wS('w-d1'); else if(prof==='firm') wS('w-firm'); else if(prof==='home') wS('w-home'); }
-function dW(cat, val, el) { wData[cat] = val; el.parentElement.querySelectorAll('.opt-card').forEach(c=>{ c.style.borderColor='var(--border)'; c.classList.remove('selected'); }); el.style.borderColor='var(--driver)'; el.classList.add('selected'); if(cat==='p') { let elB = document.getElementById('wd-b'); if(elB) elB.style.display = (val === 'corp') ? 'block' : 'none'; } if(cat==='c') { let elC = document.getElementById('wd-c'); if(elC) elC.style.display = (val === 'own') ? 'none' : 'block'; } if(cat==='e') { let ep = document.getElementById('wd-e-p'); let ej = document.getElementById('wd-e-j'); if(ep) ep.style.display = (val === 'partner') ? 'block' : 'none'; if(ej) ej.style.display = (val === 'jdg') ? 'block' : 'none'; } }
+function dW(cat, val, el) { wData[cat] = val; el.parentElement.querySelectorAll('.opt-card').forEach(c=>{ c.style.borderColor='rgba(255,255,255,0.05)'; c.classList.remove('selected'); }); el.style.borderColor='var(--driver)'; el.classList.add('selected'); if(cat==='p') { let elB = document.getElementById('wd-b'); if(elB) elB.style.display = (val === 'corp') ? 'block' : 'none'; } if(cat==='c') { let elC = document.getElementById('wd-c'); if(elC) elC.style.display = (val === 'own') ? 'none' : 'block'; } if(cat==='e') { let ep = document.getElementById('wd-e-p'); let ej = document.getElementById('wd-e-j'); if(ep) ep.style.display = (val === 'partner') ? 'block' : 'none'; if(ej) ej.style.display = (val === 'jdg') ? 'block' : 'none'; } }
 function dTogglePType(prefix) { let elT = document.getElementById(`${prefix}-p-type`); let val = elT ? elT.value : 'flat'; let flatBox = document.getElementById(`${prefix}-p-flat-box`); let pctBox = document.getElementById(`${prefix}-p-pct-box`); if(flatBox) flatBox.style.display = (val === 'flat') ? 'block' : 'none'; if(pctBox) pctBox.style.display = (val === 'pct') ? 'block' : 'none'; }
 
 function dFin() { 
@@ -309,7 +318,7 @@ function rHome() {
 
     let nav = `<div class="nav"><div class="nav-item ${t==='dash'?'act-home':''}" onclick="db.tab='dash';render()"><i>🏠</i>Portfel</div><div class="nav-item ${t==='exp'?'act-home':''}" onclick="db.tab='exp';render()"><i>💸</i>Wydatki</div><div class="nav-item ${t==='inc'?'act-home':''}" onclick="db.tab='inc';render()"><i>💵</i>Wpływy</div><div class="nav-item ${t==='stats'?'act-home':''}" onclick="db.tab='stats';render()"><i>📊</i>Ranking</div><div class="nav-item ${t==='plan'?'act-home':''}" onclick="db.tab='plan';render()"><i>🔮</i>Plany</div></div>`; 
     
-    let hdr = `<header><div class="logo" onclick="openSwitcher()">ŁAPTRANS <span style="color:var(--life)">⏷</span></div><div class="header-actions"><div class="badge" style="color:var(--life); border-color:rgba(20,184,166,0.3); background:rgba(20,184,166,0.1);">Budżet domowy</div><div class="settings-btn" onclick="db.tab='set';render()">⚙️</div></div></header>`; 
+    let hdr = `<header><div class="logo" onclick="openSwitcher()">ŁAPTRANS <span style="color:var(--life)">⏷</span></div><div class="header-actions"><div class="badge" style="color:var(--life); border-color:rgba(20,184,166,0.3); background:rgba(20,184,166,0.1);">Rodzina</div><div class="settings-btn" onclick="db.tab='set';render()">⚙️</div></div></header>`; 
     
     let now = new Date(); let currentMonthNum = now.getMonth() + 1;
     let currExp=0; let currInc=0; 
@@ -358,7 +367,7 @@ function rHome() {
     }
 
     if(t === 'set') { 
-        APP.innerHTML = hdr + `<div class="panel" style="border-color:var(--info);"><div class="p-title" style="color:var(--info)">👨‍👩‍👦 Zarządzaj Rodziną</div><div class="inp-row" style="align-items:flex-end;"><div class="inp-group" style="flex:2"><label>Dodaj osobę</label><input type="text" id="h-new-mem" placeholder="Imię domownika"></div><button class="btn" style="background:var(--info); color:#fff; width:auto; margin-top:0; padding:16px 20px;" onclick="hAddMem()">DODAJ</button></div><div style="margin-top:15px;">${h.members.map(m => `<div style="display:inline-block; background:rgba(255,255,255,0.05); margin:5px 5px 5px 0; padding:10px 15px; border-radius:12px; font-weight:bold; font-size:0.9rem;">${m} <span style="color:var(--danger); cursor:pointer; margin-left:10px; padding:5px;" onclick="hDelMem('${m}')">✖</span></div>`).join('')}</div><small style="color:var(--muted); display:block; margin-top:10px; line-height:1.4;">Osoby dodane tutaj będą widoczne przy dodawaniu wydatków i wpływów, aby budować wspólne statystyki.</small></div><div class="panel" style="border-color:rgba(20,184,166,0.4)"><div class="p-title" style="color:var(--life)">Parametry Budżetu</div><div class="inp-group" style="margin-bottom:15px;"><label>Stała Wypłata z etatu (zł)</label><input type="number" id="hs-sal" value="${h.sal}"></div><div class="inp-group"><label>Stałe Opłaty na start msc (zł)</label><input type="number" id="hs-fix" value="${h.fix}"></div><button class="btn btn-home" style="margin-top:20px;" onclick="hSaveUS()">ZAKTUALIZUJ</button></div><div class="panel" style="border-color:rgba(239,68,68,0.2)"><div class="p-title" style="color:var(--danger)">Zarządzanie</div><button class="btn btn-danger" style="background:rgba(239,68,68,0.15); color:var(--danger); border:none;" onclick="hardReset()">TWARDY RESET DANYCH</button></div>` + nav; 
+        APP.innerHTML = hdr + `<div class="section-lbl" style="color:var(--info); border-color:var(--info);">👨‍👩‍👦 Zarządzaj Rodziną</div><div class="panel" style="border-color:var(--info);"><div class="inp-row" style="align-items:flex-end;"><div class="inp-group" style="flex:2"><label>Dodaj osobę</label><input type="text" id="h-new-mem" placeholder="Imię domownika"></div><button class="btn" style="background:var(--info); color:#fff; width:auto; margin-top:0; padding:16px 20px;" onclick="hAddMem()">DODAJ</button></div><div style="margin-top:15px;">${h.members.map(m => `<div style="display:inline-block; background:rgba(255,255,255,0.05); margin:5px 5px 5px 0; padding:10px 15px; border-radius:12px; font-weight:bold; font-size:0.9rem;">${m} <span style="color:var(--danger); cursor:pointer; margin-left:10px; padding:5px;" onclick="hDelMem('${m}')">✖</span></div>`).join('')}</div><small style="color:var(--muted); display:block; margin-top:10px; line-height:1.4;">Osoby dodane tutaj będą widoczne przy dodawaniu wydatków i wpływów, aby budować wspólne statystyki.</small></div><div class="section-lbl" style="color:var(--life); border-color:var(--life);">🏠 Parametry Budżetu</div><div class="panel" style="border-color:rgba(20,184,166,0.4)"><div class="inp-group" style="margin-bottom:15px;"><label>Stała Wypłata z etatu (zł)</label><input type="number" id="hs-sal" value="${h.sal}"></div><div class="inp-group"><label>Stałe Opłaty na start msc (zł)</label><input type="number" id="hs-fix" value="${h.fix}"></div><button class="btn btn-home" style="margin-top:20px;" onclick="hSaveUS()">ZAKTUALIZUJ</button></div><div class="section-lbl" style="color:var(--danger); border-color:var(--danger);">⚠️ Strefa Niebezpieczna</div><div class="panel" style="border-color:rgba(239,68,68,0.4)"><button class="btn btn-danger" style="background:rgba(239,68,68,0.15); color:var(--danger); border:none; box-shadow:none;" onclick="hardReset()">TWARDY RESET DANYCH</button></div>` + nav; 
     } 
 } 
 function hAction(type) { 
@@ -385,10 +394,10 @@ function hAction(type) {
 function hCalcS() { let v = safeVal('hc-v'); let m = safeVal('hc-m'); let el = document.getElementById('hc-res'); if(v > 0 && m > 0) { let res = v / m; el.innerText = `Odkładaj ${res.toFixed(2)} zł co miesiąc.`; } else { el.innerText = "Wpisz kwotę i czas."; } }
 function hAddPlan() { let dEl=document.getElementById('hp-d'); let d = dEl?dEl.value:'Plan'; let v = safeVal('hp-v'); let mEl=document.getElementById('hp-m'); let m = mEl?parseInt(mEl.value):1; if(d && v) { db.home.planned.push({id:Date.now(), d, v, m}); save(); render(); } }
 function hDelPlan(id) { db.home.planned = db.home.planned.filter(x=>x.id!==id); save(); render(); }
-function hPayPlan(id) { let plan = db.home.planned.find(x => x.id === id); if(plan) { let who = window.hMem || db.home.members[0]; db.home.exp.unshift({ id: Date.now(), ty: 'exp', cat: '🏠 Dom / Rachunki', d: `Opłacono: ${plan.d}`, v: plan.v, who: who, dt: new Date().toLocaleDateString(), rD: new Date().toISOString() }); db.home.planned = db.home.planned.filter(x => x.id !== id); save(); db.tab = 'dash'; render(); } }
+function hPayPlan(id) { let plan = db.home.planned.find(x => x.id === id); if(plan) { let who = window.hMem || db.home.members[0]; db.home.exp.push({ id: Date.now(), ty: 'exp', cat: '🏠 Dom / Rachunki', d: `Opłacono: ${plan.d}`, v: plan.v, who: who, dt: new Date().toLocaleDateString(), rD: new Date().toISOString() }); db.home.exp.sort((a,b) => new Date(b.rD) - new Date(a.rD)); db.home.planned = db.home.planned.filter(x => x.id !== id); save(); db.tab = 'dash'; render(); } }
 function hAddMem() { let mEl=document.getElementById('h-new-mem'); let m = mEl?mEl.value.trim():''; if(m && !db.home.members.includes(m)) { db.home.members.push(m); save(); render(); } }
 function hDelMem(m) { if(db.home.members.length === 1) return; if(confirm(`Usunąć profil: ${m}?`)) { db.home.members = db.home.members.filter(x=>x!==m); save(); render(); } }
-function hSaveUS() { db.home.sal = safeVal('hs-sal'); db.home.fix = safeVal('hs-fix'); save(); render(); }
+function hSaveUS() { db.home.sal = safeVal('hs-sal'); db.home.fix = safeVal('hs-fix'); save(); alert("Zaktualizowano!"); render(); }
 
 
 // ==========================================
@@ -403,12 +412,12 @@ function rDrv() {
 
     if(t === 'term') { 
         let ch1 = d.plat === 'apps' 
-            ? `<div class="chip ${dTSrc==='Uber'?'active':''}" style="${dTSrc==='Uber'?'background:var(--driver);color:#fff':'color:var(--muted)'}" onclick="dTC('s','Uber',this)">Uber</div><div class="chip ${dTSrc==='Bolt'?'active':''}" style="${dTSrc==='Bolt'?'background:var(--driver);color:#fff':'color:var(--muted)'}" onclick="dTC('s','Bolt',this)">Bolt</div><div class="chip ${dTSrc==='Prywatny'?'active':''}" style="${dTSrc==='Prywatny'?'background:var(--driver);color:#fff':'color:var(--muted)'}" onclick="dTC('s','Prywatny',this)">Prywatny</div>`
-            : `<div class="chip ${dTSrc==='Centrala'?'active':''}" style="${dTSrc==='Centrala'?'background:var(--driver);color:#fff':'color:var(--muted)'}" onclick="dTC('s','Centrala',this)">Centrala</div><div class="chip ${dTSrc==='Postój'?'active':''}" style="${dTSrc==='Postój'?'background:var(--driver);color:#fff':'color:var(--muted)'}" onclick="dTC('s','Postój',this)">Postój</div><div class="chip ${dTSrc==='Prywatny'?'active':''}" style="${dTSrc==='Prywatny'?'background:var(--driver);color:#fff':'color:var(--muted)'}" onclick="dTC('s','Prywatny',this)">Prywatny</div>`;
+            ? `<div class="chip ${dTSrc==='Uber'?'active':''}" style="${dTSrc==='Uber'?'background:var(--driver);color:#fff;border-color:var(--driver)':'color:var(--muted)'}" onclick="dTC('s','Uber',this)">Uber</div><div class="chip ${dTSrc==='Bolt'?'active':''}" style="${dTSrc==='Bolt'?'background:var(--driver);color:#fff;border-color:var(--driver)':'color:var(--muted)'}" onclick="dTC('s','Bolt',this)">Bolt</div><div class="chip ${dTSrc==='Prywatny'?'active':''}" style="${dTSrc==='Prywatny'?'background:var(--driver);color:#fff;border-color:var(--driver)':'color:var(--muted)'}" onclick="dTC('s','Prywatny',this)">Prywatny</div>`
+            : `<div class="chip ${dTSrc==='Centrala'?'active':''}" style="${dTSrc==='Centrala'?'background:var(--driver);color:#fff;border-color:var(--driver)':'color:var(--muted)'}" onclick="dTC('s','Centrala',this)">Centrala</div><div class="chip ${dTSrc==='Postój'?'active':''}" style="${dTSrc==='Postój'?'background:var(--driver);color:#fff;border-color:var(--driver)':'color:var(--muted)'}" onclick="dTC('s','Postój',this)">Postój</div><div class="chip ${dTSrc==='Prywatny'?'active':''}" style="${dTSrc==='Prywatny'?'background:var(--driver);color:#fff;border-color:var(--driver)':'color:var(--muted)'}" onclick="dTC('s','Prywatny',this)">Prywatny</div>`;
         
         let ch2 = d.plat === 'apps'
-            ? `<div class="chip ${dTPay==='Online'?'active':''}" style="${dTPay==='Online'?'background:var(--info);color:#fff':'color:var(--muted)'}" onclick="dTC('p','Online',this)">Aplikacja</div><div class="chip ${dTPay==='Gotówka'?'active':''}" style="${dTPay==='Gotówka'?'background:var(--success);color:#000':'color:var(--muted)'}" onclick="dTC('p','Gotówka',this)">Gotówka</div>`
-            : `<div class="chip ${dTPay==='Gotówka'?'active':''}" style="${dTPay==='Gotówka'?'background:var(--success);color:#000':'color:var(--muted)'}" onclick="dTC('p','Gotówka',this)">Gotówka</div><div class="chip ${dTPay==='Karta'?'active':''}" style="${dTPay==='Karta'?'background:var(--info);color:#fff':'color:var(--muted)'}" onclick="dTC('p','Karta',this)">Karta</div>`;
+            ? `<div class="chip ${dTPay==='Online'?'active':''}" style="${dTPay==='Online'?'background:var(--info);color:#fff;border-color:var(--info)':'color:var(--muted)'}" onclick="dTC('p','Online',this)">Aplikacja</div><div class="chip ${dTPay==='Gotówka'?'active':''}" style="${dTPay==='Gotówka'?'background:var(--success);color:#000;border-color:var(--success)':'color:var(--muted)'}" onclick="dTC('p','Gotówka',this)">Gotówka</div>`
+            : `<div class="chip ${dTPay==='Gotówka'?'active':''}" style="${dTPay==='Gotówka'?'background:var(--success);color:#000;border-color:var(--success)':'color:var(--muted)'}" onclick="dTC('p','Gotówka',this)">Gotówka</div><div class="chip ${dTPay==='Karta'?'active':''}" style="${dTPay==='Karta'?'background:var(--info);color:#fff;border-color:var(--info)':'color:var(--muted)'}" onclick="dTC('p','Karta',this)">Karta</div>`;
 
         let clientOpts = d.clients.map(c => `<option value="${c.id}">${c.n}</option>`).join('');
 
@@ -418,8 +427,7 @@ function rDrv() {
         let stoperHtml = '';
         if(d.sh.on) {
             if(d.liveRideStart) {
-                let minsElapsed = Math.floor((Date.now() - d.liveRideStart) / 60000);
-                stoperHtml = `<div class="panel" style="border-color:var(--danger); text-align:center; background:rgba(239,68,68,0.05); padding:30px 20px;"><div style="font-size:3rem; margin-bottom:10px;">⏳</div><h3 style="color:var(--danger); margin:0 0 5px 0; text-transform:uppercase;">Kurs w toku!</h3><p style="color:var(--muted); font-size:0.85rem; margin-bottom:20px;">Stoper liczy czas. Możesz zablokować telefon.</p><button class="btn btn-live" style="font-size:1.2rem; padding:25px;" onclick="stopLiveRide()">🔴 ZAKOŃCZ KURS</button></div>`;
+                stoperHtml = `<div class="panel" style="border-color:var(--danger); text-align:center; background:rgba(239,68,68,0.05); padding:30px 20px;"><div style="font-size:3rem; margin-bottom:10px;">⏳</div><h3 style="color:var(--danger); margin:0 0 5px 0; text-transform:uppercase;">Kurs w toku!</h3><p style="color:var(--muted); font-size:0.85rem; margin-bottom:20px;">Stoper liczy czas. Możesz zablokować telefon.</p><button class="btn btn-live" onclick="stopLiveRide()">🔴 ZAKOŃCZ KURS</button></div>`;
             } else {
                 stoperHtml = `<div class="panel" style="border-color:var(--success); text-align:center;"><button class="btn" style="background:var(--success); color:#000; font-size:1.2rem; padding:25px;" onclick="startLiveRide()">🟢 ROZPOCZNIJ KURS (STOPER)</button><p style="color:var(--muted); font-size:0.75rem; margin-top:15px;">Kliknij, gdy klient wsiądzie. System sam wyliczy minuty.</p></div>`;
             }
@@ -427,7 +435,7 @@ function rDrv() {
 
         let act = d.sh.on ? `<div class="dash-hero" style="padding-bottom:5px;"><p>ZYSK NETTO ZMIANY</p><h1 style="font-size:4rem; color:${n>=0?'var(--success)':'var(--danger)'};">${n.toFixed(2)} zł</h1></div>
         ${stoperHtml}
-        <div class="panel" style="border-color:rgba(59, 130, 246, 0.4);"><div class="p-title" style="color:var(--driver);">➕ Zaksięguj nowy kurs</div><div class="form-section" style="padding:12px; margin-bottom:15px;"><div class="fs-title" style="margin-bottom:8px;">Źródło & Płatność</div><div class="chip-box" style="margin-bottom:10px; padding-bottom:0;">${ch1}</div><div class="chip-box" style="margin-bottom:0; padding-bottom:0;">${ch2}</div></div><div class="inp-group" style="margin-bottom:15px;"><label>Zwiąż z Klientem VIP (Opcjonalnie)</label><select id="dt-cid"><option value="">-- Zwykły kurs --</option>${clientOpts}</select></div><div class="form-section" style="padding:20px 15px; border-color:rgba(59,130,246,0.3); background:rgba(59,130,246,0.05);"><div class="fs-title" style="color:var(--driver); text-align:center; margin-bottom:15px;">Kwota (Brutto z taksometru / apki)</div><input type="number" id="dt-v" class="big-inp" placeholder="0.00" style="color:var(--driver); border:none; background:rgba(0,0,0,0.5); border-radius:16px;"></div><div class="inp-row"><div class="inp-group"><label>Czas (Min)</label><input type="number" id="dt-m" placeholder="np. 15"></div><div class="inp-group"><label>Dystans (KM)</label><input type="number" id="dt-k" placeholder="np. 8.5"></div></div><button class="btn btn-driver" style="margin-top:15px; font-size:1.1rem; padding:20px;" onclick="dAddT()">DODAJ KURS DO PORTFELA</button></div><div class="panel"><div class="p-title">Historia Zmiany</div>${d.sh.tr.map(x=>{ let icon = x.p==='Gotówka'?'💵':(x.p==='Karta'?'💳':'📱'); return `<div class="log-item" style="border-left-color:var(--driver); padding:15px;"><div style="display:flex; align-items:center; gap:15px;"><div style="font-size:1.5rem; background:rgba(255,255,255,0.05); padding:10px; border-radius:12px;">${icon}</div><div><strong style="font-size:1.2rem">${x.v.toFixed(2)} zł</strong><br><small style="color:var(--muted)">${x.s} • ${x.m||0} min • ${x.k||0}km</small></div></div><button class="btn-danger" style="padding:8px 12px; border:none; border-radius:8px; font-weight:bold; background:rgba(239,68,68,0.15);" onclick="dDelT(${x.id})">Cofnij</button></div>` }).join('')||'<div style="text-align:center;color:var(--muted);padding:30px 0;font-size:0.9rem;">Brak kursów.</div>'}</div><div class="panel" style="border-color:rgba(239,68,68,0.3); background:rgba(239,68,68,0.02)"><div class="p-title" style="color:var(--danger)">Zakończenie Dnia Pracy</div><div class="inp-group" style="margin-bottom:15px;"><label style="color:var(--danger)">Licznik po zjeździe (KM)</label><input type="number" id="de-o" class="big-inp" style="color:var(--danger); border-color:rgba(239,68,68,0.4); background:#000;"></div><button class="btn btn-danger" style="background:linear-gradient(135deg, #ef4444, #b91c1c); color:#fff; border:none; padding:20px;" onclick="dEndS()">ZAKOŃCZ ZMIANĘ</button></div>` : `<div class="dash-hero" style="padding-top:40px;"><div style="width:80px;height:80px;background:linear-gradient(135deg,var(--success),#059669);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:2.5rem;box-shadow:0 10px 25px rgba(34,197,94,0.3);">🚗</div><h1 style="font-size:2.5rem;">Cześć, ${db.userName}!</h1><p style="margin-top:10px;">Podaj stan licznika, aby otworzyć zmianę</p></div><div class="panel" style="border-color:var(--success); box-shadow:0 10px 30px rgba(34,197,94,0.1);"><div class="inp-group"><input type="number" id="ds-o" class="big-inp" placeholder="Licznik (KM)" style="font-size:2.5rem; padding:30px;"></div><button class="btn" style="background:linear-gradient(135deg, var(--success), #059669); color:#fff; font-size:1.2rem; padding:20px; margin-top:20px;" onclick="dStartS()">ROZPOCZNIJ PRACĘ</button></div>`;
+        <div class="panel" style="border-color:rgba(59, 130, 246, 0.4);"><div class="p-title" style="color:var(--driver);">➕ Zaksięguj nowy kurs</div><div class="form-section" style="padding:12px; margin-bottom:15px;"><div class="fs-title" style="margin-bottom:8px;">Źródło & Płatność</div><div class="chip-box" style="margin-bottom:10px; padding-bottom:0;">${ch1}</div><div class="chip-box" style="margin-bottom:0; padding-bottom:0;">${ch2}</div></div><div class="inp-group" style="margin-bottom:15px;"><label>Zwiąż z Klientem VIP (Opcjonalnie)</label><select id="dt-cid"><option value="">-- Zwykły kurs --</option>${clientOpts}</select></div><div class="form-section" style="padding:20px 15px; border-color:rgba(59,130,246,0.3); background:rgba(59,130,246,0.05);"><div class="fs-title" style="color:var(--driver); text-align:center; margin-bottom:15px;">Kwota (Brutto z taksometru / apki)</div><input type="number" id="dt-v" class="big-inp" placeholder="0.00" style="color:var(--driver); border:none; background:rgba(0,0,0,0.5); border-radius:16px;"></div><div class="inp-row"><div class="inp-group"><label>Czas (Min)</label><input type="number" id="dt-m" placeholder="np. 15"></div><div class="inp-group"><label>Dystans (KM)</label><input type="number" id="dt-k" placeholder="np. 8.5"></div></div><button class="btn btn-driver" style="margin-top:15px; font-size:1.1rem; padding:20px;" onclick="dAddT()">DODAJ KURS DO PORTFELA</button></div><div class="panel"><div class="p-title">Historia Zmiany</div>${d.sh.tr.map(x=>{ let icon = x.p==='Gotówka'?'💵':(x.p==='Karta'?'💳':'📱'); return `<div class="log-item" style="border-left-color:var(--driver); padding:15px;"><div style="display:flex; align-items:center; gap:15px;"><div style="font-size:1.5rem; background:rgba(255,255,255,0.05); padding:10px; border-radius:12px;">${icon}</div><div><strong style="font-size:1.2rem">${x.v.toFixed(2)} zł</strong><br><small style="color:var(--muted)">${x.s} • ${x.m||0} min • ${x.k||0}km</small></div></div><button class="btn-danger" style="padding:8px 12px; border:none; border-radius:8px; font-weight:bold; background:rgba(239,68,68,0.15); box-shadow:none;" onclick="dDelT(${x.id})">Cofnij</button></div>` }).join('')||'<div style="text-align:center;color:var(--muted);padding:30px 0;font-size:0.9rem;">Brak kursów.</div>'}</div><div class="panel" style="border-color:rgba(239,68,68,0.3); background:rgba(239,68,68,0.02)"><div class="p-title" style="color:var(--danger)">Zakończenie Dnia Pracy</div><div class="inp-group" style="margin-bottom:15px;"><label style="color:var(--danger)">Licznik po zjeździe (KM)</label><input type="number" id="de-o" class="big-inp" style="color:var(--danger); border-color:rgba(239,68,68,0.4); background:#000;"></div><button class="btn btn-danger" onclick="dEndS()">ZAKOŃCZ ZMIANĘ</button></div>` : `<div class="dash-hero" style="padding-top:40px;"><div style="width:80px;height:80px;background:linear-gradient(135deg,var(--success),#059669);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:2.5rem;box-shadow:0 10px 25px rgba(34,197,94,0.3);">🚗</div><h1 style="font-size:2.5rem;">Cześć, ${db.userName}!</h1><p style="margin-top:10px;">Podaj stan licznika, aby otworzyć zmianę</p></div><div class="panel" style="border-color:var(--success); box-shadow:0 10px 30px rgba(34,197,94,0.1);"><div class="inp-group"><input type="number" id="ds-o" class="big-inp" placeholder="Licznik (KM)" style="font-size:2.5rem; padding:30px;"></div><button class="btn" style="background:linear-gradient(135deg, var(--success), #059669); color:#fff; font-size:1.2rem; padding:20px; margin-top:20px;" onclick="dStartS()">ROZPOCZNIJ PRACĘ</button></div>`;
         APP.innerHTML = hdr + act + nav;
     }
 
@@ -461,13 +469,13 @@ function rDrv() {
         let n = g - fc - tx - fix - pf - cf - ex; 
         let rKm = k>0?(n/k):0;
 
-        APP.innerHTML = hdr + `<div class="mode-switch" style="margin:15px; border-color:var(--border);"><div class="m-btn ${fM==='today'?'active':''}" onclick="db.filter='today';render()">Dziś</div><div class="m-btn ${fM==='week'?'active':''}" onclick="db.filter='week';render()">Tydzień</div><div class="m-btn ${fM==='month'?'active':''}" onclick="db.filter='month';render()">Miesiąc</div><div class="m-btn ${fM==='all'?'active':''}" onclick="db.filter='all';render()">Całość</div></div><div class="dash-hero" style="padding-top:0;"><p>TWOJE PRAWDZIWE NETTO</p><h1 style="color:${n>=0?'var(--success)':'var(--danger)'}; font-size:3.8rem;">${n.toFixed(2)} zł</h1></div><div class="grid-2"><div class="box"><span style="color:var(--info)">Zysk na 1 kilometr</span><strong style="color:#fff">${rKm.toFixed(2)} zł/km</strong></div><div class="box"><span style="color:var(--success)">Przepracowano</span><strong style="color:#fff">${uniqueDays} dni</strong></div></div>
+        APP.innerHTML = hdr + `<div class="mode-switch" style="margin:15px;"><div class="m-btn ${fM==='today'?'active':''}" onclick="db.filter='today';render()">Dziś</div><div class="m-btn ${fM==='week'?'active':''}" onclick="db.filter='week';render()">Tydzień</div><div class="m-btn ${fM==='month'?'active':''}" onclick="db.filter='month';render()">Miesiąc</div><div class="m-btn ${fM==='all'?'active':''}" onclick="db.filter='all';render()">Całość</div></div><div class="dash-hero" style="padding-top:0;"><p>TWOJE PRAWDZIWE NETTO</p><h1 style="color:${n>=0?'var(--success)':'var(--danger)'}; font-size:3.8rem;">${n.toFixed(2)} zł</h1></div><div class="grid-2"><div class="box"><span style="color:var(--info)">Zysk na 1 kilometr</span><strong style="color:#fff">${rKm.toFixed(2)} zł/km</strong></div><div class="box"><span style="color:var(--success)">Przepracowano</span><strong style="color:#fff">${uniqueDays} dni</strong></div></div>
         
         <div style="padding: 0 15px; margin-bottom: 20px;">
-            <button class="btn btn-home" style="margin:0; box-shadow: 0 10px 25px rgba(20, 184, 166, 0.3);" onclick="dTransferToHomeUI()">💸 PRZELEJ ZYSKI DO DOMU</button>
+            <button class="btn btn-home" onclick="dTransferToHomeUI()">💸 PRZELEJ ZYSKI DO BUDŻETU DOMOWEGO</button>
         </div>
 
-        <div class="panel" style="border-color:var(--border); padding:25px;"><div class="p-title">Wodospad Finansowy (P&L)</div><div class="fin-row"><span class="fin-label">Utarg Brutto z aplikacji</span><span class="fin-val" style="color:var(--success)">${g.toFixed(2)} zł</span></div><div class="fin-row"><span class="fin-label">Wydatki Garażowe</span><span class="fin-val" style="color:var(--danger)">-${ex.toFixed(2)} zł</span></div><div class="fin-row"><span class="fin-label">Paliwo z tras</span><span class="fin-val" style="color:var(--fuel)">-${fc.toFixed(2)} zł</span></div>${cf > 0 ? `<div class="fin-row"><span class="fin-label" style="color:var(--info)">Terminal</span><span class="fin-val" style="color:var(--danger)">-${cf.toFixed(2)} zł</span></div>` : ''}${pf > 0 ? `<div class="fin-row"><span class="fin-label">Prowizja Partnera</span><span class="fin-val" style="color:var(--danger)">-${pf.toFixed(2)} zł</span></div>` : ''}<div class="fin-row" style="align-items:flex-start;"><div style="display:flex; flex-direction:column; max-width:70%;"><span class="fin-label" style="color:#fff;">Koszty Stałe (Odpis)</span><small style="color:var(--muted); font-size:0.7rem; margin-top:4px; line-height:1.4;">Za przepracowane: <strong>${uniqueDays} dni</strong><br>Odpis: <strong>${d.cfg.fix.toFixed(2)} zł/dzień</strong><br>Auto: ${d.cfg.cC} | Baza: ${d.cfg.bC} | Inne: ${d.cfg.eC + d.cfg.iC}</small></div><span class="fin-val" style="color:var(--danger); padding-top:2px;">-${fix.toFixed(2)} zł</span></div><div class="fin-row" style="background:#09090b; margin-top:15px; padding:20px; border-radius:14px; border:1px solid var(--border);"><span class="fin-label" style="color:#fff; font-size:1.1rem;">CZYSTY ZYSK</span><span class="fin-val" style="font-size:1.5rem; color:${n>=0?'var(--success)':'var(--danger)'}">${n.toFixed(2)} zł</span></div></div><div class="panel"><div class="p-title">Struktura Kosztów</div><div style="height:200px; position:relative;"><canvas id="ch-doughnut"></canvas></div></div><div class="panel"><div class="p-title">Dziennik Zmian</div>${fs.map(x=>`<div class="log-item" style="border-left-color:${x.n>=0?'var(--success)':'var(--danger)'}; flex-direction:column; align-items:flex-start; padding:15px;"><div style="display:flex; justify-content:space-between; width:100%; margin-bottom:5px;"><strong style="font-size:1.1rem;">${x.dt}</strong><strong style="color:${x.n>=0?'var(--success)':'var(--danger)'}; font-size:1.2rem;">${x.n.toFixed(2)} zł</strong></div><small style="color:var(--muted)">Utarg: ${x.g.toFixed(2)} zł | Przebieg: ${x.k}km</small></div>`).join('')||'<div style="text-align:center;color:var(--muted);font-size:0.85rem;padding:20px 0;">Brak danych w tym przedziale.</div>'}</div>` + nav;
+        <div class="panel" style="padding:25px;"><div class="p-title">Wodospad Finansowy (P&L)</div><div class="fin-row"><span class="fin-label">Utarg Brutto z aplikacji</span><span class="fin-val" style="color:var(--success)">${g.toFixed(2)} zł</span></div><div class="fin-row"><span class="fin-label">Wydatki Garażowe</span><span class="fin-val" style="color:var(--danger)">-${ex.toFixed(2)} zł</span></div><div class="fin-row"><span class="fin-label">Paliwo z tras</span><span class="fin-val" style="color:var(--fuel)">-${fc.toFixed(2)} zł</span></div>${cf > 0 ? `<div class="fin-row"><span class="fin-label" style="color:var(--info)">Terminal</span><span class="fin-val" style="color:var(--danger)">-${cf.toFixed(2)} zł</span></div>` : ''}${pf > 0 ? `<div class="fin-row"><span class="fin-label">Prowizja Partnera</span><span class="fin-val" style="color:var(--danger)">-${pf.toFixed(2)} zł</span></div>` : ''}<div class="fin-row" style="align-items:flex-start;"><div style="display:flex; flex-direction:column; max-width:70%;"><span class="fin-label" style="color:#fff;">Koszty Stałe (Odpis)</span><small style="color:var(--muted); font-size:0.7rem; margin-top:4px; line-height:1.4;">Za przepracowane: <strong>${uniqueDays} dni</strong><br>Odpis: <strong>${d.cfg.fix.toFixed(2)} zł/dzień</strong><br>Auto: ${d.cfg.cC} | Baza: ${d.cfg.bC} | Inne: ${d.cfg.eC + d.cfg.iC}</small></div><span class="fin-val" style="color:var(--danger); padding-top:2px;">-${fix.toFixed(2)} zł</span></div><div class="fin-row" style="background:#000; margin-top:15px; padding:20px; border-radius:14px; border:1px solid rgba(255,255,255,0.05);"><span class="fin-label" style="color:#fff; font-size:1.1rem;">CZYSTY ZYSK</span><span class="fin-val" style="font-size:1.5rem; color:${n>=0?'var(--success)':'var(--danger)'}">${n.toFixed(2)} zł</span></div></div><div class="panel"><div class="p-title">Struktura Kosztów</div><div style="height:200px; position:relative;"><canvas id="ch-doughnut"></canvas></div></div><div class="panel"><div class="p-title">Dziennik Zmian</div>${fs.map(x=>`<div class="log-item" style="border-left-color:${x.n>=0?'var(--success)':'var(--danger)'}; flex-direction:column; align-items:flex-start; padding:15px;"><div style="display:flex; justify-content:space-between; width:100%; margin-bottom:5px;"><strong style="font-size:1.1rem;">${x.dt}</strong><strong style="color:${x.n>=0?'var(--success)':'var(--danger)'}; font-size:1.2rem;">${x.n.toFixed(2)} zł</strong></div><small style="color:var(--muted)">Utarg: ${x.g.toFixed(2)} zł | Przebieg: ${x.k}km</small></div>`).join('')||'<div style="text-align:center;color:var(--muted);font-size:0.85rem;padding:20px 0;">Brak danych w tym przedziale.</div>'}</div>` + nav;
         
         setTimeout(() => { 
             if(window.dCh1) window.dCh1.destroy(); 
@@ -483,35 +491,53 @@ function rDrv() {
 
     if(t === 'quote') {
         let q = d.q; let clientOpts = d.clients.map(c => `<option value="${c.id}" data-d="${c.d||0}">${c.n} (Rabat: ${c.d||0}%)</option>`).join('');
-        APP.innerHTML = hdr + `<div class="dash-hero" style="padding-bottom:5px;"><p>KALKULATOR TRASY</p></div><div class="panel" style="border-color:rgba(217, 70, 239, 0.4)"><div class="mode-switch"><div class="m-btn ${dQM==='taxi'?'active':''}" style="${dQM==='taxi'?'background:var(--quote);color:#fff':''}" onclick="dQM='taxi';render()">Taksometr</div><div class="m-btn ${dQM==='fix'?'active':''}" style="${dQM==='fix'?'background:var(--quote);color:#fff':''}" onclick="dQM='fix';render()">Trasa Umowna</div></div><div class="inp-group" style="margin-bottom:15px;"><label>Klient VIP</label><select id="dq-c" onchange="dSetDisc()"><option value="">-- Brak --</option>${clientOpts}</select></div><div id="dq-t" class="${dQM==='taxi'?'':'hidden'}"><div class="chip-box" style="margin-bottom:15px;"><div class="chip ${!dQN?'active':''}" style="background:${!dQN?'rgba(217,70,239,0.1)':'var(--bg)'};color:${!dQN?'var(--quote)':'var(--muted)'}" onclick="dQN=false;render()">Dzień (T1/T3)</div><div class="chip ${dQN?'active':''}" style="background:${dQN?'rgba(217,70,239,0.1)':'var(--bg)'};color:${dQN?'var(--quote)':'var(--muted)'}" onclick="dQN=true;render()">Noc/Święto (T2/T4)</div></div><div class="inp-row"><div class="inp-group"><label>KM Miasto</label><input type="number" id="dqk1" oninput="dQC()"></div><div class="inp-group"><label>KM Poza</label><input type="number" id="dqk2" oninput="dQC()"></div></div><div class="inp-row"><div class="inp-group"><label>Korki (Min)</label><input type="number" id="dqm" oninput="dQC()"></div><div class="inp-group"><label>Rabat (%)</label><input type="number" id="dqd" value="0" oninput="dQC()"></div></div></div><div id="dq-f" class="${dQM==='fix'?'':'hidden'}"><div class="inp-row"><div class="inp-group"><label>Dystans 1-str (KM)</label><input type="number" id="dqfk" oninput="dQC()"></div><div class="inp-group"><label>Stawka (zł/km)</label><input type="number" id="dqfr" value="3.00" oninput="dQC()"></div></div></div><div style="background:#000; border-radius:16px; padding:20px; margin-top:20px; text-align:center; border:1px solid #222;"><p style="margin:0 0 5px 0; color:var(--quote); font-size:0.75rem; font-weight:800;">DO ZAPŁATY (BRUTTO)</p><h1 id="dqt" style="margin:0; font-size:3.5rem; letter-spacing:-2px;">0.00 zł</h1></div><button class="btn btn-quote" style="margin-top:15px;" onclick="dQB()">ZAKSIĘGUJ</button></div><div class="panel"><div class="p-title">Ustawienia Taryf</div><div class="grid-2"><div class="inp-group"><label>Start</label><input type="number" id="dcs" value="${q.s}"></div><div class="inp-group"><label>1h Postoju</label><input type="number" id="dcw" value="${q.w}"></div></div><div class="grid-4" style="grid-template-columns:1fr 1fr 1fr 1fr; gap:8px;"><div class="inp-group"><label>T1</label><input type="number" id="dct1" value="${q.t1}"></div><div class="inp-group"><label>T2</label><input type="number" id="dct2" value="${q.t2}"></div><div class="inp-group"><label>T3</label><input type="number" id="dct3" value="${q.t3}"></div><div class="inp-group"><label>T4</label><input type="number" id="dct4" value="${q.t4}"></div></div><button class="btn" style="background:#222; color:#fff;" onclick="dSaveQC()">ZAPISZ TARYFY</button></div>` + nav; setTimeout(dQC, 50);
+        APP.innerHTML = hdr + `<div class="dash-hero" style="padding-bottom:5px;"><p>KALKULATOR TRASY</p></div><div class="panel" style="border-color:rgba(217, 70, 239, 0.4)"><div class="mode-switch"><div class="m-btn ${dQM==='taxi'?'active':''}" style="${dQM==='taxi'?'background:var(--quote);color:#fff':''}" onclick="dQM='taxi';render()">Taksometr</div><div class="m-btn ${dQM==='fix'?'active':''}" style="${dQM==='fix'?'background:var(--quote);color:#fff':''}" onclick="dQM='fix';render()">Trasa Umowna</div></div><div class="inp-group" style="margin-bottom:15px;"><label>Klient VIP</label><select id="dq-c" onchange="dSetDisc()"><option value="">-- Brak --</option>${clientOpts}</select></div><div id="dq-t" class="${dQM==='taxi'?'':'hidden'}"><div class="chip-box" style="margin-bottom:15px;"><div class="chip ${!dQN?'active':''}" style="background:${!dQN?'rgba(217,70,239,0.1)':'var(--bg)'};color:${!dQN?'var(--quote)':'var(--muted)'}; border-color:${!dQN?'var(--quote)':'transparent'}" onclick="dQN=false;render()">Dzień (T1/T3)</div><div class="chip ${dQN?'active':''}" style="background:${dQN?'rgba(217,70,239,0.1)':'var(--bg)'};color:${dQN?'var(--quote)':'var(--muted)'}; border-color:${dQN?'var(--quote)':'transparent'}" onclick="dQN=true;render()">Noc/Święto (T2/T4)</div></div><div class="inp-row"><div class="inp-group"><label>KM Miasto</label><input type="number" id="dqk1" oninput="dQC()"></div><div class="inp-group"><label>KM Poza</label><input type="number" id="dqk2" oninput="dQC()"></div></div><div class="inp-row"><div class="inp-group"><label>Korki (Min)</label><input type="number" id="dqm" oninput="dQC()"></div><div class="inp-group"><label>Rabat (%)</label><input type="number" id="dqd" value="0" oninput="dQC()"></div></div></div><div id="dq-f" class="${dQM==='fix'?'':'hidden'}"><div class="inp-row"><div class="inp-group"><label>Dystans 1-str (KM)</label><input type="number" id="dqfk" oninput="dQC()"></div><div class="inp-group"><label>Stawka (zł/km)</label><input type="number" id="dqfr" value="3.00" oninput="dQC()"></div></div></div><div style="background:#000; border-radius:16px; padding:20px; margin-top:20px; text-align:center; border:1px solid #222; box-shadow:inset 0 5px 10px rgba(0,0,0,0.5);"><p style="margin:0 0 5px 0; color:var(--quote); font-size:0.75rem; font-weight:800;">DO ZAPŁATY (BRUTTO)</p><h1 id="dqt" style="margin:0; font-size:3.5rem; letter-spacing:-2px;">0.00 zł</h1></div><button class="btn btn-quote" style="margin-top:15px;" onclick="dQB()">ZAKSIĘGUJ DO TERMINALA</button></div><div class="section-lbl" style="color:var(--quote); border-color:var(--quote);">Ustawienia Taryfikatora</div><div class="panel"><div class="grid-2"><div class="inp-group"><label>Start</label><input type="number" id="dcs" value="${q.s}"></div><div class="inp-group"><label>1h Postoju</label><input type="number" id="dcw" value="${q.w}"></div></div><div class="grid-4" style="grid-template-columns:1fr 1fr 1fr 1fr; gap:8px;"><div class="inp-group"><label>T1</label><input type="number" id="dct1" value="${q.t1}"></div><div class="inp-group"><label>T2</label><input type="number" id="dct2" value="${q.t2}"></div><div class="inp-group"><label>T3</label><input type="number" id="dct3" value="${q.t3}"></div><div class="inp-group"><label>T4</label><input type="number" id="dct4" value="${q.t4}"></div></div><button class="btn" style="background:#222; color:#fff;" onclick="dSaveQC()">ZAPISZ TARYFY</button></div>` + nav; setTimeout(dQC, 50);
     }
 
     if(t === 'garage') {
         let fS = calcFuelioStats();
         let todayStr = new Date().toISOString().split('T')[0];
-        APP.innerHTML = hdr + `<div class="dash-hero" style="padding-bottom:5px;"><p>ŚREDNIE SPALANIE AUTA</p><h1 style="color:var(--fuel); font-size:3.5rem;">${fS.l1.toFixed(1)} <span style="font-size:1.5rem; color:var(--muted)">L/100</span></h1></div><div class="grid-2" style="padding:0 15px; margin-bottom:20px;"><div class="box" style="border-color:rgba(245,158,11,0.3); background:rgba(245,158,11,0.05); align-items:center;"><span style="color:var(--fuel)">Koszt 100 KM</span><strong style="color:#fff">${fS.c1.toFixed(2)} zł</strong></div><div class="box" style="border-color:rgba(245,158,11,0.3); background:rgba(245,158,11,0.05); align-items:center;"><span style="color:var(--fuel)">Bieżący Koszt 1 KM</span><strong style="color:#fff">${d.cfg.fuelPx.toFixed(2)} zł</strong></div></div><div class="panel" style="border-color:var(--fuel)"><div class="p-title" style="color:var(--fuel)">Dziennik Tankowań</div><div class="inp-row"><div class="inp-group"><label>Licznik Główny (KM)</label><input type="number" id="df-o"></div><div class="inp-group"><label>Wlane Litry</label><input type="number" id="df-l" step="0.1"></div></div><div class="inp-row"><div class="inp-group"><label>Rachunek (zł)</label><input type="number" id="df-v"></div><div class="inp-group"><label>Data</label><input type="date" id="df-date" value="${todayStr}"></div></div><div class="inp-group" style="margin-bottom:15px;"><label>Pod korek?</label><select id="df-f"><option value="1">Tak (Przelicz spalanie)</option><option value="0">Nie</option></select></div><button class="btn" style="background:var(--fuel); color:#000;" onclick="dAF()">ZAPISZ PARAGON</button></div><div class="panel" style="border-color:rgba(239,68,68,0.4)"><div class="p-title" style="color:var(--danger)">Inne Wydatki Operacyjne</div><div class="inp-row"><div class="inp-group" style="flex:2"><label>Kategoria Wydatku</label><select id="de-c"><option value="✨ Myjnia / Kosmetyka">✨ Myjnia / Kosmetyka</option><option value="🛠️ Serwis / Części">🛠️ Serwis / Części</option><option value="🛡️ Ubezpieczenie">🛡️ Ubezpieczenie</option><option value="📦 Inne koszty">📦 Inne koszty</option></select></div><div class="inp-group"><label>Kwota (zł)</label><input type="number" id="de-v" placeholder="0.00"></div></div><div class="inp-group" style="margin-bottom:15px;"><label>Data Wydatku</label><input type="date" id="de-date" value="${todayStr}"></div><button class="btn btn-danger" style="background:var(--danger); color:#fff;" onclick="dAE()">ZAPISZ WYDATEK</button></div><div class="panel"><div class="p-title">Historia Garażu</div>${renderGarageHistory()}</div>` + nav;
+        APP.innerHTML = hdr + `<div class="dash-hero" style="padding-bottom:5px;"><p>ŚREDNIE SPALANIE (Od ostatniego tankowania)</p><h1 style="color:var(--fuel); font-size:4rem;">${fS.l1.toFixed(1)} <span style="font-size:1.5rem; color:var(--muted)">L/100</span></h1></div><div class="grid-2" style="padding:0 15px; margin-bottom:20px;"><div class="box" style="border-color:rgba(245,158,11,0.3); background:rgba(245,158,11,0.05); align-items:center;"><span style="color:var(--fuel)">Koszt 100 KM</span><strong style="color:#fff">${fS.c1.toFixed(2)} zł</strong></div><div class="box" style="border-color:rgba(245,158,11,0.3); background:rgba(245,158,11,0.05); align-items:center;"><span style="color:var(--fuel)">Koszt 1 KM</span><strong style="color:#fff">${d.cfg.fuelPx.toFixed(2)} zł</strong></div></div><div class="panel" style="border-color:var(--fuel); background: linear-gradient(180deg, #18181b 0%, #09090b 100%);"><div class="p-title" style="color:var(--fuel)">⛽ Inteligentny Dziennik Tankowań</div><div class="inp-row"><div class="inp-group"><label>Licznik Główny (KM)</label><input type="number" id="df-o" placeholder="np. 155000"></div><div class="inp-group"><label>Wlane Litry</label><input type="number" id="df-l" step="0.1" placeholder="0.0"></div></div><div class="inp-row"><div class="inp-group"><label>Rachunek (zł)</label><input type="number" id="df-v" placeholder="0.00"></div><div class="inp-group"><label>Data</label><input type="date" id="df-date" value="${todayStr}"></div></div><div class="inp-group" style="margin-bottom:15px;"><label>Pod korek?</label><select id="df-f"><option value="1">Tak (Oblicz dokładne spalanie)</option><option value="0">Nie</option></select></div><button class="btn" style="background:var(--fuel); color:#000;" onclick="dAF()">ZAPISZ PARAGON ZE STACJI</button></div><div class="panel" style="border-color:rgba(239,68,68,0.4)"><div class="p-title" style="color:var(--danger)">🔧 Inne Wydatki Operacyjne</div><div class="inp-row"><div class="inp-group" style="flex:2"><label>Kategoria Wydatku</label><select id="de-c"><option value="✨ Myjnia / Kosmetyka">✨ Myjnia / Kosmetyka</option><option value="🛠️ Serwis / Części">🛠️ Serwis / Części</option><option value="💧 Płyny / Eksploatacja">💧 Płyny / Eksploatacja</option><option value="🛡️ Ubezpieczenie">🛡️ Ubezpieczenie</option><option value="🅿️ Parking / Autostrada">🅿️ Parking / Autostrada</option><option value="📦 Inne koszty">📦 Inne koszty</option></select></div><div class="inp-group"><label>Kwota (zł)</label><input type="number" id="de-v" placeholder="0.00"></div></div><div class="inp-group" style="margin-bottom:15px;"><label>Data Wydatku</label><input type="date" id="de-date" value="${todayStr}"></div><button class="btn btn-danger" style="background:var(--danger); color:#fff;" onclick="dAE()">ZAPISZ WYDATEK W BAZIE</button></div><div class="section-lbl" style="color:#fff; border-color:rgba(255,255,255,0.1);">Historia Garażu</div><div style="padding: 0 15px;">${renderGarageHistory()}</div>` + nav;
     }
 
     if(t === 'crm') {
-        APP.innerHTML = hdr + `<div class="dash-hero" style="padding-bottom:10px;"><p>BAZA KLIENTÓW VIP</p><h1 style="font-size:3rem;">${d.clients.length} <span style="font-size:1.5rem; color:var(--muted)">Osob.</span></h1></div><div class="panel" style="border-color:var(--driver);"><div class="p-title" style="color:var(--driver)">➕ Dodaj Klienta</div><div class="inp-row"><div class="inp-group"><label>Imię / Firma</label><input type="text" id="dc-n" placeholder="np. Hotel Qubus"></div></div><div class="inp-row"><div class="inp-group"><label>Telefon</label><input type="text" id="dc-p" placeholder="np. 500 000 000"></div><div class="inp-group"><label>Zniżka (%)</label><input type="number" id="dc-d" placeholder="np. 10"></div></div><button class="btn btn-driver" style="margin-top:10px;" onclick="dAddCrm()">ZAPISZ KLIENTA</button></div><div class="panel"><div class="p-title">Katalog Klientów</div>${d.clients.map(c => { return `<div class="log-item" style="border-left-color:var(--driver); flex-direction:column; align-items:flex-start; padding:18px;"><div><strong style="font-size:1.2rem; color:#fff">${c.n}</strong></div><div style="width:100%; display:flex; justify-content:space-between; align-items:center; margin-top:15px; padding-top:15px; border-top:1px solid rgba(255,255,255,0.05);"><div><span style="font-size:0.7rem; color:var(--muted); text-transform:uppercase; font-weight:800;">Rabat:</span><br><strong style="color:var(--info); font-size:1.1rem;">${c.d}%</strong></div><button class="btn-danger" style="padding:10px 14px; font-size:0.75rem; border:none; border-radius:10px; background:transparent;" onclick="dCrmDel(${c.id})">USUŃ</button></div></div>` }).join('') || '<div style="text-align:center;color:var(--muted);font-size:0.85rem;padding:20px;">Brak klientów.</div>'}</div>` + nav;
+        APP.innerHTML = hdr + `<div class="dash-hero" style="padding-bottom:10px;"><p>BAZA KLIENTÓW VIP</p><h1 style="font-size:3rem;">${d.clients.length} <span style="font-size:1.5rem; color:var(--muted)">Osob.</span></h1></div><div class="panel" style="border-color:var(--driver);"><div class="p-title" style="color:var(--driver)">➕ Dodaj Klienta</div><div class="inp-row"><div class="inp-group"><label>Imię / Firma</label><input type="text" id="dc-n" placeholder="np. Hotel Qubus"></div></div><div class="inp-row"><div class="inp-group"><label>Telefon</label><input type="text" id="dc-p" placeholder="np. 500 000 000"></div><div class="inp-group"><label>Zniżka (%)</label><input type="number" id="dc-d" placeholder="np. 10"></div></div><button class="btn btn-driver" style="margin-top:10px;" onclick="dAddCrm()">ZAPISZ KLIENTA</button></div><div class="panel"><div class="p-title">Katalog Klientów</div>${d.clients.map(c => { return `<div class="log-item" style="border-left-color:var(--driver); flex-direction:column; align-items:flex-start; padding:18px; background:linear-gradient(145deg, #18181b, #121214);"><div style="display:flex; justify-content:space-between; width:100%;"><strong style="font-size:1.2rem; color:#fff">${c.n}</strong><span style="color:var(--muted); font-size:0.8rem;">${c.ph||'Brak tel'}</span></div><div style="width:100%; display:flex; justify-content:space-between; align-items:center; margin-top:15px; padding-top:15px; border-top:1px dashed rgba(255,255,255,0.1);"><div><span style="font-size:0.7rem; color:var(--muted); text-transform:uppercase; font-weight:800;">Stałyy Rabat:</span><br><strong style="color:var(--info); font-size:1.1rem;">${c.d}%</strong></div><button class="btn-danger" style="padding:10px 14px; font-size:0.75rem; border:none; border-radius:10px; background:rgba(239,68,68,0.1); color:var(--danger); box-shadow:none;" onclick="dCrmDel(${c.id})">USUŃ</button></div></div>` }).join('') || '<div style="text-align:center;color:var(--muted);font-size:0.85rem;padding:20px;">Brak klientów.</div>'}</div>` + nav;
     }
 
     if(t === 'set') {
-        APP.innerHTML = hdr + `<button class="btn" style="background:#222; color:#fff; border:1px solid #333; margin: 15px; width:calc(100% - 30px);" onclick="db.tab='term';render()">Powrót do aplikacji</button><div class="dash-hero" style="padding-bottom:0; padding-top:10px;"><p>KONTROLA TWOJEJ FIRMY</p></div><div class="panel" style="border-color:var(--success)"><div class="p-title" style="color:var(--success)">Personalizacja & Motywacja</div><div class="inp-row"><div class="inp-group"><label>Twoje Imię</label><input type="text" id="us-name" value="${db.userName}"></div><div class="inp-group"><label>Cel (zł)</label><input type="number" id="us-goal" value="${d.cfg.goal}"></div></div></div><div class="panel" style="border-color:var(--driver)"><div class="p-title" style="color:var(--driver)">Parametry Stałe</div><div class="inp-row"><div class="inp-group"><label>Koszt Auta (zł)</label><input type="number" id="us-cc" value="${d.cfg.cC}"></div><div class="inp-group"><label>Okres</label><select id="us-ctype" style="width:100%;padding:16px;background:#09090b;border:1px solid var(--border);color:#fff;border-radius:14px;"><option value="week" ${d.cfg.cType==='week'?'selected':''}>Tygodniowo</option><option value="month" ${d.cfg.cType==='month'?'selected':''}>Miesięcznie</option></select></div></div><div class="inp-row"><div class="inp-group"><label>Baza / Korpo zł/mc</label><input type="number" id="us-bc" value="${d.cfg.bC}"></div><div class="inp-group"><label>Inne Stałe zł/mc</label><input type="number" id="us-ic" value="${d.cfg.iC || 0}"></div></div><div style="border-top:1px solid #333; margin:15px 0; padding-top:15px;"><label style="font-size:0.7rem; color:var(--info); font-weight:bold; margin-bottom:8px; display:block;">ZUS ORAZ PARTNER</label><select id="us-etype" onchange="dTogglePType('us')" style="width:100%;padding:16px;background:#09090b;border:1px solid var(--border);color:#fff;border-radius:14px;margin-bottom:10px;"><option value="flat" ${d.cfg.eType==='flat'?'selected':''}>Stała kwota (ZUS)</option><option value="pct" ${d.cfg.eType==='pct'?'selected':''}>Procent (Prowizja Partnera)</option></select><div id="us-p-flat-box" style="display:${d.cfg.eType==='flat'?'block':'none'}"><input type="number" id="us-ec" value="${d.cfg.eC}" style="width:100%;padding:16px;background:#09090b;border:1px solid var(--border);color:#fff;border-radius:14px;"></div><div id="us-p-pct-box" style="display:${d.cfg.eType==='pct'?'block':'none'}"><input type="number" id="us-epct" value="${(d.cfg.ePct*100).toFixed(0)}" style="width:100%;padding:16px;background:#09090b;border:1px solid var(--driver);color:var(--driver);border-radius:14px;font-weight:bold;"></div></div><div class="inp-row"><div class="inp-group"><label>Podatek (%)</label><input type="number" id="us-tx" value="${(d.cfg.tax*100).toFixed(1)}" step="0.1"></div><div class="inp-group"><label>Terminal (%)</label><input type="number" id="us-cf" value="${(d.cfg.cardF*100).toFixed(1)}" step="0.1" style="color:var(--info); border-color:rgba(14,165,233,0.5);"></div></div><div style="background:var(--bg); padding:15px; border-radius:12px; margin:15px 0; text-align:center;"><small style="color:var(--muted)">Twoja Dniówka stała wynosi:</small><br><strong style="color:var(--danger); font-size:1.5rem;">${d.cfg.fix.toFixed(2)} zł / dzień</strong></div><button class="btn btn-driver" onclick="dSaveUS()">ZAKTUALIZUJ KOSZTY</button></div><div class="panel" style="border-color:var(--quote)"><div class="p-title" style="color:var(--quote)">Kopie Zapasowe</div><div class="grid-2" style="margin-bottom:0;"><button class="btn" style="background:rgba(255,255,255,0.1); color:#fff; border:1px solid var(--border);" onclick="exportDb()">💾 Pobierz</button><button class="btn" style="background:rgba(255,255,255,0.1); color:#fff; border:1px solid var(--border);" onclick="importDb()">📂 Wgraj</button></div></div>`;
+        APP.innerHTML = hdr + `
+        <div class="dash-hero" style="padding-bottom:0; padding-top:20px;"><p>KONTROLA TWOJEJ FIRMY</p></div>
+        
+        <div class="section-lbl" style="color:var(--success); border-color:var(--success);">👤 Personalizacja</div>
+        <div class="panel"><div class="inp-row"><div class="inp-group"><label>Twoje Imię</label><input type="text" id="us-name" value="${db.userName}"></div><div class="inp-group"><label>Cel Dzienny (zł)</label><input type="number" id="us-goal" value="${d.cfg.goal}"></div></div></div>
+        
+        <div class="section-lbl" style="color:var(--driver); border-color:var(--driver);">🚗 Auto i Baza</div>
+        <div class="panel"><div class="inp-row"><div class="inp-group"><label>Koszt Auta (zł)</label><input type="number" id="us-cc" value="${d.cfg.cC}"></div><div class="inp-group"><label>Okres</label><select id="us-ctype"><option value="week" ${d.cfg.cType==='week'?'selected':''}>Tygodniowo</option><option value="month" ${d.cfg.cType==='month'?'selected':''}>Miesięcznie</option></select></div></div><div class="inp-row"><div class="inp-group"><label>Baza / Korpo zł/mc</label><input type="number" id="us-bc" value="${d.cfg.bC}"></div><div class="inp-group"><label>Inne Stałe zł/mc</label><input type="number" id="us-ic" value="${d.cfg.iC || 0}"></div></div></div>
+        
+        <div class="section-lbl" style="color:var(--info); border-color:var(--info);">⚖️ Podatki i Prowizje</div>
+        <div class="panel"><div class="inp-group" style="margin-bottom:15px;"><label>Rodzaj Rozliczenia (ZUS / Partner)</label><select id="us-etype" onchange="dTogglePType('us')"><option value="flat" ${d.cfg.eType==='flat'?'selected':''}>Stała kwota (np. ZUS 1600zł)</option><option value="pct" ${d.cfg.eType==='pct'?'selected':''}>Procent (np. 50% dla Partnera)</option></select></div><div id="us-p-flat-box" style="display:${d.cfg.eType==='flat'?'block':'none'}; margin-bottom:15px;"><div class="inp-group"><label>Kwota stała zł/mc</label><input type="number" id="us-ec" value="${d.cfg.eC}"></div></div><div id="us-p-pct-box" style="display:${d.cfg.eType==='pct'?'block':'none'}; margin-bottom:15px;"><div class="inp-group"><label>Prowizja Partnera (%)</label><input type="number" id="us-epct" value="${(d.cfg.ePct*100).toFixed(0)}" style="color:var(--driver); border-color:var(--driver);"></div></div><div class="inp-row"><div class="inp-group"><label>Podatek (%)</label><input type="number" id="us-tx" value="${(d.cfg.tax*100).toFixed(1)}" step="0.1"></div><div class="inp-group"><label>Prow. Terminala (%)</label><input type="number" id="us-cf" value="${(d.cfg.cardF*100).toFixed(1)}" step="0.1"></div></div><div style="background:#000; padding:15px; border-radius:12px; margin-top:15px; text-align:center; border:1px solid rgba(255,255,255,0.05);"><small style="color:var(--muted)">Wyliczona Dniówka Stała (Odpis):</small><br><strong style="color:var(--danger); font-size:1.5rem;">${d.cfg.fix.toFixed(2)} zł / dzień</strong></div></div>
+        
+        <div style="padding: 0 15px;"><button class="btn btn-driver" style="margin-bottom:30px;" onclick="dSaveUS()">💾 ZAKTUALIZUJ KOSZTY</button></div>
+        
+        <div class="section-lbl" style="color:var(--muted); border-color:var(--muted);">⚙️ System</div>
+        <div class="panel" style="margin-bottom:40px;"><div class="grid-2" style="margin-bottom:0;"><button class="btn" style="background:rgba(255,255,255,0.05); color:#fff; box-shadow:none; font-size:0.8rem;" onclick="exportDb()">Pobierz Kopię</button><button class="btn" style="background:rgba(255,255,255,0.05); color:#fff; box-shadow:none; font-size:0.8rem;" onclick="importDb()">Wgraj Kopię</button></div></div>
+        ` + nav;
     }
 }
 
-// LOGIKA MODALÓW I PRZELEWU DO DOMU
+// ==========================================
+// LOGIKA MODALÓW - TRANSFER I PODSUMOWANIE
+// ==========================================
 function dTransferToHomeUI() {
     let mHtml = `
     <div id="m-transfer" class="modal-overlay" style="z-index: 30000; animation: fadeIn 0.3s;">
-        <div class="panel" style="width:100%; max-width:380px; border-color:var(--life); text-align:center;">
-            <div style="font-size:3rem; margin-bottom:10px;">💸</div>
-            <h3 style="color:var(--life); margin:0 0 10px 0; font-size:1.5rem;">PRZELEW DO DOMU</h3>
-            <p style="color:var(--muted); font-size:0.85rem; margin-bottom:20px;">Ile gotówki z wypłaty na Taxi chcesz przesłać do domowego budżetu?</p>
-            <input type="number" id="transfer-amt" class="big-inp" placeholder="0.00" style="margin-bottom:20px; border-color:var(--life); color:var(--life);">
+        <div class="panel" style="width:100%; max-width:380px; border-color:var(--life); text-align:center; background: linear-gradient(145deg, #18181b, #09090b);">
+            <div style="font-size:3.5rem; margin-bottom:10px;">💸</div>
+            <h3 style="color:var(--life); margin:0 0 10px 0; font-size:1.5rem; font-weight:900;">PRZELEW DO DOMU</h3>
+            <p style="color:var(--muted); font-size:0.85rem; margin-bottom:20px; line-height:1.4;">Zdejmij gotówkę z utargu Taxi i bezpiecznie zapisz ją jako dochód w Budżecie Domowym.</p>
+            <input type="number" id="transfer-amt" class="big-inp" placeholder="0.00" style="margin-bottom:20px; border-color:var(--life); color:var(--life); background:#000;">
             <button class="btn btn-home" onclick="execTransfer()">POTWIERDŹ PRZELEW</button>
-            <button class="btn" style="background:transparent; color:var(--muted); border:1px solid var(--border);" onclick="document.getElementById('m-transfer').remove()">ANULUJ</button>
+            <button class="btn" style="background:transparent; color:var(--muted); border:1px solid rgba(255,255,255,0.1); box-shadow:none;" onclick="document.getElementById('m-transfer').remove()">ANULUJ</button>
         </div>
     </div>`;
     document.body.insertAdjacentHTML('beforeend', mHtml);
@@ -532,45 +558,85 @@ window.execTransfer = function() {
         let sHtml = `
         <div id="m-success" class="modal-overlay" style="z-index: 30000; animation: fadeIn 0.3s;">
             <div class="panel" style="width:100%; max-width:380px; border-color:var(--success); text-align:center;">
-                <div style="font-size:4rem; margin-bottom:10px;">✔️</div>
-                <h3 style="color:var(--success); margin:0 0 10px 0; font-size:1.5rem;">SUKCES!</h3>
-                <p style="color:var(--muted); font-size:0.9rem; margin-bottom:20px;">Kwota <strong>${amt.toFixed(2)} zł</strong> wylądowała bezpiecznie w Twoim Budżecie Domowym.</p>
-                <button class="btn btn-success" style="background:var(--success); color:#000;" onclick="document.getElementById('m-success').remove()">ZAMKNIJ</button>
+                <div style="font-size:4.5rem; margin-bottom:10px;">✔️</div>
+                <h3 style="color:var(--success); margin:0 0 10px 0; font-size:1.5rem; font-weight:900;">SUKCES!</h3>
+                <p style="color:var(--muted); font-size:0.95rem; margin-bottom:25px;">Kwota <strong style="color:#fff">${amt.toFixed(2)} zł</strong> wylądowała bezpiecznie w Twoim Budżecie Domowym.</p>
+                <button class="btn btn-success" style="background:var(--success); color:#000;" onclick="document.getElementById('m-success').remove()">ŚWIETNIE</button>
             </div>
         </div>`;
         document.body.insertAdjacentHTML('beforeend', sHtml);
     } else {
-        el.style.borderColor = 'red';
+        el.style.borderColor = 'var(--danger)';
     }
 }
 
-// TAXI LOGIC
+// LOGIKA TAXI & STOPERA (Brak błędu Focusu)
 function startLiveRide(){db.drv.liveRideStart=Date.now();save();render();}
 function stopLiveRide(){
     let m=Math.round((Date.now()-db.drv.liveRideStart)/60000); if(m<1)m=1;
     db.drv.liveRideStart=null; save(); render();
     setTimeout(()=>{
-        let iM=document.getElementById('dt-m'); let iV=document.getElementById('dt-v');
+        let iM=document.getElementById('dt-m'); 
         if(iM){iM.value=m; iM.classList.add('highlight-input'); setTimeout(()=>iM.classList.remove('highlight-input'),1500);}
-        if(iV) { iV.focus(); } 
     },50);
 }
 
-function dTC(t,v,el) { if(t==='s') dTSrc=v; else dTPay=v; el.parentElement.querySelectorAll('.chip').forEach(c=>{ c.style.background='rgba(255,255,255,0.05)'; c.style.color='var(--muted)'; }); if(v==='Gotówka') { el.style.background='var(--success)'; el.style.color='#000'; } else if(v==='Karta') { el.style.background='var(--info)'; el.style.color='#fff'; } else { el.style.background='var(--driver)'; el.style.color='#fff'; } }
+function dTC(t,v,el) { if(t==='s') dTSrc=v; else dTPay=v; el.parentElement.querySelectorAll('.chip').forEach(c=>{ c.style.background='rgba(255,255,255,0.03)'; c.style.color='var(--muted)'; }); if(v==='Gotówka') { el.style.background='var(--success)'; el.style.color='#000'; } else if(v==='Karta') { el.style.background='var(--info)'; el.style.color='#fff'; } else { el.style.background='var(--driver)'; el.style.color='#fff'; } }
 function dStartS() { let o=safeVal('ds-o'); if(!o) return; db.drv.odo=o; db.drv.sh={on:true, o, t:Date.now(), tr:[]}; db.drv.liveRideStart=null; save(); render(); }
 function dQC() { let q=db.drv.q; let fC=db.drv.cfg.fuelPx; let tax=db.drv.cfg.tax; let v=0,k=0,m=0,f=0; if(dQM==='taxi') { let k1=safeVal('dqk1'); let k2=safeVal('dqk2'); m=safeVal('dqm'); let disc=safeVal('dqd'); k=k1+k2; let base=q.s+(k1*(dQN?q.t2:q.t1))+(k2*(dQN?q.t4:q.t3))+(m*(q.w/60)); v=base-(base*(disc/100)); } else { k=safeVal('dqfk'); let r=safeVal('dqfr', 3.00); v=k*r; } dQK=k; dQM_T=m; dQV=v; let elT=document.getElementById('dqt'); if(elT)elT.innerText=v.toFixed(2)+" zł"; }
 function dQB() { if(!db.drv.sh.on) return alert("Otwórz zmianę!"); if(dQV>0) { db.drv.sh.tr.unshift({id:Date.now(),v:dQV,k:dQK,m:dQM_T,s:'Wycena',p:'Gotówka'}); save(); db.tab='term'; render(); } }
 function dSaveQC() { db.drv.q = { s:safeVal('dcs'), w:safeVal('dcw'), t1:safeVal('dct1'), t2:safeVal('dct2'), t3:safeVal('dct3'), t4:safeVal('dct4') }; save(); }
-function calcFuelioStats() { let l=db.drv.fuel; let s={l1:0,c1:0,ck:db.drv.cfg.fuelPx}; if(l.length>=2){ let lF=l.findIndex(x=>x.isF===1); if(lF!==-1){ let pF=l.findIndex((x,i)=>i>lF&&x.isF===1); if(pF!==-1){ let d=l[lF].o-l[pF].o; if(d>0){ let tL=0,tC=0; for(let i=lF;i<pF;i++){tL+=l[i].l;tC+=l[i].v;} s.l1=(tL/d)*100; s.c1=(tC/d)*100; s.ck=tC/d; db.drv.cfg.fuelPx=s.ck; save(); } } } } return s; }
 
-// Zapis wydatków i tankowania z datą (Garaż)
+// -----------------------------------------------------
+// FUELIO LOGIC W GARAŻU (STATYSTYKI DLA POSZCZEGÓLNYCH TANKOWAŃ)
+// -----------------------------------------------------
+function calcFuelioStats() { 
+    let l=db.drv.fuel; let s={l1:0,c1:0,ck:db.drv.cfg.fuelPx}; 
+    if(l.length>=2){ 
+        let lF=l.findIndex(x=>x.isF===1); 
+        if(lF!==-1){ 
+            let pF=l.findIndex((x,i)=>i>lF&&x.isF===1); 
+            if(pF!==-1){ 
+                let d=l[lF].o-l[pF].o; 
+                if(d>0){ 
+                    let tL=0,tC=0; 
+                    for(let i=lF;i<pF;i++){tL+=l[i].l;tC+=l[i].v;} 
+                    s.l1=(tL/d)*100; s.c1=(tC/d)*100; s.ck=tC/d; 
+                    db.drv.cfg.fuelPx=s.ck; save(); 
+                } 
+            } 
+        } 
+    } 
+    return s; 
+}
+
 function dAF() { 
     let o=safeVal('df-o'); let l=safeVal('df-l'); let v=safeVal('df-v'); let fEl=document.getElementById('df-f'); let f=fEl?parseInt(fEl.value):1; 
+    if(!o||!l||!v) return alert("Wypełnij dane ze stacji!"); 
     let dVal = document.getElementById('df-date').value;
     let dObj = dVal ? new Date(dVal) : new Date(); if(dVal) dObj.setHours(12,0,0);
+    
+    // Obliczanie spalania dla tego konkretnego tankowania względem poprzedniego
+    let dist = 0, l100 = 0, cpkm = 0;
+    let prevF = db.drv.fuel.filter(x => x.o < o).sort((a,b) => b.o - a.o)[0];
+    if (prevF) {
+        dist = o - prevF.o;
+        if(dist > 0) {
+            l100 = (l / dist) * 100;
+            cpkm = v / dist;
+            if(f === 1) db.drv.cfg.fuelPx = cpkm;
+        }
+    }
+    
     db.drv.odo=o; 
     db.drv.fuel.push({o,l,v,isF:f, rD:dObj.toISOString()});
-    db.drv.exp.push({id:Date.now(), rD:dObj.toISOString(), d:`⛽ Paliwo ${l}L`, v, dt:dObj.toLocaleDateString('pl-PL'), ty:'f'}); 
+    db.drv.fuel.sort((a,b) => b.o - a.o);
+    
+    db.drv.exp.push({
+        id:Date.now(), rD:dObj.toISOString(), 
+        d:`⛽ Tankowanie`, v, dt:dObj.toLocaleDateString('pl-PL'), ty:'f',
+        l, odo:o, dist, l100, cpkm, isF:f
+    }); 
     db.drv.exp.sort((a,b) => new Date(b.rD) - new Date(a.rD));
     save(); render(); 
 }
@@ -586,7 +652,30 @@ function dAE() {
     } 
 }
 
-function renderGarageHistory() { return db.drv.exp.map(x => { let isF = x.ty==='f'; let col = isF ? 'var(--fuel)' : 'var(--danger)'; return `<div class="log-item" style="border-left-color:${col}"><div><strong style="color:#fff; font-size:1.05rem;">${x.d}</strong><br><small style="color:var(--muted)">${x.dt}</small></div><strong style="color:${col}">-${x.v.toFixed(2)} zł</strong></div>`; }).join('') || '<div style="text-align:center;color:var(--muted);padding:10px;font-size:0.8rem;">Brak wpisów.</div>'; }
+function renderGarageHistory() { 
+    return db.drv.exp.map(x => { 
+        if(x.ty === 'f') {
+            let dist = x.dist || 0; let l100 = x.l100 || 0; let cpkm = x.cpkm || 0; let l = x.l || 0; let odo = x.odo || 0; let full = x.isF === 1 ? 'Pod korek' : 'Częściowo';
+            let statsHtml = dist > 0 
+                ? `<div style="display:flex; justify-content:space-between; width:100%; margin-top:12px; padding-top:12px; border-top:1px dashed rgba(255,255,255,0.1); font-size:0.8rem;">
+                     <div style="text-align:center;"><span style="color:var(--muted); font-size:0.65rem; text-transform:uppercase;">Dystans</span><br><strong style="color:#fff;">${dist} km</strong></div>
+                     <div style="text-align:center;"><span style="color:var(--muted); font-size:0.65rem; text-transform:uppercase;">Spalanie</span><br><strong style="color:var(--info);">${l100.toFixed(1)} L</strong></div>
+                     <div style="text-align:center;"><span style="color:var(--muted); font-size:0.65rem; text-transform:uppercase;">Koszt/KM</span><br><strong style="color:var(--danger);">${cpkm.toFixed(2)} zł</strong></div>
+                   </div>` 
+                : `<div style="margin-top:10px; font-size:0.75rem; color:var(--muted); text-align:center; width:100%;">Zatankuj ponownie, aby obliczyć spalanie.</div>`;
+            
+            return `<div class="log-item" style="border-left-color:var(--fuel); flex-direction:column; align-items:flex-start; background:linear-gradient(145deg, #18181b, #121214);">
+                <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
+                    <div><strong style="color:#fff; font-size:1.1rem;">${x.d} <span style="color:var(--fuel)">${l}L</span></strong><br><small style="color:var(--muted)">${x.dt} • ODO: <span style="color:#fff">${odo}</span> (${full})</small></div>
+                    <strong style="color:var(--fuel); font-size:1.2rem;">-${x.v.toFixed(2)} zł</strong>
+                </div>${statsHtml}
+            </div>`;
+        } else {
+            let col = x.ty==='amort' ? 'var(--info)' : 'var(--danger)'; let pref = x.ty==='amort' ? '' : '-';
+            return `<div class="log-item" style="border-left-color:${col}; background:linear-gradient(145deg, #18181b, #121214);"><div><strong style="color:#fff; font-size:1.05rem;">${x.d}</strong><br><small style="color:var(--muted)">${x.dt}</small></div><strong style="color:${col}">${pref}${x.v.toFixed(2)} zł</strong></div>`; 
+        }
+    }).join('') || '<div style="text-align:center;color:var(--muted);padding:10px;font-size:0.8rem;">Brak wpisów z garażu.</div>'; 
+}
 
 function dAddT() { let v=safeVal('dt-v'); let k=safeVal('dt-k'); let m=safeVal('dt-m'); let cIdel=document.getElementById('dt-cid'); let cId=cIdel ? parseInt(cIdel.value)||null : null; if(!v)return; db.drv.sh.tr.unshift({id:Date.now(),v,k,m,s:dTSrc,p:dTPay,c:cId}); save(); render(); }
 function dDelT(id) { db.drv.sh.tr=db.drv.sh.tr.filter(x=>x.id!==id); save(); render(); }
@@ -594,41 +683,27 @@ function dDelT(id) { db.drv.sh.tr=db.drv.sh.tr.filter(x=>x.id!==id); save(); ren
 // PIĘKNE POWIADOMIENIE O ZAKOŃCZENIU ZMIANY
 function dEndS() { 
     let e=safeVal('de-o'); 
-    
-    // Zwykły błąd formularza zostawiamy
     let odoInput = document.getElementById('de-o');
-    if(!e || e <= db.drv.sh.o) {
-        odoInput.style.borderColor = 'red';
-        return; 
-    }
+    if(!e || e <= db.drv.sh.o) { odoInput.style.borderColor = 'var(--danger)'; return; }
     
     let g=0; let pk=0; let cf=0; 
     db.drv.sh.tr.forEach(x=>{ g+=x.v; pk+=x.k; if(x.p==='Karta') cf += x.v * db.drv.cfg.cardF; }); 
-    let k=e-db.drv.sh.o; 
-    let fc=k*db.drv.cfg.fuelPx; 
-    let tax=g*db.drv.cfg.tax; 
-    let pFee = db.drv.cfg.eType === 'pct' ? g * db.drv.cfg.ePct : 0; 
+    let k=e-db.drv.sh.o; let fc=k*db.drv.cfg.fuelPx; let tax=g*db.drv.cfg.tax; let pFee = db.drv.cfg.eType === 'pct' ? g * db.drv.cfg.ePct : 0; 
     let n=g-fc-tax-pFee-cf-db.drv.cfg.fix; 
     
-    // Zapisz do bazy
     db.drv.odo=e; 
     db.drv.h.unshift({id:Date.now(), rD:new Date().toISOString(), dt:new Date().toLocaleDateString('pl-PL'), g, n, k, pk, fc, tx:tax, pF:pFee, cF:cf, tr:[...db.drv.sh.tr]}); 
-    db.drv.sh.on=false; 
-    db.drv.sh.tr=[]; 
-    db.drv.liveRideStart=null; 
-    save(); 
-    db.tab='stats'; 
-    render(); 
+    db.drv.sh.on=false; db.drv.sh.tr=[]; db.drv.liveRideStart=null; 
+    save(); db.tab='stats'; render(); 
     
-    // Wyświetl nowy, przepiękny Modal Podsumowania
     let mHtml = `
     <div id="m-summary" class="modal-overlay" style="z-index: 30000; animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);">
-        <div class="panel" style="width:100%; max-width:380px; border-color:var(--success); text-align:center; padding:30px 20px;">
+        <div class="panel" style="width:100%; max-width:380px; border-color:var(--success); text-align:center; padding:30px 20px; background: linear-gradient(145deg, #18181b, #09090b);">
             <div style="font-size:4rem; margin-bottom:10px;">🏁</div>
             <h2 style="color:var(--success); margin:0 0 10px 0; font-weight:900; font-size:1.8rem; letter-spacing:-1px;">ZMIANA ZAKOŃCZONA</h2>
             <p style="color:var(--muted); font-size:0.9rem; margin-bottom:20px;">Dobra robota! Wyniki zostały zapisane w systemie.</p>
             
-            <div style="background:var(--bg); border:1px solid var(--border); padding:20px; border-radius:16px; margin-bottom:20px;">
+            <div style="background:#000; border:1px solid rgba(255,255,255,0.05); padding:20px; border-radius:16px; margin-bottom:20px; box-shadow:inset 0 2px 10px rgba(0,0,0,0.5);">
                 <div style="display:flex; justify-content:space-between; margin-bottom:12px; align-items:center;">
                     <span style="color:var(--muted); font-size:0.85rem; text-transform:uppercase; font-weight:bold;">Utarg Brutto:</span>
                     <strong style="color:var(--success); font-size:1.3rem;">${g.toFixed(2)} zł</strong>
@@ -639,7 +714,7 @@ function dEndS() {
                 </div>
                 <div style="display:flex; justify-content:space-between; border-top:1px dashed rgba(255,255,255,0.1); padding-top:12px; align-items:center;">
                     <span style="color:var(--muted); font-size:0.85rem; text-transform:uppercase; font-weight:bold;">Szacowany Zysk:</span>
-                    <strong style="color:${n>=0?'var(--success)':'var(--danger)'}; font-size:1.3rem;">${n.toFixed(2)} zł</strong>
+                    <strong style="color:${n>=0?'var(--success)':'var(--danger)'}; font-size:1.4rem;">${n.toFixed(2)} zł</strong>
                 </div>
             </div>
             
@@ -649,7 +724,7 @@ function dEndS() {
     document.body.insertAdjacentHTML('beforeend', mHtml);
 }
 
-function dSaveUS() { db.userName = document.getElementById('us-name').value; db.drv.cfg.goal = safeVal('us-goal', 350); db.drv.cfg.cC = safeVal('us-cc'); db.drv.cfg.cType = document.getElementById('us-ctype').value; db.drv.cfg.bC = safeVal('us-bc'); db.drv.cfg.iC = safeVal('us-ic'); db.drv.cfg.tax = safeVal('us-tx') / 100; db.drv.cfg.cardF = safeVal('us-cf') / 100; let eTy = document.getElementById('us-etype').value; db.drv.cfg.eType = eTy; if(eTy === 'flat') { db.drv.cfg.eC = safeVal('us-ec'); db.drv.cfg.ePct = 0; } else { db.drv.cfg.eC = 0; db.drv.cfg.ePct = safeVal('us-epct') / 100; } let dailyCar = (db.drv.cfg.cType === 'week') ? (db.drv.cfg.cC / 7) : (db.drv.cfg.cC / 30); let dailyOther = (db.drv.cfg.eC + db.drv.cfg.bC + db.drv.cfg.iC) / 30; db.drv.cfg.fix = dailyCar + dailyOther; save(); render(); }
+function dSaveUS() { db.userName = document.getElementById('us-name').value; db.drv.cfg.goal = safeVal('us-goal', 350); db.drv.cfg.cC = safeVal('us-cc'); db.drv.cfg.cType = document.getElementById('us-ctype').value; db.drv.cfg.bC = safeVal('us-bc'); db.drv.cfg.iC = safeVal('us-ic'); db.drv.cfg.tax = safeVal('us-tx') / 100; db.drv.cfg.cardF = safeVal('us-cf') / 100; let eTy = document.getElementById('us-etype').value; db.drv.cfg.eType = eTy; if(eTy === 'flat') { db.drv.cfg.eC = safeVal('us-ec'); db.drv.cfg.ePct = 0; } else { db.drv.cfg.eC = 0; db.drv.cfg.ePct = safeVal('us-epct') / 100; } let dailyCar = (db.drv.cfg.cType === 'week') ? (db.drv.cfg.cC / 7) : (db.drv.cfg.cC / 30); let dailyOther = (db.drv.cfg.eC + db.drv.cfg.bC + db.drv.cfg.iC) / 30; db.drv.cfg.fix = dailyCar + dailyOther; save(); alert('Zaktualizowano Koszty Firmy!'); render(); }
 function dAddCrm() { let n = document.getElementById('dc-n').value; let ph = document.getElementById('dc-p').value; let d = safeVal('dc-d'); if(n) { db.drv.clients.unshift({id:Date.now(), n, ph, d, bl: false}); save(); render(); } }
 function dCrmDel(id) { if(confirm("Usunąć klienta z bazy?")) { db.drv.clients = db.drv.clients.filter(x=>x.id!==id); save(); render(); } }
 
