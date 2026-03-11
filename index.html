@@ -3,13 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>ŁAPTRANS OS</title>
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#09090b">
-<link rel="manifest" href='data:application/manifest+json,{"name":"ŁAPTRANS OS","short_name":"ŁapTrans","start_url":".","display":"standalone","background_color":"#09090b","theme_color":"#09090b","icons":[{"src":"https://cdn-icons-png.flaticon.com/512/758/758488.png","sizes":"512x512","type":"image/png"}]}'>
-
+<title>V78 ŁAPTRANS | Flawless Fix</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
@@ -120,6 +114,9 @@
 </div>
 
 <script>
+// ==========================================
+// 1. ZABEZPIECZONA BAZA DANYCH (V78)
+// ==========================================
 let defaultDb = {
     init: false, mainProfile: null, role: null, tab: 'term', filter: 'all', userName: '',
     drv: { 
@@ -150,8 +147,13 @@ window.tmpFr = null;
 window.hMem = null; 
 const APP = document.getElementById('app');
 
-function save() { localStorage.setItem('laptrans_v18_db', JSON.stringify(db)); }
+function save() { 
+    localStorage.setItem('laptrans_v18_db', JSON.stringify(db)); 
+}
 
+// ==========================================
+// 1A. KLUCZOWA FUNKCJA (NAPRAWIAJĄCA BŁĄD Z EKRANU)
+// ==========================================
 let dTSrc = null; let dTPay = null; let dQM = 'taxi'; let dQN = false; let dQV=0; let dQK=0; let dQM_T=0;
 
 function dSessionInit() { 
@@ -160,6 +162,7 @@ function dSessionInit() {
     if(!dTPay) dTPay = db.drv.plat === 'apps' ? 'Online' : 'Gotówka'; 
 }
 
+// BEZPIECZNE POBIERANIE WARTOŚCI (Zapobiega błędom formularza)
 function safeVal(id, fallback = 0) {
     let el = document.getElementById(id);
     if(el && el.value) {
@@ -218,6 +221,9 @@ function switchApp(newRole) {
     render(); 
 }
 
+// ==========================================
+// 2. GŁÓWNY ROUTER
+// ==========================================
 function render() {
     if(!db || !db.init) return rWiz();
     if(db.role === 'drv') return rDrv();
@@ -228,6 +234,9 @@ function render() {
     return rWiz();
 }
 
+// ==========================================
+// 3. KREATOR STARTOWY 
+// ==========================================
 function rWiz() {
     let html = `
         <div id="w-main" class="wiz-screen active">
@@ -352,33 +361,111 @@ function rWiz() {
     APP.innerHTML = html;
 }
 
-function wS(id) { document.querySelectorAll('.wiz-screen').forEach(e=>e.classList.remove('active')); let t = document.getElementById(id); if(t) t.classList.add('active'); }
-function wMainProfile(prof) { wData.mainProfile = prof; if(prof==='driver') wS('w-d1'); else if(prof==='firm') wS('w-firm'); else if(prof==='home') wS('w-home'); }
+function wS(id) { 
+    document.querySelectorAll('.wiz-screen').forEach(e=>e.classList.remove('active')); 
+    let t = document.getElementById(id);
+    if(t) t.classList.add('active'); 
+}
+
+function wMainProfile(prof) { 
+    wData.mainProfile = prof; 
+    if(prof==='driver') wS('w-d1'); 
+    else if(prof==='firm') wS('w-firm'); 
+    else if(prof==='home') wS('w-home'); 
+}
 
 function dW(cat, val, el) { 
     wData[cat] = val; 
-    el.parentElement.querySelectorAll('.opt-card').forEach(c=>{ c.style.borderColor='var(--border)'; c.classList.remove('selected'); }); 
-    el.style.borderColor='var(--driver)'; el.classList.add('selected'); 
-    if(cat==='p') { let elB = document.getElementById('wd-b'); if(elB) elB.style.display = (val === 'corp') ? 'block' : 'none'; } 
-    if(cat==='c') { let elC = document.getElementById('wd-c'); if(elC) elC.style.display = (val === 'own') ? 'none' : 'block'; } 
-    if(cat==='e') { let ep = document.getElementById('wd-e-p'); let ej = document.getElementById('wd-e-j'); if(ep) ep.style.display = (val === 'partner') ? 'block' : 'none'; if(ej) ej.style.display = (val === 'jdg') ? 'block' : 'none'; } 
+    el.parentElement.querySelectorAll('.opt-card').forEach(c=>{ 
+        c.style.borderColor='var(--border)'; 
+        c.classList.remove('selected'); 
+    }); 
+    el.style.borderColor='var(--driver)'; 
+    el.classList.add('selected'); 
+    
+    if(cat==='p') { 
+        let elB = document.getElementById('wd-b'); 
+        if(elB) elB.style.display = (val === 'corp') ? 'block' : 'none'; 
+    } 
+    if(cat==='c') { 
+        let elC = document.getElementById('wd-c'); 
+        if(elC) elC.style.display = (val === 'own') ? 'none' : 'block'; 
+    } 
+    if(cat==='e') { 
+        let ep = document.getElementById('wd-e-p'); 
+        let ej = document.getElementById('wd-e-j'); 
+        if(ep) ep.style.display = (val === 'partner') ? 'block' : 'none'; 
+        if(ej) ej.style.display = (val === 'jdg') ? 'block' : 'none'; 
+    } 
 }
 
-function dTogglePType(prefix) { let elT = document.getElementById(`${prefix}-p-type`); let val = elT ? elT.value : 'flat'; let flatBox = document.getElementById(`${prefix}-p-flat-box`); let pctBox = document.getElementById(`${prefix}-p-pct-box`); if(flatBox) flatBox.style.display = (val === 'flat') ? 'block' : 'none'; if(pctBox) pctBox.style.display = (val === 'pct') ? 'block' : 'none'; }
+function dTogglePType(prefix) { 
+    let elT = document.getElementById(`${prefix}-p-type`); 
+    let val = elT ? elT.value : 'flat'; 
+    let flatBox = document.getElementById(`${prefix}-p-flat-box`); 
+    let pctBox = document.getElementById(`${prefix}-p-pct-box`); 
+    if(flatBox) flatBox.style.display = (val === 'flat') ? 'block' : 'none'; 
+    if(pctBox) pctBox.style.display = (val === 'pct') ? 'block' : 'none'; 
+}
 
+// ZAPIS KIEROWCY
 function dFin() { 
     try {
         db.mainProfile = wData.mainProfile || 'driver';
-        let nameEl = document.getElementById('w-name'); db.userName = nameEl ? (nameEl.value || 'Kierowca') : 'Kierowca';
-        db.drv.plat = wData.p; db.drv.carType = wData.c; db.drv.emp = wData.e; 
-        let b = wData.p === 'corp' ? safeVal('wd-b-v') : 0; let c = wData.c === 'own' ? 0 : safeVal('wd-c-v'); let cTypeEl = document.getElementById('wd-c-type'); let cType = wData.c === 'own' ? 'month' : (cTypeEl ? cTypeEl.value : 'month');
-        let i = safeVal('wd-i-v'); let e = 0, eTy = 'flat', ePct = 0; 
-        if(wData.e === 'partner') { let pTypeEl = document.getElementById('wd-p-type'); eTy = pTypeEl ? pTypeEl.value : 'flat'; if(eTy === 'flat') { e = safeVal('wd-p-v'); } else { ePct = safeVal('wd-p-pct') / 100; } } else { e = safeVal('wd-j-z'); } 
-        db.drv.cfg.bC = b; db.drv.cfg.cC = c; db.drv.cfg.cType = cType; db.drv.cfg.eC = e; db.drv.cfg.iC = i; db.drv.cfg.eType = eTy; db.drv.cfg.ePct = ePct; 
-        let dailyCar = (cType === 'week') ? (c / 7) : (c / 30); let dailyOther = (b + e + i) / 30; db.drv.cfg.fix = dailyCar + dailyOther;
-        db.drv.cfg.tax = (wData.e === 'partner') ? 0 : safeVal('wd-j-t'); db.drv.cfg.cardF = 0.015; db.drv.cfg.goal = 350;
-        db.role = 'drv'; db.tab = 'term'; db.init = true; save(); dSessionInit(); render(); 
-    } catch (err) { alert("Błąd zapisu profilu: " + err.message); }
+        let nameEl = document.getElementById('w-name'); 
+        db.userName = nameEl ? (nameEl.value || 'Kierowca') : 'Kierowca';
+        
+        db.drv.plat = wData.p; 
+        db.drv.carType = wData.c; 
+        db.drv.emp = wData.e; 
+        
+        let b = wData.p === 'corp' ? safeVal('wd-b-v') : 0; 
+        let c = wData.c === 'own' ? 0 : safeVal('wd-c-v'); 
+        
+        let cTypeEl = document.getElementById('wd-c-type'); 
+        let cType = wData.c === 'own' ? 'month' : (cTypeEl ? cTypeEl.value : 'month');
+        
+        let i = safeVal('wd-i-v'); 
+        let e = 0, eTy = 'flat', ePct = 0; 
+        
+        if(wData.e === 'partner') { 
+            let pTypeEl = document.getElementById('wd-p-type'); 
+            eTy = pTypeEl ? pTypeEl.value : 'flat'; 
+            if(eTy === 'flat') {
+                e = safeVal('wd-p-v'); 
+            } else {
+                ePct = safeVal('wd-p-pct') / 100; 
+            }
+        } else { 
+            e = safeVal('wd-j-z'); 
+        } 
+        
+        db.drv.cfg.bC = b; 
+        db.drv.cfg.cC = c; 
+        db.drv.cfg.cType = cType; 
+        db.drv.cfg.eC = e; 
+        db.drv.cfg.iC = i; 
+        db.drv.cfg.eType = eTy; 
+        db.drv.cfg.ePct = ePct; 
+        
+        let dailyCar = (cType === 'week') ? (c / 7) : (c / 30); 
+        let dailyOther = (b + e + i) / 30; 
+        db.drv.cfg.fix = dailyCar + dailyOther;
+        
+        db.drv.cfg.tax = (wData.e === 'partner') ? 0 : safeVal('wd-j-t'); 
+        db.drv.cfg.cardF = 0.015; 
+        db.drv.cfg.goal = 350;
+        
+        db.role = 'drv'; 
+        db.tab = 'term'; 
+        db.init = true; 
+        
+        save(); 
+        dSessionInit(); 
+        render(); 
+    } catch (err) { 
+        alert("Błąd zapisu profilu: " + err.message); 
+    }
 }
 
 function fFin() { db.mainProfile = wData.mainProfile; let nE = document.getElementById('w-name'); db.userName = nE ? (nE.value || 'Szefie') : 'Szefie'; let fn = document.getElementById('wf-n'); db.flt.n = fn ? (fn.value || "Flota") : "Flota"; db.role='flt'; db.tab='dash'; db.init=true; save(); render(); }
@@ -387,7 +474,7 @@ function sFin() { db.mainProfile = wData.mainProfile; let nE = document.getEleme
 function hFin() { db.mainProfile = wData.mainProfile; let nE = document.getElementById('w-name'); db.userName = nE ? (nE.value || 'Domownik') : 'Domownik'; db.home.sal = safeVal('wh-sal'); db.home.fix = safeVal('wh-fix'); db.home.members = [db.userName]; db.role = 'home'; db.tab = 'dash'; db.init = true; save(); render(); }
 
 // ==========================================
-// 🏠 5. BUDŻET DOMOWY 
+// 🏠 5. BUDŻET DOMOWY Z ALARMAMI I KALENDARZEM
 // ==========================================
 function rHome() { 
     let h = db.home; let t = db.tab; 
@@ -403,17 +490,39 @@ function rHome() {
         <div class="nav-item ${t==='plan'?'act-home':''}" style="color:${t==='plan'?'var(--plan)':''}" onclick="db.tab='plan';render()"><i>🔮</i>Plany</div>
     </div>`; 
     
-    let isSwitcherValid = db.mainProfile !== 'home'; let hdrAction = isSwitcherValid ? `onclick="openSwitcher()"` : ''; let hdrIcon = isSwitcherValid ? `<span style="color:var(--life)">⏷</span>` : `<span style="color:var(--life)">DOM</span>`;
-    let hdr = `<header><div class="logo" ${hdrAction}>ŁAPTRANS ${hdrIcon}</div><div class="header-actions"><div class="badge" style="color:var(--life); border-color:rgba(20,184,166,0.3); background:rgba(20,184,166,0.1);">Budżet: ${db.userName}</div><div class="settings-btn" onclick="db.tab='set';render()">⚙️</div></div></header>`; 
+    let isSwitcherValid = db.mainProfile !== 'home'; 
+    let hdrAction = isSwitcherValid ? `onclick="openSwitcher()"` : ''; 
+    let hdrIcon = isSwitcherValid ? `<span style="color:var(--life)">⏷</span>` : `<span style="color:var(--life)">DOM</span>`;
+    
+    let hdr = `
+    <header>
+        <div class="logo" ${hdrAction}>ŁAPTRANS ${hdrIcon}</div>
+        <div class="header-actions">
+            <div class="badge" style="color:var(--life); border-color:rgba(20,184,166,0.3); background:rgba(20,184,166,0.1);">Budżet: ${db.userName}</div>
+            <div class="settings-btn" onclick="db.tab='set';render()">⚙️</div>
+        </div>
+    </header>`; 
     
     let now = new Date(); let currentMonthNum = now.getMonth() + 1;
     let currExp=0; let currInc=0; let taxiNet=0;
     
-    if(db.drv && db.drv.h) { db.drv.h.forEach(x => { let d = new Date(x.rD); if(d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()) { taxiNet += x.n; } }); }
-    h.exp.forEach(x => { let d=new Date(x.rD); if(d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear()) currExp+=x.v; }); 
-    h.inc.forEach(x => { let d=new Date(x.rD); if(d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear()) currInc+=x.v; }); 
+    if(db.drv && db.drv.h) { 
+        db.drv.h.forEach(x => { 
+            let d = new Date(x.rD); 
+            if(d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()) { taxiNet += x.n; } 
+        }); 
+    }
+    h.exp.forEach(x => { 
+        let d=new Date(x.rD); 
+        if(d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear()) currExp+=x.v; 
+    }); 
+    h.inc.forEach(x => { 
+        let d=new Date(x.rD); 
+        if(d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear()) currInc+=x.v; 
+    }); 
     
     let totalAvail = h.sal + currInc + taxiNet - h.fix - currExp; 
+
     let daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
     let daysLeft = daysInMonth - now.getDate() + 1;
     let safeDaily = totalAvail > 0 ? (totalAvail / daysLeft).toFixed(0) : 0;
@@ -421,93 +530,404 @@ function rHome() {
     let pendingPlans = h.planned ? h.planned.filter(x => x.m === currentMonthNum) : [];
     let reminderHtml = '';
     if(pendingPlans.length > 0 && t === 'dash') {
-        reminderHtml = `<div class="panel" style="border-color:var(--warning); background:rgba(245,158,11,0.05); padding:15px; margin-top:0; margin-bottom:15px;"><div style="display:flex; align-items:center; gap:12px;"><div class="ringing" style="font-size:2rem;">🔔</div><div><strong style="color:var(--warning); font-size:0.9rem;">ZAPLANOWANE OPŁATY</strong><br><small style="color:var(--muted)">Czekają na opłacenie: ${pendingPlans.map(x=>x.d).join(', ')}.</small></div></div><button class="btn" style="background:var(--warning); color:#000; padding:12px; margin-top:12px; font-size:0.85rem;" onclick="db.tab='plan';render()">Przejdź do opłacenia rachunków</button></div>`;
+        reminderHtml = `
+        <div class="panel" style="border-color:var(--warning); background:rgba(245,158,11,0.05); padding:15px; margin-top:0; margin-bottom:15px;">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div class="ringing" style="font-size:2rem;">🔔</div>
+                <div>
+                    <strong style="color:var(--warning); font-size:0.9rem;">ZAPLANOWANE OPŁATY</strong><br>
+                    <small style="color:var(--muted)">Czekają na opłacenie: ${pendingPlans.map(x=>x.d).join(', ')}.</small>
+                </div>
+            </div>
+            <button class="btn" style="background:var(--warning); color:#000; padding:12px; margin-top:12px; font-size:0.85rem;" onclick="db.tab='plan';render()">Przejdź do opłacenia rachunków</button>
+        </div>`;
     }
     
     if(t === 'dash') { 
         APP.innerHTML = hdr + reminderHtml + `
-        <div class="dash-hero" style="padding-bottom:5px;"><p>DO WYDANIA W TYM MIESIĄCU</p><h1 style="color:${totalAvail>=0?'var(--life)':'var(--danger)'}; font-size:4.5rem;">${totalAvail.toFixed(0)} zł</h1></div>
-        <div style="text-align:center; margin-bottom:15px; color:var(--muted); font-size:0.8rem;">💡 Bezpieczny limit: <strong style="color:var(--life); font-size:1.1rem;">${safeDaily} zł / dzień</strong></div>
-        <div class="grid-2"><div class="box" style="border-color:rgba(34,197,94,0.3);"><span style="color:var(--success)">Przychód</span><strong style="color:#fff">${(h.sal + currInc).toFixed(0)} zł</strong></div><div class="box" style="border-color:rgba(239,68,68,0.3);"><span style="color:var(--danger)">Wydatki</span><strong style="color:#fff">-${(h.fix + currExp).toFixed(0)} zł</strong></div></div>
+        <div class="dash-hero" style="padding-bottom:5px;">
+            <p>DO WYDANIA W TYM MIESIĄCU</p>
+            <h1 style="color:${totalAvail>=0?'var(--life)':'var(--danger)'}; font-size:4.5rem;">${totalAvail.toFixed(0)} zł</h1>
+        </div>
+        <div style="text-align:center; margin-bottom:15px; color:var(--muted); font-size:0.8rem;">
+            💡 Bezpieczny limit: <strong style="color:var(--life); font-size:1.1rem;">${safeDaily} zł / dzień</strong>
+        </div>
+        <div class="grid-2">
+            <div class="box" style="border-color:rgba(34,197,94,0.3);"><span style="color:var(--success)">Przychód (Wypłata+Inne)</span><strong style="color:#fff">${(h.sal + currInc).toFixed(0)} zł</strong></div>
+            <div class="box" style="border-color:rgba(239,68,68,0.3);"><span style="color:var(--danger)">Wydatki (Opłaty+Koszty)</span><strong style="color:#fff">-${(h.fix + currExp).toFixed(0)} zł</strong></div>
+        </div>
         ${db.mainProfile !== 'home' ? `<div class="panel" style="padding:15px; margin-top:0; border-color:var(--driver); background:rgba(59,130,246,0.05); display:flex; justify-content:space-between; align-items:center;"><div><strong style="font-size:0.8rem; color:var(--driver); text-transform:uppercase;">Zysk z Taxi (Ten miesiąc)</strong><br><small style="color:var(--muted)">Zintegrowane automatycznie</small></div><strong style="color:var(--success); font-size:1.3rem;">+${taxiNet.toFixed(0)} zł</strong></div>`:''}
-        <div class="panel" style="border-color:rgba(20,184,166,0.4); background: linear-gradient(180deg, rgba(24,24,27,1) 0%, rgba(9,9,11,1) 100%);"><div class="p-title" style="color:var(--life); margin-bottom:5px;">Szybka Akcja</div><div class="grid-2" style="margin-bottom:0;"><button class="btn btn-danger" style="margin-top:0;" onclick="db.tab='exp';render()">ZAPISZ WYDATEK</button><button class="btn" style="background:rgba(34,197,94,0.15); color:var(--success); margin-top:0; border:1px solid var(--success);" onclick="db.tab='inc';render()">DODAJ WPŁYW</button></div></div>
-        <div class="panel"><div class="p-title">Historia operacji (Ostatnie 5)</div>${[...h.exp, ...h.inc].sort((a,b)=>new Date(b.rD)-new Date(a.rD)).slice(0,5).map(x=>{ let isExp = x.ty === 'exp'; return `<div class="log-item" style="border-left-color:${isExp?'var(--danger)':'var(--success)'}; padding:15px;"><div><div style="display:flex; align-items:center; gap:8px;"><strong style="font-size:1.1rem">${x.d}</strong><span style="background:rgba(255,255,255,0.1); padding:2px 8px; border-radius:6px; font-size:0.65rem; font-weight:bold; color:var(--muted)">👤 ${x.who || 'Nieznany'}</span></div><small style="color:var(--muted); display:block; margin-top:4px;">${x.dt} ${isExp?`• ${x.cat}`:''}</small></div><strong style="color:${isExp?'var(--danger)':'var(--success)'}; font-size:1.1rem;">${isExp?'-':'+'}${x.v.toFixed(2)} zł</strong></div>`}).join('')||'<div style="text-align:center;color:var(--muted);padding:20px 0;font-size:0.8rem;">Brak operacji na koncie.</div>'}</div>
+        
+        <div class="panel" style="border-color:rgba(20,184,166,0.4); background: linear-gradient(180deg, rgba(24,24,27,1) 0%, rgba(9,9,11,1) 100%);">
+            <div class="p-title" style="color:var(--life); margin-bottom:5px;">Szybka Akcja</div>
+            <div class="grid-2" style="margin-bottom:0;">
+                <button class="btn btn-danger" style="margin-top:0;" onclick="db.tab='exp';render()">ZAPISZ WYDATEK</button>
+                <button class="btn" style="background:rgba(34,197,94,0.15); color:var(--success); margin-top:0; border:1px solid var(--success);" onclick="db.tab='inc';render()">DODAJ WPŁYW</button>
+            </div>
+        </div>
+        
+        <div class="panel">
+            <div class="p-title">Historia operacji (Ostatnie 5)</div>
+            ${[...h.exp, ...h.inc].sort((a,b)=>new Date(b.rD)-new Date(a.rD)).slice(0,5).map(x=>{
+                let isExp = x.ty === 'exp'; 
+                return `
+                <div class="log-item" style="border-left-color:${isExp?'var(--danger)':'var(--success)'}; padding:15px;">
+                    <div>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <strong style="font-size:1.1rem">${x.d}</strong>
+                            <span style="background:rgba(255,255,255,0.1); padding:2px 8px; border-radius:6px; font-size:0.65rem; font-weight:bold; color:var(--muted)">👤 ${x.who || 'Nieznany'}</span>
+                        </div>
+                        <small style="color:var(--muted); display:block; margin-top:4px;">${x.dt} ${isExp?`• ${x.cat}`:''}</small>
+                    </div>
+                    <strong style="color:${isExp?'var(--danger)':'var(--success)'}; font-size:1.1rem;">${isExp?'-':'+'}${x.v.toFixed(2)} zł</strong>
+                </div>`
+            }).join('')||'<div style="text-align:center;color:var(--muted);padding:20px 0;font-size:0.8rem;">Brak operacji na koncie.</div>'}
+        </div>
         ` + nav; 
     } 
     
-    if(t === 'exp' || t === 'inc') { 
-        let isExp = t==='exp'; let col = isExp?'var(--danger)':'var(--success)';
-        let memChips = h.members.map(m => `<div class="chip" style="${window.hMem===m?`background:${col};color:${isExp?'#fff':'#000'}; border-color:${col}`:'background:rgba(255,255,255,0.05);color:var(--muted)'}" onclick="window.hMem='${m}';render()">${m}</div>`).join(''); 
-        APP.innerHTML = hdr + `<div class="panel" style="border-color:${isExp?'rgba(239,68,68,0.4)':'rgba(34,197,94,0.4)'}"><div class="p-title" style="color:${col}">${isExp?'Zaksięguj Nowy Wydatek':'Dodaj Ekstra Przychód'}</div><div class="fs-title" style="margin-bottom:8px;">Kto to zapisuje?</div><div class="chip-box" style="margin-bottom:20px;">${memChips}</div>${isExp?`<div class="inp-group" style="margin-bottom:15px;"><label>Kategoria Wydatku</label><select id="h-c"><option value="🛒 Jedzenie / Zakupy">🛒 Jedzenie / Zakupy codzienne</option><option value="🚗 Auto / Transport">🚗 Auto / Paliwo / Transport</option><option value="🏠 Dom / Rachunki">🏠 Dom / Środki / Wyposażenie</option><option value="🎉 Rozrywka / Wyjścia">🎉 Rozrywka / Restauracje</option><option value="💊 Zdrowie / Uroda">💊 Zdrowie / Apteka / Uroda</option><option value="👗 Ubrania">👗 Ubrania / Buty</option><option value="📦 Inne wydatki">📦 Inne wydatki</option></select></div>`:''}<div class="inp-row"><div class="inp-group" style="flex:2"><label>Opis</label><input type="text" id="h-d" placeholder="${isExp?'np. Biedronka':'np. Sprzedaż wózka'}"></div><div class="inp-group"><label style="color:${col}">Kwota (zł)</label><input type="number" id="h-v" class="big-inp" style="color:${col}; border-color:${col}; padding:10px!important; font-size:1.5rem!important;" placeholder="0.00"></div></div><button class="btn" style="background:${col}; color:${isExp?'#fff':'#000'}; margin-top:20px;" onclick="hAction('${t}')">${isExp?'WYDAJ Z BUDŻETU':'ZASIL BUDŻET'}</button></div>` + nav; 
+    if(t === 'exp') { 
+        let memChips = h.members.map(m => `<div class="chip" style="${window.hMem===m?`background:var(--danger);color:#fff; border-color:var(--danger)`:'background:rgba(255,255,255,0.05);color:var(--muted)'}" onclick="window.hMem='${m}';render()">${m}</div>`).join(''); 
+        APP.innerHTML = hdr + `
+        <div class="panel" style="border-color:rgba(239,68,68,0.4)">
+            <div class="p-title" style="color:var(--danger)">Zaksięguj Nowy Wydatek</div>
+            <div class="fs-title" style="margin-bottom:8px;">Kto to zapisuje? (Członek rodziny)</div>
+            <div class="chip-box" style="margin-bottom:20px;">${memChips}</div>
+            <div class="inp-group" style="margin-bottom:15px;">
+                <label>Kategoria Wydatku</label>
+                <select id="h-c">
+                    <option value="🛒 Jedzenie / Zakupy">🛒 Jedzenie / Zakupy codzienne</option>
+                    <option value="🚗 Auto / Transport">🚗 Auto / Paliwo / Transport</option>
+                    <option value="🏠 Dom / Rachunki">🏠 Dom / Środki / Wyposażenie</option>
+                    <option value="🎉 Rozrywka / Wyjścia">🎉 Rozrywka / Restauracje</option>
+                    <option value="💊 Zdrowie / Uroda">💊 Zdrowie / Apteka / Uroda</option>
+                    <option value="👗 Ubrania">👗 Ubrania / Buty</option>
+                    <option value="📦 Inne wydatki">📦 Inne wydatki</option>
+                </select>
+            </div>
+            <div class="inp-row">
+                <div class="inp-group" style="flex:2"><label>Na co poszło? (Opis)</label><input type="text" id="h-d" placeholder="np. Biedronka"></div>
+                <div class="inp-group"><label style="color:var(--danger)">Kwota (zł)</label><input type="number" id="h-v" class="big-inp" style="color:var(--danger); border-color:var(--danger); padding:10px!important; font-size:1.5rem!important;" placeholder="0.00"></div>
+            </div>
+            <button class="btn btn-danger" style="background:var(--danger); color:#fff; margin-top:20px;" onclick="hAction('exp')">WYDAJ Z BUDŻETU</button>
+        </div>` + nav; 
+    } 
+    
+    if(t === 'inc') { 
+        let memChips = h.members.map(m => `<div class="chip" style="${window.hMem===m?`background:var(--success);color:#000; border-color:var(--success)`:'background:rgba(255,255,255,0.05);color:var(--muted)'}" onclick="window.hMem='${m}';render()">${m}</div>`).join(''); 
+        APP.innerHTML = hdr + `
+        <div class="panel" style="border-color:rgba(34,197,94,0.4)">
+            <div class="p-title" style="color:var(--success)">Dodaj Ekstra Przychód</div>
+            <div class="fs-title" style="margin-bottom:8px;">Kto to zapisuje?</div>
+            <div class="chip-box" style="margin-bottom:20px;">${memChips}</div>
+            <div class="inp-row">
+                <div class="inp-group" style="flex:2"><label>Źródło (Opis)</label><input type="text" id="h-d" placeholder="np. Sprzedaż na Vinted"></div>
+                <div class="inp-group"><label style="color:var(--success)">Kwota (zł)</label><input type="number" id="h-v" class="big-inp" style="color:var(--success); border-color:var(--success); padding:10px!important; font-size:1.5rem!important;" placeholder="0.00"></div>
+            </div>
+            <button class="btn" style="background:var(--success); color:#000; margin-top:20px;" onclick="hAction('inc')">ZASIL BUDŻET</button>
+        </div>` + nav; 
     } 
     
     if(t === 'stats') { 
         let cats = {}; let sum = 0; let membersSum = {}; 
-        h.exp.forEach(x=>{ let d=new Date(x.rD); if(d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear()) { if(!cats[x.cat]) cats[x.cat] = 0; cats[x.cat] += x.v; sum += x.v; let who = x.who || 'Nieznany'; if(!membersSum[who]) membersSum[who] = 0; membersSum[who] += x.v; } }); 
+        h.exp.forEach(x=>{ 
+            let d=new Date(x.rD); 
+            if(d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear()) { 
+                if(!cats[x.cat]) cats[x.cat] = 0; cats[x.cat] += x.v; sum += x.v; 
+                let who = x.who || 'Nieznany'; if(!membersSum[who]) membersSum[who] = 0; membersSum[who] += x.v; 
+            } 
+        }); 
         let cLabels = Object.keys(cats); let cData = Object.values(cats); 
-        APP.innerHTML = hdr + `<div class="dash-hero" style="padding-bottom:0;"><p>WSPÓLNIE WYDANO W TYM MIESIĄCU</p><h1 style="color:var(--danger); font-size:3.5rem;">${sum.toFixed(2)} zł</h1></div><div class="panel" style="border-color:var(--info);"><div class="p-title" style="color:var(--info)">🏆 Ranking Wydatków Rodziny</div>${Object.keys(membersSum).sort((a,b)=>membersSum[b]-membersSum[a]).map((m, idx) => `<div class="fin-row" style="border-bottom:1px solid rgba(255,255,255,0.05);"><span class="fin-label" style="color:#fff; font-size:1.1rem;">${idx===0?'🥇':(idx===1?'🥈':'🥉')} ${m}</span><span class="fin-val" style="color:var(--danger)">${membersSum[m].toFixed(2)} zł</span></div>`).join('') || '<small style="color:var(--muted)">Brak danych członków rodziny w tym miesiącu.</small>'}</div><div class="panel"><div class="p-title">Analiza Kategorii</div><div style="height:220px; position:relative;"><canvas id="h-chart"></canvas></div></div><div class="panel"><div class="p-title">Pełna Historia (Ten Miesiąc)</div>${h.exp.filter(x=>new Date(x.rD).getMonth()===now.getMonth()).map(x=>`<div class="log-item" style="border-left-color:var(--danger)"><div><strong>${x.d} <span style="background:rgba(255,255,255,0.1); padding:2px 6px; border-radius:4px; font-size:0.6rem; color:var(--muted)">👤 ${x.who}</span></strong><br><small>${x.dt} • ${x.cat}</small></div><strong style="color:var(--danger)">-${x.v.toFixed(2)} zł</strong></div>`).join('')||'<div style="text-align:center;color:var(--muted);padding:10px;font-size:0.8rem;">Brak wydatków.</div>'}</div>` + nav; 
-        setTimeout(() => { if(window.hCh) window.hCh.destroy(); let ctx = document.getElementById('h-chart').getContext('2d'); window.hCh = new Chart(ctx, { type: 'doughnut', data: { labels: cLabels, datasets: [{ data: cData, backgroundColor: ['#ef4444', '#f59e0b', '#3b82f6', '#10b981', '#a855f7', '#ec4899', '#64748b'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: '#a1a1aa', font: {size: 10, family:'Inter'} } } }, cutout: '70%' } }); }, 100); 
+        APP.innerHTML = hdr + `
+        <div class="dash-hero" style="padding-bottom:0;"><p>WSPÓLNIE WYDANO W TYM MIESIĄCU</p><h1 style="color:var(--danger); font-size:3.5rem;">${sum.toFixed(2)} zł</h1></div>
+        <div class="panel" style="border-color:var(--info);">
+            <div class="p-title" style="color:var(--info)">🏆 Ranking Wydatków Rodziny</div>
+            ${Object.keys(membersSum).sort((a,b)=>membersSum[b]-membersSum[a]).map((m, idx) => `
+            <div class="fin-row" style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                <span class="fin-label" style="color:#fff; font-size:1.1rem;">${idx===0?'🥇':(idx===1?'🥈':'🥉')} ${m}</span>
+                <span class="fin-val" style="color:var(--danger)">${membersSum[m].toFixed(2)} zł</span>
+            </div>`).join('') || '<small style="color:var(--muted)">Brak danych członków rodziny w tym miesiącu.</small>'}
+        </div>
+        <div class="panel"><div class="p-title">Analiza Kategorii</div><div style="height:220px; position:relative;"><canvas id="h-chart"></canvas></div></div>
+        <div class="panel"><div class="p-title">Pełna Historia (Ten Miesiąc)</div>
+        ${h.exp.filter(x=>new Date(x.rD).getMonth()===now.getMonth()).map(x=>`
+            <div class="log-item" style="border-left-color:var(--danger)">
+                <div><strong>${x.d} <span style="background:rgba(255,255,255,0.1); padding:2px 6px; border-radius:4px; font-size:0.6rem; color:var(--muted)">👤 ${x.who}</span></strong><br><small>${x.dt} • ${x.cat}</small></div>
+                <strong style="color:var(--danger)">-${x.v.toFixed(2)} zł</strong>
+            </div>`).join('')||'<div style="text-align:center;color:var(--muted);padding:10px;font-size:0.8rem;">Brak wydatków.</div>'}
+        </div>` + nav; 
+        
+        setTimeout(() => { 
+            if(window.hCh) window.hCh.destroy(); 
+            let ctx = document.getElementById('h-chart').getContext('2d'); 
+            window.hCh = new Chart(ctx, { type: 'doughnut', data: { labels: cLabels, datasets: [{ data: cData, backgroundColor: ['#ef4444', '#f59e0b', '#3b82f6', '#10b981', '#a855f7', '#ec4899', '#64748b'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: '#a1a1aa', font: {size: 10, family:'Inter'} } } }, cutout: '70%' } }); 
+        }, 100); 
     } 
 
     if(t === 'plan') {
-        APP.innerHTML = hdr + `<div class="dash-hero" style="padding-bottom:5px;"><p>ANALIZATOR I PLANOWANIE</p></div><div class="panel" style="border-color:var(--info);"><div class="p-title" style="color:var(--info)">Kondycja Budżetu</div><div class="grid-2" style="margin-bottom:0;"><div class="box"><small>Do końca m-ca</small><strong>${daysLeft} dni</strong></div><div class="box"><small>Możesz wydawać</small><strong style="color:var(--success)">${safeDaily} zł / dzień</strong></div></div></div><div class="panel" style="border-color:var(--plan);"><div class="p-title" style="color:var(--plan)">Kalkulator Celu (Oszczędności)</div><div class="inp-row"><div class="inp-group"><label>Cel (zł)</label><input type="number" id="hc-v" oninput="hCalcS()" placeholder="np. 5000"></div><div class="inp-group"><label>Czas (miesiące)</label><input type="number" id="hc-m" oninput="hCalcS()" placeholder="np. 6"></div></div><div style="text-align:center; padding:15px; background:rgba(168, 85, 247, 0.1); border-radius:12px; margin-top:10px; color:var(--plan); font-weight:bold; font-size:1.1rem;" id="hc-res">Wpisz kwotę i czas.</div></div><div class="panel" style="border-color:var(--warning);"><div class="p-title" style="color:var(--warning)">Zeszyt Planowanych Wydatków</div><div class="inp-row"><div class="inp-group" style="flex:2"><label>Co to będzie?</label><input type="text" id="hp-d" placeholder="np. Kredyt, Netflix"></div><div class="inp-group"><label>Kwota (zł)</label><input type="number" id="hp-v" placeholder="0.00"></div></div><div class="inp-group" style="margin-bottom:15px;"><label>Na kiedy to zaplanować?</label><select id="hp-m"><option value="1">Styczeń</option><option value="2">Luty</option><option value="3">Marzec</option><option value="4">Kwiecień</option><option value="5">Maj</option><option value="6">Czerwiec</option><option value="7">Lipiec</option><option value="8">Sierpień</option><option value="9">Wrzesień</option><option value="10">Październik</option><option value="11">Listopad</option><option value="12">Grudzień</option></select></div><button class="btn" style="background:var(--warning); color:#000;" onclick="hAddPlan()">ZAPISZ DO KALENDARZA</button><div style="margin-top:20px;">${[...h.planned].sort((a,b)=>a.m - b.m).map(x=> { let isCurrent = x.m === currentMonthNum; let btn = isCurrent ? `<button class="btn-success" style="padding:8px 12px; font-size:0.75rem; border:none; border-radius:8px; background:var(--success); color:#000; font-weight:bold; margin-top:5px;" onclick="hPayPlan(${x.id})">✔️ OPŁAĆ TERAZ</button>` : `<button class="btn-danger" style="padding:8px 12px; font-size:0.75rem; border:none; border-radius:8px; background:rgba(239,68,68,0.15); color:var(--danger);" onclick="hDelPlan(${x.id})">✖ Usuń</button>`; return `<div class="log-item" style="border-left-color:${isCurrent ? 'var(--warning)' : 'var(--border)'}; padding:15px; flex-direction:column; align-items:flex-start;"><div style="display:flex; justify-content:space-between; width:100%; align-items:flex-start;"><div><strong style="color:#fff; font-size:1.1rem;">${x.d}</strong><br><small style="color:var(--muted)">Zaplanowane na miesiąc: ${x.m}</small></div><strong style="color:var(--warning); font-size:1.1rem;">${x.v.toFixed(2)} zł</strong></div><div style="width:100%; display:flex; justify-content:flex-end; margin-top:5px;">${btn}</div></div>`; }).join('') || '<div style="text-align:center; color:var(--muted); font-size:0.8rem; padding:15px;">Twój kalendarz jest czysty.</div>'}</div></div>` + nav;
+        APP.innerHTML = hdr + `
+        <div class="dash-hero" style="padding-bottom:5px;"><p>ANALIZATOR I PLANOWANIE</p></div>
+        
+        <div class="panel" style="border-color:var(--info);">
+            <div class="p-title" style="color:var(--info)">Kondycja Budżetu</div>
+            <div class="grid-2" style="margin-bottom:0;">
+                <div class="box"><small>Do końca m-ca</small><strong>${daysLeft} dni</strong></div>
+                <div class="box"><small>Możesz wydawać</small><strong style="color:var(--success)">${safeDaily} zł / dzień</strong></div>
+            </div>
+        </div>
+
+        <div class="panel" style="border-color:var(--plan);">
+            <div class="p-title" style="color:var(--plan)">Kalkulator Celu (Oszczędności)</div>
+            <div class="inp-row">
+                <div class="inp-group"><label>Cel (zł)</label><input type="number" id="hc-v" oninput="hCalcS()" placeholder="np. 5000"></div>
+                <div class="inp-group"><label>Czas (miesiące)</label><input type="number" id="hc-m" oninput="hCalcS()" placeholder="np. 6"></div>
+            </div>
+            <div style="text-align:center; padding:15px; background:rgba(168, 85, 247, 0.1); border-radius:12px; margin-top:10px; color:var(--plan); font-weight:bold; font-size:1.1rem;" id="hc-res">Wpisz kwotę i czas.</div>
+        </div>
+
+        <div class="panel" style="border-color:var(--warning);">
+            <div class="p-title" style="color:var(--warning)">Zeszyt Planowanych Wydatków</div>
+            <div class="inp-row">
+                <div class="inp-group" style="flex:2"><label>Co to będzie?</label><input type="text" id="hp-d" placeholder="np. Kredyt, Netflix"></div>
+                <div class="inp-group"><label>Kwota (zł)</label><input type="number" id="hp-v" placeholder="0.00"></div>
+            </div>
+            <div class="inp-group" style="margin-bottom:15px;">
+                <label>Na kiedy to zaplanować?</label>
+                <select id="hp-m">
+                    <option value="1">Styczeń</option><option value="2">Luty</option><option value="3">Marzec</option>
+                    <option value="4">Kwiecień</option><option value="5">Maj</option><option value="6">Czerwiec</option>
+                    <option value="7">Lipiec</option><option value="8">Sierpień</option><option value="9">Wrzesień</option>
+                    <option value="10">Październik</option><option value="11">Listopad</option><option value="12">Grudzień</option>
+                </select>
+            </div>
+            <button class="btn" style="background:var(--warning); color:#000;" onclick="hAddPlan()">ZAPISZ DO KALENDARZA</button>
+            
+            <div style="margin-top:20px;">
+                ${[...h.planned].sort((a,b)=>a.m - b.m).map(x=> {
+                    let isCurrent = x.m === currentMonthNum;
+                    let btn = isCurrent ? `<button class="btn-success" style="padding:8px 12px; font-size:0.75rem; border:none; border-radius:8px; background:var(--success); color:#000; font-weight:bold; margin-top:5px;" onclick="hPayPlan(${x.id})">✔️ OPŁAĆ TERAZ</button>` : `<button class="btn-danger" style="padding:8px 12px; font-size:0.75rem; border:none; border-radius:8px; background:rgba(239,68,68,0.15); color:var(--danger);" onclick="hDelPlan(${x.id})">✖ Usuń</button>`;
+                    return `
+                    <div class="log-item" style="border-left-color:${isCurrent ? 'var(--warning)' : 'var(--border)'}; padding:15px; flex-direction:column; align-items:flex-start;">
+                        <div style="display:flex; justify-content:space-between; width:100%; align-items:flex-start;">
+                            <div><strong style="color:#fff; font-size:1.1rem;">${x.d}</strong><br><small style="color:var(--muted)">Zaplanowane na miesiąc: ${x.m}</small></div>
+                            <strong style="color:var(--warning); font-size:1.1rem;">${x.v.toFixed(2)} zł</strong>
+                        </div>
+                        <div style="width:100%; display:flex; justify-content:flex-end; margin-top:5px;">${btn}</div>
+                    </div>`;
+                }).join('') || '<div style="text-align:center; color:var(--muted); font-size:0.8rem; padding:15px;">Twój kalendarz jest czysty.</div>'}
+            </div>
+        </div>
+        ` + nav;
     }
 
     if(t === 'set') { 
-        APP.innerHTML = hdr + `<div class="panel" style="border-color:var(--info);"><div class="p-title" style="color:var(--info)">👨‍👩‍👦 Zarządzaj Rodziną</div><div class="inp-row" style="align-items:flex-end;"><div class="inp-group" style="flex:2"><label>Dodaj osobę</label><input type="text" id="h-new-mem" placeholder="Imię domownika"></div><button class="btn" style="background:var(--info); color:#fff; width:auto; margin-top:0; padding:16px 20px;" onclick="hAddMem()">DODAJ</button></div><div style="margin-top:15px;">${h.members.map(m => `<div style="display:inline-block; background:rgba(255,255,255,0.05); margin:5px 5px 5px 0; padding:10px 15px; border-radius:12px; font-weight:bold; font-size:0.9rem;">${m} <span style="color:var(--danger); cursor:pointer; margin-left:10px; padding:5px;" onclick="hDelMem('${m}')">✖</span></div>`).join('')}</div><small style="color:var(--muted); display:block; margin-top:10px; line-height:1.4;">Osoby dodane tutaj będą widoczne przy dodawaniu wydatków i wpływów, aby budować wspólne statystyki.</small></div><div class="panel" style="border-color:rgba(20,184,166,0.4)"><div class="p-title" style="color:var(--life)">Parametry Budżetu</div><div class="inp-group" style="margin-bottom:15px;"><label>Stała Wypłata (zł)</label><input type="number" id="hs-sal" value="${h.sal}"></div><div class="inp-group"><label>Stałe Opłaty (zł/msc)</label><input type="number" id="hs-fix" value="${h.fix}"></div><button class="btn btn-home" style="margin-top:20px;" onclick="hSaveUS()">ZAKTUALIZUJ</button></div><div class="panel" style="border-color:rgba(239,68,68,0.2)"><div class="p-title" style="color:var(--danger)">Zarządzanie</div><button class="btn btn-danger" style="background:rgba(239,68,68,0.15); color:var(--danger); border:none;" onclick="hardReset()">TWARDY RESET DANYCH</button></div>` + nav; 
+        APP.innerHTML = hdr + `
+        <div class="panel" style="border-color:var(--info);">
+            <div class="p-title" style="color:var(--info)">👨‍👩‍👦 Zarządzaj Rodziną</div>
+            <div class="inp-row" style="align-items:flex-end;">
+                <div class="inp-group" style="flex:2"><label>Dodaj osobę (np. Żona Anna)</label><input type="text" id="h-new-mem" placeholder="Imię domownika"></div>
+                <button class="btn" style="background:var(--info); color:#fff; width:auto; margin-top:0; padding:16px 20px;" onclick="hAddMem()">DODAJ</button>
+            </div>
+            <div style="margin-top:15px;">
+                ${h.members.map(m => `<div style="display:inline-block; background:rgba(255,255,255,0.05); margin:5px 5px 5px 0; padding:10px 15px; border-radius:12px; font-weight:bold; font-size:0.9rem;">${m} <span style="color:var(--danger); cursor:pointer; margin-left:10px; padding:5px;" onclick="hDelMem('${m}')">✖</span></div>`).join('')}
+            </div>
+            <small style="color:var(--muted); display:block; margin-top:10px; line-height:1.4;">Osoby dodane tutaj będą widoczne przy dodawaniu wydatków i wpływów, aby budować wspólne statystyki (Rankingi).</small>
+        </div>
+
+        <div class="panel" style="border-color:rgba(20,184,166,0.4)">
+            <div class="p-title" style="color:var(--life)">Parametry Twojego Budżetu</div>
+            <div class="inp-group" style="margin-bottom:15px;"><label>Stała Miesięczna Wypłata (Na rękę) zł</label><input type="number" id="hs-sal" value="${h.sal}"></div>
+            <div class="inp-group"><label>Stałe Opłaty (Czynsz, prąd, kredyt) zł/msc</label><input type="number" id="hs-fix" value="${h.fix}"></div>
+            <button class="btn btn-home" style="margin-top:20px;" onclick="hSaveUS()">ZAKTUALIZUJ DANE</button>
+        </div>
+        
+        <div class="panel" style="border-color:rgba(239,68,68,0.2)">
+            <div class="p-title" style="color:var(--danger)">Zarządzanie Systemem</div>
+            <button class="btn btn-danger" style="background:rgba(239,68,68,0.15); color:var(--danger); border:none;" onclick="hardReset()">TWARDY RESET DANYCH</button>
+        </div>` + nav; 
     } 
 } 
 
-function hAction(type) { let v = safeVal('h-v'); let dEl = document.getElementById('h-d'); let d = dEl ? dEl.value : ''; let who = window.hMem || db.home.members[0]; if(type === 'exp') { let c = document.getElementById('h-c').value; if(!d) d = c; if(v) { db.home.exp.unshift({id:Date.now(), ty:'exp', cat:c, d, v, who, dt:new Date().toLocaleDateString(), rD:new Date().toISOString()}); save(); db.tab='dash'; render(); } } else { if(!d) d = 'Przychód'; if(v) { db.home.inc.unshift({id:Date.now(), ty:'inc', d, v, who, dt:new Date().toLocaleDateString(), rD:new Date().toISOString()}); save(); db.tab='dash'; render(); } } } 
+function hAction(type) { 
+    let v = safeVal('h-v'); 
+    let dEl = document.getElementById('h-d'); let d = dEl ? dEl.value : ''; 
+    let who = window.hMem || db.home.members[0]; 
+    if(type === 'exp') { 
+        let c = document.getElementById('h-c').value; 
+        if(!d) d = c; 
+        if(v) { db.home.exp.unshift({id:Date.now(), ty:'exp', cat:c, d, v, who, dt:new Date().toLocaleDateString(), rD:new Date().toISOString()}); save(); db.tab='dash'; render(); } 
+    } else { 
+        if(!d) d = 'Dodatkowy Przychód'; 
+        if(v) { db.home.inc.unshift({id:Date.now(), ty:'inc', d, v, who, dt:new Date().toLocaleDateString(), rD:new Date().toISOString()}); save(); db.tab='dash'; render(); } 
+    } 
+} 
+
 function hCalcS() { let v = safeVal('hc-v'); let m = safeVal('hc-m'); let el = document.getElementById('hc-res'); if(v > 0 && m > 0) { let res = v / m; el.innerText = `Odkładaj ${res.toFixed(2)} zł co miesiąc.`; } else { el.innerText = "Wpisz kwotę i czas."; } }
 function hAddPlan() { let dEl=document.getElementById('hp-d'); let d = dEl?dEl.value:'Plan'; let v = safeVal('hp-v'); let mEl=document.getElementById('hp-m'); let m = mEl?parseInt(mEl.value):1; if(d && v) { db.home.planned.push({id:Date.now(), d, v, m}); save(); render(); } }
 function hDelPlan(id) { db.home.planned = db.home.planned.filter(x=>x.id!==id); save(); render(); }
-function hPayPlan(id) { let plan = db.home.planned.find(x => x.id === id); if(plan) { let who = window.hMem || db.home.members[0]; db.home.exp.unshift({ id: Date.now(), ty: 'exp', cat: '🏠 Dom / Rachunki', d: `Opłacono: ${plan.d}`, v: plan.v, who: who, dt: new Date().toLocaleDateString(), rD: new Date().toISOString() }); db.home.planned = db.home.planned.filter(x => x.id !== id); save(); db.tab = 'dash'; render(); alert(`Sukces! Kwota ${plan.v} zł za "${plan.d}" została odjęta z budżetu.`); } }
+function hPayPlan(id) {
+    let plan = db.home.planned.find(x => x.id === id);
+    if(plan) {
+        let who = window.hMem || db.home.members[0];
+        db.home.exp.unshift({ id: Date.now(), ty: 'exp', cat: '🏠 Dom / Rachunki', d: `Opłacono: ${plan.d}`, v: plan.v, who: who, dt: new Date().toLocaleDateString(), rD: new Date().toISOString() });
+        db.home.planned = db.home.planned.filter(x => x.id !== id);
+        save(); db.tab = 'dash'; render();
+        alert(`Sukces! Kwota ${plan.v} zł za "${plan.d}" została odjęta z budżetu.`);
+    }
+}
 function hAddMem() { let mEl=document.getElementById('h-new-mem'); let m = mEl?mEl.value.trim():''; if(m && !db.home.members.includes(m)) { db.home.members.push(m); save(); render(); } }
 function hDelMem(m) { if(db.home.members.length === 1) return alert("Musi zostać przynajmniej jeden domownik!"); if(confirm(`Usunąć profil: ${m}?`)) { db.home.members = db.home.members.filter(x=>x!==m); save(); render(); } }
 function hSaveUS() { db.home.sal = safeVal('hs-sal'); db.home.fix = safeVal('hs-fix'); save(); alert('Zaktualizowano budżet domowy!'); render(); }
 
 
 // ==========================================
-// 🚕 6. KIEROWCA TAXI 
+// 🚕 6. KIEROWCA TAXI LOGIKA ZAPISÓW I KURSÓW
 // ==========================================
 function rDrv() {
     let d=db.drv; let t=db.tab;
-    let nav = `<div class="nav"><div class="nav-item ${t==='term'?'active':''}" onclick="db.tab='term';render()"><i>🚕</i>Panel</div><div class="nav-item ${t==='quote'?'active':''}" onclick="db.tab='quote';render()"><i>🧮</i>Wycena</div><div class="nav-item ${t==='garage'?'active':''}" onclick="db.tab='garage';render()"><i>⛽</i>Garaż</div><div class="nav-item ${t==='stats'?'active':''}" onclick="db.tab='stats';render()"><i>📊</i>Wyniki</div><div class="nav-item ${t==='crm'?'active':''}" onclick="db.tab='crm';render()"><i>👥</i>Klienci</div></div>`;
-    let isSwitcherValid = db.mainProfile !== 'home'; let hdrAction = isSwitcherValid ? `onclick="openSwitcher()"` : ''; let hdrIcon = isSwitcherValid ? `<span style="color:var(--driver)">⏷</span>` : `<span style="color:var(--driver)">TAXI</span>`;
-    let hdr = `<header><div class="logo" ${hdrAction}>ŁAPTRANS ${hdrIcon}</div><div class="header-actions"><div class="badge" style="color:var(--fuel); border-color:rgba(245,158,11,0.3); background:rgba(245,158,11,0.1);">${d.odo} KM</div><div class="settings-btn" onclick="db.tab='set';render()">⚙️</div></div></header>`;
+    let nav = `
+    <div class="nav">
+        <div class="nav-item ${t==='term'?'active':''}" onclick="db.tab='term';render()"><i>🚕</i>Panel</div>
+        <div class="nav-item ${t==='quote'?'active':''}" onclick="db.tab='quote';render()"><i>🧮</i>Wycena</div>
+        <div class="nav-item ${t==='garage'?'active':''}" onclick="db.tab='garage';render()"><i>⛽</i>Garaż</div>
+        <div class="nav-item ${t==='stats'?'active':''}" onclick="db.tab='stats';render()"><i>📊</i>Wyniki</div>
+        <div class="nav-item ${t==='crm'?'active':''}" onclick="db.tab='crm';render()"><i>👥</i>Klienci</div>
+    </div>`;
+    
+    let isSwitcherValid = db.mainProfile !== 'home'; 
+    let hdrAction = isSwitcherValid ? `onclick="openSwitcher()"` : ''; 
+    let hdrIcon = isSwitcherValid ? `<span style="color:var(--driver)">⏷</span>` : `<span style="color:var(--driver)">TAXI</span>`;
+    
+    let hdr = `
+    <header>
+        <div class="logo" ${hdrAction}>ŁAPTRANS ${hdrIcon}</div>
+        <div class="header-actions">
+            <div class="badge" style="color:var(--fuel); border-color:rgba(245,158,11,0.3); background:rgba(245,158,11,0.1);">${d.odo} KM</div>
+            <div class="settings-btn" onclick="db.tab='set';render()">⚙️</div>
+        </div>
+    </header>`;
 
     if(t === 'term') { 
-        let cAppU = dTSrc==='Uber'?'background:var(--driver);border-color:var(--driver);color:#fff;':''; let cAppB = dTSrc==='Bolt'?'background:var(--driver);border-color:var(--driver);color:#fff;':''; let cAppF = dTSrc==='F.Now'?'background:var(--driver);border-color:var(--driver);color:#fff;':''; let cAppP = dTSrc==='Prywatny'?'background:var(--driver);border-color:var(--driver);color:#fff;':''; let cAppC = dTSrc==='Centrala'?'background:var(--driver);border-color:var(--driver);color:#fff;':''; let cAppS = dTSrc==='Postój'?'background:var(--driver);border-color:var(--driver);color:#fff;':'';
-        let cPayO = dTPay==='Online'?'background:var(--info);border-color:var(--info);color:#fff;':''; let cPayG = dTPay==='Gotówka'?'background:var(--success);border-color:var(--success);color:#000;':''; let cPayK = dTPay==='Karta'?'background:var(--info);border-color:var(--info);color:#fff;':''; let cPayV = dTPay==='Voucher'?'background:var(--warning);border-color:var(--warning);color:#000;':'';
-        let ch1 = d.plat==='apps' ? `<div class="chip" style="${cAppU}" onclick="dTC('s','Uber',this)">Uber</div><div class="chip" style="${cAppB}" onclick="dTC('s','Bolt',this)">Bolt</div><div class="chip" style="${cAppF}" onclick="dTC('s','F.Now',this)">F.Now</div><div class="chip" style="${cAppP}" onclick="dTC('s','Prywatny',this)">Prywatny</div>` : `<div class="chip" style="${cAppC}" onclick="dTC('s','Centrala',this)">Centrala</div><div class="chip" style="${cAppS}" onclick="dTC('s','Postój',this)">Postój</div><div class="chip" style="${cAppP}" onclick="dTC('s','Prywatny',this)">Prywatny</div>`;
-        let ch2 = d.plat==='apps' ? `<div class="chip" style="${cPayO}" onclick="dTC('p','Online',this)">Aplikacja</div><div class="chip" style="${cPayG}" onclick="dTC('p','Gotówka',this)">Gotówka</div>` : `<div class="chip" style="${cPayG}" onclick="dTC('p','Gotówka',this)">Gotówka</div><div class="chip" style="${cPayK}" onclick="dTC('p','Karta',this)">Terminal (Karta)</div><div class="chip" style="${cPayV}" onclick="dTC('p','Voucher',this)">Voucher</div>`;
+        let cAppU = dTSrc==='Uber'?'background:var(--driver);border-color:var(--driver);color:#fff;':''; 
+        let cAppB = dTSrc==='Bolt'?'background:var(--driver);border-color:var(--driver);color:#fff;':''; 
+        let cAppF = dTSrc==='F.Now'?'background:var(--driver);border-color:var(--driver);color:#fff;':''; 
+        let cAppP = dTSrc==='Prywatny'?'background:var(--driver);border-color:var(--driver);color:#fff;':''; 
+        let cAppC = dTSrc==='Centrala'?'background:var(--driver);border-color:var(--driver);color:#fff;':''; 
+        let cAppS = dTSrc==='Postój'?'background:var(--driver);border-color:var(--driver);color:#fff;':'';
+        
+        let cPayO = dTPay==='Online'?'background:var(--info);border-color:var(--info);color:#fff;':''; 
+        let cPayG = dTPay==='Gotówka'?'background:var(--success);border-color:var(--success);color:#000;':''; 
+        let cPayK = dTPay==='Karta'?'background:var(--info);border-color:var(--info);color:#fff;':''; 
+        let cPayV = dTPay==='Voucher'?'background:var(--warning);border-color:var(--warning);color:#000;':'';
+
+        let ch1 = d.plat==='apps' ? 
+            `<div class="chip" style="${cAppU}" onclick="dTC('s','Uber',this)">Uber</div><div class="chip" style="${cAppB}" onclick="dTC('s','Bolt',this)">Bolt</div><div class="chip" style="${cAppF}" onclick="dTC('s','F.Now',this)">F.Now</div><div class="chip" style="${cAppP}" onclick="dTC('s','Prywatny',this)">Prywatny</div>` : 
+            `<div class="chip" style="${cAppC}" onclick="dTC('s','Centrala',this)">Centrala</div><div class="chip" style="${cAppS}" onclick="dTC('s','Postój',this)">Postój</div><div class="chip" style="${cAppP}" onclick="dTC('s','Prywatny',this)">Prywatny</div>`;
+        let ch2 = d.plat==='apps' ? 
+            `<div class="chip" style="${cPayO}" onclick="dTC('p','Online',this)">Aplikacja</div><div class="chip" style="${cPayG}" onclick="dTC('p','Gotówka',this)">Gotówka</div>` : 
+            `<div class="chip" style="${cPayG}" onclick="dTC('p','Gotówka',this)">Gotówka</div><div class="chip" style="${cPayK}" onclick="dTC('p','Karta',this)">Terminal (Karta)</div><div class="chip" style="${cPayV}" onclick="dTC('p','Voucher',this)">Voucher</div>`;
         let clientOpts = d.clients.map(c => `<option value="${c.id}" ${c.bl?'disabled':''}>${c.bl?'[BLOKADA] ':''}${c.n}</option>`).join('');
 
-        let g=0, cf=0; if(d.sh.on) { d.sh.tr.forEach(x=>{ g+=x.v; if(x.p==='Karta') cf += x.v * d.cfg.cardF; }); }
-        let pFee = d.cfg.eType === 'pct' ? g * d.cfg.ePct : 0; let n = g - (g * d.cfg.tax) - pFee - cf - d.cfg.fix; 
-        let goal = d.cfg.goal || 350; let pctGoal = Math.min((n / goal) * 100, 100); if(pctGoal<0) pctGoal=0;
+        let g=0, cf=0; 
+        if(d.sh.on) { 
+            d.sh.tr.forEach(x=>{ g+=x.v; if(x.p==='Karta') cf += x.v * d.cfg.cardF; }); 
+        }
+        let pFee = d.cfg.eType === 'pct' ? g * d.cfg.ePct : 0; 
+        let n = g - (g * d.cfg.tax) - pFee - cf - d.cfg.fix; 
+        
+        let goal = d.cfg.goal || 350; 
+        let pctGoal = Math.min((n / goal) * 100, 100); 
+        if(pctGoal<0) pctGoal=0;
         let goalColor = pctGoal < 30 ? 'var(--danger)' : (pctGoal < 99 ? 'var(--warning)' : 'var(--success)');
         let goalText = pctGoal >= 100 ? 'CEL OSIĄGNIĘTY! 🏆' : `Brakuje ${(goal - n).toFixed(0)} zł`;
 
-        let act = d.sh.on ? `<div class="dash-hero" style="padding-bottom:5px;"><p>ZYSK NETTO ZMIANY</p><h1 style="font-size:4rem; color:${n>=0?'var(--success)':'var(--danger)'};">${n.toFixed(2)} zł</h1></div><div style="padding:0 20px;"><div class="goal-text"><span>Postęp Dnia</span><span style="color:${goalColor}">${goalText}</span></div><div class="goal-bar-bg"><div class="goal-bar-fill" style="width:${pctGoal}%; background:${goalColor};"></div></div></div><div class="panel" style="border-color:rgba(59, 130, 246, 0.4); background: linear-gradient(180deg, rgba(24,24,27,1) 0%, rgba(9,9,11,1) 100%);"><div class="p-title" style="color:var(--driver); border-bottom-color:rgba(59, 130, 246, 0.2);">➕ Zaksięguj nowy kurs</div><div class="form-section" style="padding:12px; margin-bottom:15px;"><div class="fs-title" style="margin-bottom:8px;">Źródło & Płatność</div><div class="chip-box" style="margin-bottom:10px; padding-bottom:0;">${ch1}</div><div class="chip-box" style="margin-bottom:0; padding-bottom:0;">${ch2}</div></div><div class="inp-group" style="margin-bottom:15px;"><label>Zwiąż z klientem B2B/VIP</label><select id="dt-cid" style="background:rgba(255,255,255,0.02);"><option value="">-- Zwykły kurs --</option>${clientOpts}</select></div><div class="form-section" style="padding:20px 15px; border-color:rgba(59,130,246,0.3); background:rgba(59,130,246,0.05);"><div class="fs-title" style="color:var(--driver); text-align:center; margin-bottom:15px; font-size:0.8rem;">Kwota z aplikacji (Brutto)</div><input type="number" id="dt-v" class="big-inp" placeholder="0.00" style="color:var(--driver); font-size:3rem; padding:15px; border:none; background:rgba(0,0,0,0.5); border-radius:16px;"></div><div class="inp-row"><div class="inp-group"><label>Dystans GPS (KM)</label><input type="number" id="dt-k" placeholder="np. 8.5" style="background:rgba(255,255,255,0.02);"></div><div class="inp-group"><label>Czas trwania (Min)</label><input type="number" id="dt-m" placeholder="np. 15" style="background:rgba(255,255,255,0.02);"></div></div><button class="btn btn-driver" style="margin-top:15px; font-size:1.1rem; padding:20px;" onclick="dAddT()">DODAJ KURS DO PORTFELA</button></div><div class="panel"><div class="p-title">Historia Zmiany</div>${d.sh.tr.map(x=>{ let icon = x.p==='Gotówka'?'💵':(x.p==='Voucher'?'🎟️':(x.p==='Karta'?'💳':'📱')); let bc = x.p==='Gotówka'?'var(--success)':(x.p==='Voucher'?'var(--warning)':(x.p==='Karta'?'var(--info)':'var(--driver)')); let cName = x.c ? (d.clients.find(c=>c.id===x.c)?.n || 'Nieznany') : ''; return `<div class="log-item" style="border-left-color:${bc}; padding:15px;"><div style="display:flex; align-items:center; gap:15px;"><div style="font-size:1.5rem; background:rgba(255,255,255,0.05); padding:10px; border-radius:12px;">${icon}</div><div><strong style="font-size:1.2rem">${x.v.toFixed(2)} zł</strong><br><small style="color:var(--muted)">${x.s} ${cName?`(${cName})`:''} • ${x.k}km</small></div></div><button class="btn-danger" style="padding:8px 12px; border:none; border-radius:8px; font-weight:bold; background:rgba(239,68,68,0.15);" onclick="dDelT(${x.id})">Cofnij</button></div>` }).join('')||'<div style="text-align:center;color:var(--muted);padding:30px 0;font-size:0.9rem;">Brak kursów.</div>'}</div><div class="panel" style="border-color:rgba(239,68,68,0.3); background:rgba(239,68,68,0.02)"><div class="p-title" style="color:var(--danger)">Zakończenie Dnia Pracy</div><div class="inp-group" style="margin-bottom:15px;"><label style="color:var(--danger)">Stan licznika po zjeździe (KM)</label><input type="number" id="de-o" class="big-inp" style="color:var(--danger); border-color:rgba(239,68,68,0.4); background:#000;"></div><button class="btn btn-danger" style="background:linear-gradient(135deg, #ef4444, #b91c1c); color:#fff; border:none; padding:20px;" onclick="dEndS()">ZAKOŃCZ ZMIANĘ I ZAPISZ WYNIK</button></div>` : `<div class="dash-hero" style="padding-top:40px;"><div style="width:80px;height:80px;background:linear-gradient(135deg,var(--success),#059669);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:2.5rem;box-shadow:0 10px 25px rgba(34,197,94,0.3);">🚗</div><h1 style="font-size:2.5rem;">Cześć, ${db.userName}!</h1><p style="margin-top:10px;">Podaj stan licznika, aby otworzyć zmianę</p></div><div class="panel" style="border-color:var(--success); box-shadow:0 10px 30px rgba(34,197,94,0.1);"><div class="inp-group"><input type="number" id="ds-o" class="big-inp" placeholder="Licznik (KM)" style="font-size:2.5rem; padding:30px;"></div><button class="btn" style="background:linear-gradient(135deg, var(--success), #059669); color:#fff; font-size:1.2rem; padding:20px; margin-top:20px;" onclick="dStartS()">ROZPOCZNIJ PRACĘ</button></div>`;
+        let act = d.sh.on ? `
+            <div class="dash-hero" style="padding-bottom:5px;">
+                <p>ZYSK NETTO ZMIANY</p>
+                <h1 style="font-size:4rem; color:${n>=0?'var(--success)':'var(--danger)'};">${n.toFixed(2)} zł</h1>
+            </div>
+            <div style="padding:0 20px;">
+                <div class="goal-text"><span>Postęp Dnia</span><span style="color:${goalColor}">${goalText}</span></div>
+                <div class="goal-bar-bg"><div class="goal-bar-fill" style="width:${pctGoal}%; background:${goalColor};"></div></div>
+            </div>
+            <div class="panel" style="border-color:rgba(59, 130, 246, 0.4); background: linear-gradient(180deg, rgba(24,24,27,1) 0%, rgba(9,9,11,1) 100%);">
+                <div class="p-title" style="color:var(--driver); border-bottom-color:rgba(59, 130, 246, 0.2);">➕ Zaksięguj nowy kurs</div>
+                <div class="form-section" style="padding:12px; margin-bottom:15px;"><div class="fs-title" style="margin-bottom:8px;">Źródło & Płatność</div><div class="chip-box" style="margin-bottom:10px; padding-bottom:0;">${ch1}</div><div class="chip-box" style="margin-bottom:0; padding-bottom:0;">${ch2}</div></div>
+                <div class="inp-group" style="margin-bottom:15px;"><label>Zwiąż z klientem B2B/VIP (Opcjonalnie)</label><select id="dt-cid" style="background:rgba(255,255,255,0.02);"><option value="">-- Zwykły kurs --</option>${clientOpts}</select></div>
+                <div class="form-section" style="padding:20px 15px; border-color:rgba(59,130,246,0.3); background:rgba(59,130,246,0.05);">
+                    <div class="fs-title" style="color:var(--driver); text-align:center; margin-bottom:15px; font-size:0.8rem;">Kwota z aplikacji (Brutto)</div>
+                    <input type="number" id="dt-v" class="big-inp" placeholder="0.00" style="color:var(--driver); font-size:3rem; padding:15px; border:none; background:rgba(0,0,0,0.5); border-radius:16px;">
+                </div>
+                <div class="inp-row">
+                    <div class="inp-group"><label>Dystans GPS (KM)</label><input type="number" id="dt-k" placeholder="np. 8.5" style="background:rgba(255,255,255,0.02);"></div>
+                    <div class="inp-group"><label>Czas trwania (Min)</label><input type="number" id="dt-m" placeholder="np. 15" style="background:rgba(255,255,255,0.02);"></div>
+                </div>
+                <button class="btn btn-driver" style="margin-top:15px; font-size:1.1rem; padding:20px;" onclick="dAddT()">DODAJ KURS DO PORTFELA</button>
+            </div>
+            <div class="panel">
+                <div class="p-title">Historia Zmiany</div>
+                ${d.sh.tr.map(x=>{
+                    let icon = x.p==='Gotówka'?'💵':(x.p==='Voucher'?'🎟️':(x.p==='Karta'?'💳':'📱')); 
+                    let bc = x.p==='Gotówka'?'var(--success)':(x.p==='Voucher'?'var(--warning)':(x.p==='Karta'?'var(--info)':'var(--driver)')); 
+                    let cName = x.c ? (d.clients.find(c=>c.id===x.c)?.n || 'Nieznany') : ''; 
+                    return `<div class="log-item" style="border-left-color:${bc}; padding:15px;"><div style="display:flex; align-items:center; gap:15px;"><div style="font-size:1.5rem; background:rgba(255,255,255,0.05); padding:10px; border-radius:12px;">${icon}</div><div><strong style="font-size:1.2rem">${x.v.toFixed(2)} zł</strong><br><small style="color:var(--muted)">${x.s} ${cName?`(${cName})`:''} • ${x.k}km</small></div></div><button class="btn-danger" style="padding:8px 12px; border:none; border-radius:8px; font-weight:bold; background:rgba(239,68,68,0.15);" onclick="dDelT(${x.id})">Cofnij</button></div>`
+                }).join('')||'<div style="text-align:center;color:var(--muted);padding:30px 0;font-size:0.9rem;">Brak kursów.</div>'}
+            </div>
+            <div class="panel" style="border-color:rgba(239,68,68,0.3); background:rgba(239,68,68,0.02)">
+                <div class="p-title" style="color:var(--danger)">Zakończenie Dnia Pracy</div>
+                <div class="inp-group" style="margin-bottom:15px;"><label style="color:var(--danger)">Stan licznika po zjeździe (KM)</label><input type="number" id="de-o" class="big-inp" style="color:var(--danger); border-color:rgba(239,68,68,0.4); background:#000;"></div>
+                <button class="btn btn-danger" style="background:linear-gradient(135deg, #ef4444, #b91c1c); color:#fff; border:none; padding:20px;" onclick="dEndS()">ZAKOŃCZ ZMIANĘ I ZAPISZ WYNIK</button>
+            </div>
+        ` : `
+            <div class="dash-hero" style="padding-top:40px;">
+                <div style="width:80px;height:80px;background:linear-gradient(135deg,var(--success),#059669);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:2.5rem;box-shadow:0 10px 25px rgba(34,197,94,0.3);">🚗</div>
+                <h1 style="font-size:2.5rem;">Cześć, ${db.userName}!</h1><p style="margin-top:10px;">Podaj stan licznika, aby otworzyć zmianę</p>
+            </div>
+            <div class="panel" style="border-color:var(--success); box-shadow:0 10px 30px rgba(34,197,94,0.1);">
+                <div class="inp-group"><input type="number" id="ds-o" class="big-inp" placeholder="Licznik (KM)" style="font-size:2.5rem; padding:30px;"></div>
+                <button class="btn" style="background:linear-gradient(135deg, var(--success), #059669); color:#fff; font-size:1.2rem; padding:20px; margin-top:20px;" onclick="dStartS()">ROZPOCZNIJ PRACĘ</button>
+            </div>`;
         APP.innerHTML = hdr + act + nav;
     }
 
     if(t === 'quote') {
-        let q = d.q; let clientOpts = d.clients.map(c => `<option value="${c.id}" data-d="${c.d||0}" ${c.bl?'disabled':''}>${c.bl?'[BLOKADA] ':''}${c.n} (Rabat: ${c.d||0}%)</option>`).join('');
-        APP.innerHTML = hdr + `<div class="dash-hero" style="padding-bottom:5px;"><p>KALKULATOR TRASY</p></div><div class="panel" style="border-color:rgba(217, 70, 239, 0.4)"><div class="mode-switch"><div class="m-btn ${dQM==='taxi'?'active':''}" style="${dQM==='taxi'?'background:var(--quote)':''}" onclick="dQM='taxi';render()">Taksometr (Strefy)</div><div class="m-btn ${dQM==='fix'?'active':''}" style="${dQM==='fix'?'background:var(--quote)':''}" onclick="dQM='fix';render()">Trasa Umowna</div></div><div class="inp-group" style="margin-bottom:15px;"><label>Wybierz klienta VIP</label><select id="dq-c" onchange="dSetDisc()" style="background:rgba(217,70,239,0.05); border-color:var(--quote); color:#fff;"><option value="">-- Brak / Zwykły klient --</option>${clientOpts}</select></div><div id="dq-t" class="${dQM==='taxi'?'':'hidden'}"><div class="chip-box" style="margin-bottom:15px;"><div class="chip ${!dQN?'active':''}" style="background:${!dQN?'rgba(217,70,239,0.1)':'var(--bg)'};border-color:${!dQN?'var(--quote)':'var(--border)'};color:${!dQN?'var(--quote)':'var(--muted)'}" onclick="dQN=false;render()">Dzień (T1/T3)</div><div class="chip ${dQN?'active':''}" style="background:${dQN?'rgba(217,70,239,0.1)':'var(--bg)'};border-color:${dQN?'var(--quote)':'var(--border)'};color:${dQN?'var(--quote)':'var(--muted)'}" onclick="dQN=true;render()">Noc/Święto (T2/T4)</div></div><div class="inp-row"><div class="inp-group"><label>KM Miasto</label><input type="number" id="dqk1" oninput="dQC()" placeholder="Strefa 1"></div><div class="inp-group"><label>KM Poza miastem</label><input type="number" id="dqk2" oninput="dQC()" placeholder="Strefa 2"></div></div><div class="inp-row"><div class="inp-group"><label>Czas w korku (Min)</label><input type="number" id="dqm" oninput="dQC()" placeholder="Opcjonalnie"></div><div class="inp-group"><label>Twój Rabat (%)</label><input type="number" id="dqd" oninput="dQC()" value="0"></div></div></div><div id="dq-f" class="${dQM==='fix'?'':'hidden'}"><div class="inp-row"><div class="inp-group"><label>Dystans 1-str (KM)</label><input type="number" id="dqfk" oninput="dQC()" placeholder="np. 45"></div><div class="inp-group"><label>Stawka (zł/km)</label><input type="number" id="dqfr" value="3.00" oninput="dQC()"></div></div><div class="inp-group" style="margin-bottom:15px;"><label>Czy wliczyć powrót na pusto?</label><select id="dqr" onchange="dQC()"><option value="1">Nie (Płacę za jedną stronę)</option><option value="2">Tak (Odlicz 2x paliwo z zysku)</option></select></div></div><div style="background:#000; border-radius:16px; padding:20px; margin-top:20px; text-align:center; border:1px solid #222;"><p style="margin:0 0 5px 0; color:var(--quote); font-size:0.75rem; font-weight:800;">DO ZAPŁATY (BRUTTO)</p><h1 id="dqt" style="margin:0; font-size:3.5rem; letter-spacing:-2px;">0.00 zł</h1><div style="display:inline-block; background:rgba(34,197,94,0.1); border:1px solid rgba(34,197,94,0.3); padding:4px 10px; border-radius:8px; margin-top:10px;"><span id="dqp" style="color:var(--success);font-weight:800; font-size:0.8rem;">Czysty Zysk: 0.00 zł</span></div></div><button class="btn btn-quote" style="margin-top:15px;" onclick="dQB()">ZAKSIĘGUJ DO TERMINALA</button></div><div class="panel"><div class="p-title">Konfiguracja Taryfikatora</div><div class="grid-2"><div class="inp-group"><label>Opłata Startowa</label><input type="number" id="dcs" value="${q.s}"></div><div class="inp-group"><label>1h Postoju</label><input type="number" id="dcw" value="${q.w}"></div></div><div class="grid-4" style="grid-template-columns:1fr 1fr 1fr 1fr; gap:8px;"><div class="inp-group"><label>T1</label><input type="number" id="dct1" value="${q.t1}" style="padding:12px;"></div><div class="inp-group"><label>T2</label><input type="number" id="dct2" value="${q.t2}" style="padding:12px;"></div><div class="inp-group"><label>T3</label><input type="number" id="dct3" value="${q.t3}" style="padding:12px;"></div><div class="inp-group"><label>T4</label><input type="number" id="dct4" value="${q.t4}" style="padding:12px;"></div></div><button class="btn" style="background:#222; color:#fff; border:1px solid #333;" onclick="dSaveQC()">ZAPISZ ZMIANY</button></div>` + nav; setTimeout(dQC, 50);
+        let q = d.q;
+        let clientOpts = d.clients.map(c => `<option value="${c.id}" data-d="${c.d||0}" ${c.bl?'disabled':''}>${c.bl?'[BLOKADA] ':''}${c.n} (Rabat: ${c.d||0}%)</option>`).join('');
+
+        APP.innerHTML = hdr + `
+        <div class="dash-hero" style="padding-bottom:5px;"><p>KALKULATOR TRASY</p></div>
+        <div class="panel" style="border-color:rgba(217, 70, 239, 0.4)">
+            <div class="mode-switch"><div class="m-btn ${dQM==='taxi'?'active':''}" style="${dQM==='taxi'?'background:var(--quote)':''}" onclick="dQM='taxi';render()">Taksometr (Strefy)</div><div class="m-btn ${dQM==='fix'?'active':''}" style="${dQM==='fix'?'background:var(--quote)':''}" onclick="dQM='fix';render()">Trasa Umowna</div></div>
+            <div class="inp-group" style="margin-bottom:15px;"><label>Wybierz klienta VIP</label><select id="dq-c" onchange="dSetDisc()" style="background:rgba(217,70,239,0.05); border-color:var(--quote); color:#fff;"><option value="">-- Brak / Zwykły klient --</option>${clientOpts}</select></div>
+            <div id="dq-t" class="${dQM==='taxi'?'':'hidden'}"><div class="chip-box" style="margin-bottom:15px;"><div class="chip ${!dQN?'active':''}" style="background:${!dQN?'rgba(217,70,239,0.1)':'var(--bg)'};border-color:${!dQN?'var(--quote)':'var(--border)'};color:${!dQN?'var(--quote)':'var(--muted)'}" onclick="dQN=false;render()">Dzień (T1/T3)</div><div class="chip ${dQN?'active':''}" style="background:${dQN?'rgba(217,70,239,0.1)':'var(--bg)'};border-color:${dQN?'var(--quote)':'var(--border)'};color:${dQN?'var(--quote)':'var(--muted)'}" onclick="dQN=true;render()">Noc/Święto (T2/T4)</div></div><div class="inp-row"><div class="inp-group"><label>KM Miasto</label><input type="number" id="dqk1" oninput="dQC()" placeholder="Strefa 1"></div><div class="inp-group"><label>KM Poza miastem</label><input type="number" id="dqk2" oninput="dQC()" placeholder="Strefa 2"></div></div><div class="inp-row"><div class="inp-group"><label>Czas w korku (Min)</label><input type="number" id="dqm" oninput="dQC()" placeholder="Opcjonalnie"></div><div class="inp-group"><label>Twój Rabat (%)</label><input type="number" id="dqd" oninput="dQC()" value="0"></div></div></div>
+            <div id="dq-f" class="${dQM==='fix'?'':'hidden'}"><div class="inp-row"><div class="inp-group"><label>Dystans 1-str (KM)</label><input type="number" id="dqfk" oninput="dQC()" placeholder="np. 45"></div><div class="inp-group"><label>Stawka (zł/km)</label><input type="number" id="dqfr" value="3.00" oninput="dQC()"></div></div><div class="inp-group" style="margin-bottom:15px;"><label>Czy wliczyć powrót na pusto?</label><select id="dqr" onchange="dQC()"><option value="1">Nie (Płacę za jedną stronę)</option><option value="2">Tak (Odlicz 2x paliwo z zysku)</option></select></div></div>
+            <div style="background:#000; border-radius:16px; padding:20px; margin-top:20px; text-align:center; border:1px solid #222;"><p style="margin:0 0 5px 0; color:var(--quote); font-size:0.75rem; font-weight:800;">DO ZAPŁATY (BRUTTO)</p><h1 id="dqt" style="margin:0; font-size:3.5rem; letter-spacing:-2px;">0.00 zł</h1><div style="display:inline-block; background:rgba(34,197,94,0.1); border:1px solid rgba(34,197,94,0.3); padding:4px 10px; border-radius:8px; margin-top:10px;"><span id="dqp" style="color:var(--success);font-weight:800; font-size:0.8rem;">Czysty Zysk: 0.00 zł</span></div></div>
+            <button class="btn btn-quote" style="margin-top:15px;" onclick="dQB()">ZAKSIĘGUJ DO TERMINALA</button>
+        </div>
+        <div class="panel"><div class="p-title">Konfiguracja Taryfikatora</div><div class="grid-2"><div class="inp-group"><label>Opłata Startowa</label><input type="number" id="dcs" value="${q.s}"></div><div class="inp-group"><label>1h Postoju</label><input type="number" id="dcw" value="${q.w}"></div></div><div class="grid-4" style="grid-template-columns:1fr 1fr 1fr 1fr; gap:8px;"><div class="inp-group"><label>T1</label><input type="number" id="dct1" value="${q.t1}" style="padding:12px;"></div><div class="inp-group"><label>T2</label><input type="number" id="dct2" value="${q.t2}" style="padding:12px;"></div><div class="inp-group"><label>T3</label><input type="number" id="dct3" value="${q.t3}" style="padding:12px;"></div><div class="inp-group"><label>T4</label><input type="number" id="dct4" value="${q.t4}" style="padding:12px;"></div></div><button class="btn" style="background:#222; color:#fff; border:1px solid #333;" onclick="dSaveQC()">ZAPISZ ZMIANY</button></div>
+        ` + nav; setTimeout(dQC, 50);
     }
 
     if(t === 'crm') {
         let now = new Date(); let cSumsMsc = {}; let cSumsAll = {};
         d.h.forEach(shift => { let sd = new Date(shift.rD); let isMsc = (sd.getMonth() === now.getMonth() && sd.getFullYear() === now.getFullYear()); if (shift.tr) { shift.tr.forEach(trip => { if (trip.c) { cSumsAll[trip.c] = (cSumsAll[trip.c] || 0) + trip.v; if(isMsc) cSumsMsc[trip.c] = (cSumsMsc[trip.c] || 0) + trip.v; } }); } });
-        APP.innerHTML = hdr + `<div class="dash-hero" style="padding-bottom:10px;"><p>BAZA KLIENTÓW VIP / B2B</p><h1 style="font-size:3rem;">${d.clients.length} <span style="font-size:1.5rem; color:var(--muted)">Osob.</span></h1></div><div class="panel" style="border-color:rgba(59, 130, 246, 0.4); background: linear-gradient(180deg, rgba(24,24,27,1) 0%, rgba(9,9,11,1) 100%);"><div class="p-title" style="color:var(--driver)">➕ Dodaj Klienta</div><div class="inp-row"><div class="inp-group"><label>Imię / Firma</label><input type="text" id="dc-n" placeholder="np. Hotel Qubus"></div></div><div class="inp-row"><div class="inp-group"><label>Telefon</label><input type="text" id="dc-p" placeholder="np. 500 000 000"></div><div class="inp-group"><label>Zniżka (%)</label><input type="number" id="dc-d" placeholder="np. 10"></div></div><div class="inp-row"><div class="inp-group"><label>Stała Trasa</label><input type="text" id="dc-r" placeholder="Opcjonalnie"></div></div><button class="btn btn-driver" style="margin-top:10px;" onclick="dAddCrm()">ZAPISZ KLIENTA</button></div><div class="panel"><div class="p-title">Katalog Klientów</div>${d.clients.map(c => { let sMsc = cSumsMsc[c.id] || 0; let sAll = cSumsAll[c.id] || 0; let bl = c.bl ? '<span class="st-badge" style="background:rgba(239,68,68,0.2);color:var(--danger)">ZABLOKOWANY</span>' : ''; let vip = c.d > 0 ? `<span class="st-badge" style="background:rgba(59,130,246,0.2);color:var(--driver)">VIP -${c.d}%</span>` : ''; let route = c.r ? `<span style="color:var(--info); font-size:0.75rem; font-weight:bold; display:block; margin-top:4px;">📍 ${c.r}</span>` : ''; return `<div class="log-item" style="border-left-color:${c.bl?'var(--danger)':'var(--driver)'}; flex-direction:column; align-items:flex-start; padding:18px;"><div style="display:flex; justify-content:space-between; width:100%; align-items:flex-start;"><div><strong style="font-size:1.2rem; color:${c.bl?'var(--danger)':'#fff'}">${c.n}</strong>${route}</div><div style="text-align:right;">${bl}<br>${vip}</div></div><div style="width:100%; display:flex; justify-content:space-between; align-items:center; margin-top:15px; padding-top:15px; border-top:1px solid rgba(255,255,255,0.05);"><div><span style="font-size:0.7rem; color:var(--muted); text-transform:uppercase; font-weight:800;">Ten miesiąc:</span><br><strong style="color:var(--success); font-size:1.1rem;">${sMsc.toFixed(2)} zł</strong><br><span style="font-size:0.7rem; color:var(--muted);">Cały czas: ${sAll.toFixed(0)} zł</span></div><div style="display:flex; gap:8px;"><button class="btn-danger" style="padding:10px 14px; font-size:0.75rem; border:none; border-radius:10px; background:rgba(239,68,68,0.15);" onclick="dCrmBl(${c.id})">${c.bl?'ODBLOKUJ':'ZABLOKUJ'}</button><button class="btn-danger" style="padding:10px 14px; font-size:0.75rem; border:none; border-radius:10px; background:transparent;" onclick="dCrmDel(${c.id})">USUŃ</button></div></div></div>` }).join('') || '<div style="text-align:center;color:var(--muted);font-size:0.85rem;padding:20px;">Brak klientów.</div>'}</div>` + nav;
+        
+        APP.innerHTML = hdr + `
+        <div class="dash-hero" style="padding-bottom:10px;"><p>BAZA KLIENTÓW VIP / B2B</p><h1 style="font-size:3rem;">${d.clients.length} <span style="font-size:1.5rem; color:var(--muted)">Osob.</span></h1></div>
+        <div class="panel" style="border-color:rgba(59, 130, 246, 0.4); background: linear-gradient(180deg, rgba(24,24,27,1) 0%, rgba(9,9,11,1) 100%);"><div class="p-title" style="color:var(--driver)">➕ Dodaj Klienta</div><div class="inp-row"><div class="inp-group"><label>Imię / Firma</label><input type="text" id="dc-n" placeholder="np. Hotel Qubus"></div></div><div class="inp-row"><div class="inp-group"><label>Telefon</label><input type="text" id="dc-p" placeholder="np. 500 000 000"></div><div class="inp-group"><label>Zniżka (%)</label><input type="number" id="dc-d" placeholder="np. 10"></div></div><div class="inp-row"><div class="inp-group"><label>Stała Trasa</label><input type="text" id="dc-r" placeholder="Opcjonalnie"></div></div><button class="btn btn-driver" style="margin-top:10px;" onclick="dAddCrm()">ZAPISZ KLIENTA</button></div>
+        <div class="panel"><div class="p-title">Katalog Klientów</div>${d.clients.map(c => { let sMsc = cSumsMsc[c.id] || 0; let sAll = cSumsAll[c.id] || 0; let bl = c.bl ? '<span class="st-badge" style="background:rgba(239,68,68,0.2);color:var(--danger)">ZABLOKOWANY</span>' : ''; let vip = c.d > 0 ? `<span class="st-badge" style="background:rgba(59,130,246,0.2);color:var(--driver)">VIP -${c.d}%</span>` : ''; let route = c.r ? `<span style="color:var(--info); font-size:0.75rem; font-weight:bold; display:block; margin-top:4px;">📍 ${c.r}</span>` : ''; return `<div class="log-item" style="border-left-color:${c.bl?'var(--danger)':'var(--driver)'}; flex-direction:column; align-items:flex-start; padding:18px;"><div style="display:flex; justify-content:space-between; width:100%; align-items:flex-start;"><div><strong style="font-size:1.2rem; color:${c.bl?'var(--danger)':'#fff'}">${c.n}</strong>${route}</div><div style="text-align:right;">${bl}<br>${vip}</div></div><div style="width:100%; display:flex; justify-content:space-between; align-items:center; margin-top:15px; padding-top:15px; border-top:1px solid rgba(255,255,255,0.05);"><div><span style="font-size:0.7rem; color:var(--muted); text-transform:uppercase; font-weight:800;">Ten miesiąc:</span><br><strong style="color:var(--success); font-size:1.1rem;">${sMsc.toFixed(2)} zł</strong><br><span style="font-size:0.7rem; color:var(--muted);">Cały czas: ${sAll.toFixed(0)} zł</span></div><div style="display:flex; gap:8px;"><button class="btn-danger" style="padding:10px 14px; font-size:0.75rem; border:none; border-radius:10px; background:rgba(239,68,68,0.15);" onclick="dCrmBl(${c.id})">${c.bl?'ODBLOKUJ':'ZABLOKUJ'}</button><button class="btn-danger" style="padding:10px 14px; font-size:0.75rem; border:none; border-radius:10px; background:transparent;" onclick="dCrmDel(${c.id})">USUŃ</button></div></div></div>` }).join('') || '<div style="text-align:center;color:var(--muted);font-size:0.85rem;padding:20px;">Brak klientów.</div>'}</div>
+        ` + nav;
     }
 
     if(t === 'garage') {
         let fS = calcFuelioStats();
-        APP.innerHTML = hdr + `<div class="dash-hero" style="padding-bottom:5px;"><p>ŚREDNIE SPALANIE AUTA</p><h1 style="color:var(--fuel); font-size:3.5rem;">${fS.l1.toFixed(1)} <span style="font-size:1.5rem; color:var(--muted)">L/100</span></h1></div><div class="grid-2" style="padding:0 15px; margin-bottom:20px;"><div class="box" style="border-color:rgba(245,158,11,0.3); background:rgba(245,158,11,0.05); align-items:center;"><span style="color:var(--fuel)">Koszt 100 KM</span><strong style="color:#fff">${fS.c1.toFixed(2)} zł</strong></div><div class="box" style="border-color:rgba(245,158,11,0.3); background:rgba(245,158,11,0.05); align-items:center;"><span style="color:var(--fuel)">Bieżący Koszt 1 KM</span><strong style="color:#fff">${d.cfg.fuelPx.toFixed(2)} zł</strong></div></div><div class="panel" style="border-color:var(--fuel)"><div class="p-title" style="color:var(--fuel)">Inteligentny Dziennik Tankowań</div><div class="inp-row"><div class="inp-group"><label>Licznik Główny (KM)</label><input type="number" id="df-o" placeholder="np. 150000"></div><div class="inp-group"><label>Wlane Litry</label><input type="number" id="df-l" placeholder="np. 45.5" step="0.1"></div></div><div class="inp-row"><div class="inp-group"><label>Kwota Rachunku (zł)</label><input type="number" id="df-v" placeholder="np. 300"></div><div class="inp-group"><label>Tankowanie pod korek?</label><select id="df-f"><option value="1">Tak (Przelicz spalanie)</option><option value="0">Nie</option></select></div></div><button class="btn" style="background:linear-gradient(135deg, #f59e0b, #d97706); color:#000;" onclick="dAF()">ZAPISZ PARAGON ZE STACJI</button></div><div class="panel" style="border-color:rgba(239,68,68,0.4)"><div class="p-title" style="color:var(--danger)">Inne Wydatki Operacyjne</div><div class="inp-row"><div class="inp-group" style="flex:2"><label>Kategoria Wydatku</label><select id="de-c"><option value="✨ Myjnia / Kosmetyka">✨ Myjnia / Kosmetyka</option><option value="🛠️ Serwis / Części">🛠️ Serwis / Części</option><option value="💧 Płyny / Eksploatacja">💧 Płyny / Eksploatacja</option><option value="🛡️ Ubezpieczenie (Roczne / 12)" style="color:var(--info); font-weight:bold;">🛡️ Ubezpieczenie (Roczne -> Amortyzacja)</option><option value="🅿️ Parking / Autostrada">🅿️ Parking / Autostrada</option><option value="🚓 Mandat / Kara">🚓 Mandat / Kara</option><option value="🧾 Księgowość / Biuro">🧾 Księgowość / Biuro</option><option value="📱 Abonamenty / Net">📱 Abonamenty / Net</option><option value="📦 Inne koszty">📦 Inne koszty</option></select></div><div class="inp-group"><label>Pełna Kwota (zł)</label><input type="number" id="de-v" placeholder="0.00"></div></div><button class="btn btn-danger" style="background:var(--danger); color:#fff;" onclick="dAE()">ZAPISZ WYDATEK W BAZIE</button></div><div class="panel"><div class="p-title">Historia Garażu</div>${renderGarageHistory()}</div>` + nav;
+        APP.innerHTML = hdr + `
+        <div class="dash-hero" style="padding-bottom:5px;"><p>ŚREDNIE SPALANIE AUTA</p><h1 style="color:var(--fuel); font-size:3.5rem;">${fS.l1.toFixed(1)} <span style="font-size:1.5rem; color:var(--muted)">L/100</span></h1></div>
+        <div class="grid-2" style="padding:0 15px; margin-bottom:20px;"><div class="box" style="border-color:rgba(245,158,11,0.3); background:rgba(245,158,11,0.05); align-items:center;"><span style="color:var(--fuel)">Koszt 100 KM</span><strong style="color:#fff">${fS.c1.toFixed(2)} zł</strong></div><div class="box" style="border-color:rgba(245,158,11,0.3); background:rgba(245,158,11,0.05); align-items:center;"><span style="color:var(--fuel)">Bieżący Koszt 1 KM</span><strong style="color:#fff">${d.cfg.fuelPx.toFixed(2)} zł</strong></div></div>
+        <div class="panel" style="border-color:var(--fuel)"><div class="p-title" style="color:var(--fuel)">Inteligentny Dziennik Tankowań</div><div class="inp-row"><div class="inp-group"><label>Licznik Główny (KM)</label><input type="number" id="df-o" placeholder="np. 150000"></div><div class="inp-group"><label>Wlane Litry</label><input type="number" id="df-l" placeholder="np. 45.5" step="0.1"></div></div><div class="inp-row"><div class="inp-group"><label>Kwota Rachunku (zł)</label><input type="number" id="df-v" placeholder="np. 300"></div><div class="inp-group"><label>Tankowanie pod korek?</label><select id="df-f"><option value="1">Tak (Przelicz spalanie)</option><option value="0">Nie</option></select></div></div><button class="btn" style="background:linear-gradient(135deg, #f59e0b, #d97706); color:#000;" onclick="dAF()">ZAPISZ PARAGON ZE STACJI</button></div>
+        <div class="panel" style="border-color:rgba(239,68,68,0.4)"><div class="p-title" style="color:var(--danger)">Inne Wydatki Operacyjne</div><div class="inp-row"><div class="inp-group" style="flex:2"><label>Kategoria Wydatku</label><select id="de-c"><option value="✨ Myjnia / Kosmetyka">✨ Myjnia / Kosmetyka</option><option value="🛠️ Serwis / Części">🛠️ Serwis / Części</option><option value="💧 Płyny / Eksploatacja">💧 Płyny / Eksploatacja</option><option value="🛡️ Ubezpieczenie (Roczne / 12)" style="color:var(--info); font-weight:bold;">🛡️ Ubezpieczenie (Roczne -> Amortyzacja)</option><option value="🅿️ Parking / Autostrada">🅿️ Parking / Autostrada</option><option value="🚓 Mandat / Kara">🚓 Mandat / Kara</option><option value="🧾 Księgowość / Biuro">🧾 Księgowość / Biuro</option><option value="📱 Abonamenty / Net">📱 Abonamenty / Net</option><option value="📦 Inne koszty">📦 Inne koszty</option></select></div><div class="inp-group"><label>Pełna Kwota (zł)</label><input type="number" id="de-v" placeholder="0.00"></div></div><button class="btn btn-danger" style="background:var(--danger); color:#fff;" onclick="dAE()">ZAPISZ WYDATEK W BAZIE</button></div>
+        <div class="panel"><div class="p-title">Historia Garażu</div>${renderGarageHistory()}</div>
+        ` + nav;
     }
 
     if(t === 'stats') {
@@ -519,12 +939,64 @@ function rDrv() {
         fe.forEach(x=> { if(x.ty !== 'amort') ex+=x.v; });
         let fix = fs.length * d.cfg.fix; let n = g - fc - tx - fix - pf - cf - ex; let eff = k>0?(pk/k)*100:0; let rHr = hrs>0?(n/hrs):0; let rKm = k>0?(n/k):0;
 
-        APP.innerHTML = hdr + `<div class="mode-switch" style="margin:15px; border-color:var(--border);"><div class="m-btn ${fM==='today'?'active':''}" onclick="db.filter='today';render()">Dziś</div><div class="m-btn ${fM==='week'?'active':''}" onclick="db.filter='week';render()">Ten Tydzień</div><div class="m-btn ${fM==='month'?'active':''}" onclick="db.filter='month';render()">Ten Miesiąc</div><div class="m-btn ${fM==='all'?'active':''}" onclick="db.filter='all';render()">Całość</div></div><div class="dash-hero" style="padding-top:0;"><p>TWOJE PRAWDZIWE NETTO</p><h1 style="color:${n>=0?'var(--success)':'var(--danger)'}; font-size:3.8rem;">${n.toFixed(2)} zł</h1></div><div class="grid-2"><div class="box"><span style="color:var(--info)">Zysk na 1 godzinę</span><strong style="color:#fff">${rHr.toFixed(2)} zł/h</strong></div><div class="box"><span style="color:var(--quote)">Zysk na 1 kilometr</span><strong style="color:#fff">${rKm.toFixed(2)} zł/km</strong></div></div><div class="panel" style="border-color:var(--border); padding:25px;"><div class="p-title">Wodospad Finansowy (P&L)</div><div class="fin-row"><span class="fin-label">Utarg Brutto z aplikacji</span><span class="fin-val" style="color:var(--success)">${g.toFixed(2)} zł</span></div><div class="fin-row"><span class="fin-label">Wydatki Zmienne (Garaż)</span><span class="fin-val" style="color:var(--danger)">-${ex.toFixed(2)} zł</span></div><div class="fin-row"><span class="fin-label">Paliwo z przejechanych tras</span><span class="fin-val" style="color:var(--fuel)">-${fc.toFixed(2)} zł</span></div>${cf > 0 ? `<div class="fin-row"><span class="fin-label" style="color:var(--info)">Prowizja Terminala (Karty)</span><span class="fin-val" style="color:var(--danger)">-${cf.toFixed(2)} zł</span></div>` : ''}${d.cfg.eType === 'pct' || pf > 0 ? `<div class="fin-row"><span class="fin-label">Prowizja Partnera (${(d.cfg.ePct*100).toFixed(1)}%)</span><span class="fin-val" style="color:var(--danger)">-${pf.toFixed(2)} zł</span></div>` : ''}<div class="fin-row"><span class="fin-label">Podatek Dochodowy (${(d.cfg.tax*100).toFixed(1)}%)</span><span class="fin-val" style="color:var(--danger)">-${tx.toFixed(2)} zł</span></div><div class="fin-row" style="align-items:flex-start;"><span class="fin-label" style="flex-direction:column; align-items:flex-start; font-size:0.75rem;">Koszty Stałe (Odpis za dni pracy)<small style="color:#555; margin-top:4px;">Auto: ${d.cfg.cC} (${d.cfg.cType==='week'?'tydz':'msc'}) | Baza: ${d.cfg.bC} | Stałe: ${d.cfg.eC + d.cfg.iC}</small></span><span class="fin-val" style="color:var(--danger)">-${fix.toFixed(2)} zł</span></div><div class="fin-row" style="background:#09090b; margin-top:15px; padding:20px; border-radius:14px; border:1px solid var(--border);"><span class="fin-label" style="color:#fff; font-size:1.1rem;">CZYSTY ZYSK</span><span class="fin-val" style="font-size:1.5rem; color:${n>=0?'var(--success)':'var(--danger)'}">${n.toFixed(2)} zł</span></div><button class="btn" style="background:linear-gradient(135deg, #a855f7, #9333ea); color:#fff; margin-top:20px;" onclick="dGenRep(${g}, ${fc}, ${ex}, ${fix+pf+cf+tx}, ${n})">GENERUJ RAPORT DO SZEFA</button></div><div class="panel"><div class="p-title">Struktura Kosztów</div><div style="height:200px; position:relative;"><canvas id="ch-doughnut"></canvas></div></div><div class="panel"><div class="p-title">Skuteczność Logistyczna</div><div class="grid-2" style="padding:0; margin-bottom:5px;"><div class="box" style="padding:12px; background:var(--bg)"><span style="color:var(--danger)">Przejechane Pusto</span><strong style="color:#fff">${(k-pk).toFixed(1)} km</strong></div><div class="box" style="padding:12px; background:var(--bg)"><span style="color:var(--success)">Skuteczność Trasy</span><strong style="color:#fff">${eff.toFixed(1)}%</strong></div></div></div><div class="panel"><div class="p-title">Dziennik Zmian (${fM.toUpperCase()})</div>${fs.map(x=>`<div class="log-item" style="border-left-color:${x.n>=0?'var(--success)':'var(--danger)'}; flex-direction:column; align-items:flex-start; padding:15px;"><div style="display:flex; justify-content:space-between; width:100%; margin-bottom:5px;"><strong style="font-size:1.1rem;">${x.dt}</strong><strong style="color:${x.n>=0?'var(--success)':'var(--danger)'}; font-size:1.2rem;">${x.n.toFixed(2)} zł</strong></div><small style="color:var(--muted)">Czas w aucie: ${x.h.toFixed(1)}h | Przebieg: ${x.k}km</small></div>`).join('')||'<div style="text-align:center;color:var(--muted);font-size:0.85rem;padding:20px 0;">Brak danych w tym przedziale.</div>'}</div>` + nav;
+        APP.innerHTML = hdr + `
+        <div class="mode-switch" style="margin:15px; border-color:var(--border);"><div class="m-btn ${fM==='today'?'active':''}" onclick="db.filter='today';render()">Dziś</div><div class="m-btn ${fM==='week'?'active':''}" onclick="db.filter='week';render()">Ten Tydzień</div><div class="m-btn ${fM==='month'?'active':''}" onclick="db.filter='month';render()">Ten Miesiąc</div><div class="m-btn ${fM==='all'?'active':''}" onclick="db.filter='all';render()">Całość</div></div>
+        <div class="dash-hero" style="padding-top:0;"><p>TWOJE PRAWDZIWE NETTO</p><h1 style="color:${n>=0?'var(--success)':'var(--danger)'}; font-size:3.8rem;">${n.toFixed(2)} zł</h1></div>
+        <div class="grid-2"><div class="box"><span style="color:var(--info)">Zysk na 1 godzinę</span><strong style="color:#fff">${rHr.toFixed(2)} zł/h</strong></div><div class="box"><span style="color:var(--quote)">Zysk na 1 kilometr</span><strong style="color:#fff">${rKm.toFixed(2)} zł/km</strong></div></div>
+        <div class="panel" style="border-color:var(--border); padding:25px;">
+            <div class="p-title">Wodospad Finansowy (P&L)</div>
+            <div class="fin-row"><span class="fin-label">Utarg Brutto z aplikacji</span><span class="fin-val" style="color:var(--success)">${g.toFixed(2)} zł</span></div>
+            <div class="fin-row"><span class="fin-label">Wydatki Zmienne (Garaż)</span><span class="fin-val" style="color:var(--danger)">-${ex.toFixed(2)} zł</span></div>
+            <div class="fin-row"><span class="fin-label">Paliwo z przejechanych tras</span><span class="fin-val" style="color:var(--fuel)">-${fc.toFixed(2)} zł</span></div>
+            ${cf > 0 ? `<div class="fin-row"><span class="fin-label" style="color:var(--info)">Prowizja Terminala (Karty)</span><span class="fin-val" style="color:var(--danger)">-${cf.toFixed(2)} zł</span></div>` : ''}
+            ${d.cfg.eType === 'pct' || pf > 0 ? `<div class="fin-row"><span class="fin-label">Prowizja Partnera (${(d.cfg.ePct*100).toFixed(1)}%)</span><span class="fin-val" style="color:var(--danger)">-${pf.toFixed(2)} zł</span></div>` : ''}
+            <div class="fin-row"><span class="fin-label">Podatek Dochodowy (${(d.cfg.tax*100).toFixed(1)}%)</span><span class="fin-val" style="color:var(--danger)">-${tx.toFixed(2)} zł</span></div>
+            <div class="fin-row" style="align-items:flex-start;"><span class="fin-label" style="flex-direction:column; align-items:flex-start; font-size:0.75rem;">Koszty Stałe (Odpis za dni pracy)<small style="color:#555; margin-top:4px;">Auto: ${d.cfg.cC} (${d.cfg.cType==='week'?'tydz':'msc'}) | Baza: ${d.cfg.bC} | Stałe: ${d.cfg.eC + d.cfg.iC}</small></span><span class="fin-val" style="color:var(--danger)">-${fix.toFixed(2)} zł</span></div>
+            <div class="fin-row" style="background:#09090b; margin-top:15px; padding:20px; border-radius:14px; border:1px solid var(--border);"><span class="fin-label" style="color:#fff; font-size:1.1rem;">CZYSTY ZYSK</span><span class="fin-val" style="font-size:1.5rem; color:${n>=0?'var(--success)':'var(--danger)'}">${n.toFixed(2)} zł</span></div>
+            <button class="btn" style="background:linear-gradient(135deg, #a855f7, #9333ea); color:#fff; margin-top:20px;" onclick="dGenRep(${g}, ${fc}, ${ex}, ${fix+pf+cf+tx}, ${n})">GENERUJ RAPORT DO SZEFA</button>
+        </div>
+        <div class="panel"><div class="p-title">Struktura Kosztów</div><div style="height:200px; position:relative;"><canvas id="ch-doughnut"></canvas></div></div>
+        <div class="panel"><div class="p-title">Skuteczność Logistyczna</div><div class="grid-2" style="padding:0; margin-bottom:5px;"><div class="box" style="padding:12px; background:var(--bg)"><span style="color:var(--danger)">Przejechane Pusto</span><strong style="color:#fff">${(k-pk).toFixed(1)} km</strong></div><div class="box" style="padding:12px; background:var(--bg)"><span style="color:var(--success)">Skuteczność Trasy</span><strong style="color:#fff">${eff.toFixed(1)}%</strong></div></div></div>
+        <div class="panel"><div class="p-title">Dziennik Zmian (${fM.toUpperCase()})</div>${fs.map(x=>`<div class="log-item" style="border-left-color:${x.n>=0?'var(--success)':'var(--danger)'}; flex-direction:column; align-items:flex-start; padding:15px;"><div style="display:flex; justify-content:space-between; width:100%; margin-bottom:5px;"><strong style="font-size:1.1rem;">${x.dt}</strong><strong style="color:${x.n>=0?'var(--success)':'var(--danger)'}; font-size:1.2rem;">${x.n.toFixed(2)} zł</strong></div><small style="color:var(--muted)">Czas w aucie: ${x.h.toFixed(1)}h | Przebieg: ${x.k}km</small></div>`).join('')||'<div style="text-align:center;color:var(--muted);font-size:0.85rem;padding:20px 0;">Brak danych w tym przedziale.</div>'}</div>
+        ` + nav;
+
         setTimeout(() => { if(window.dCh1) window.dCh1.destroy(); let ctx1 = document.getElementById('ch-doughnut').getContext('2d'); let labels = ['Paliwo', 'Wydatki', 'Podatek', 'Koszty Stałe']; let data = [fc, ex, tx, fix]; let colors = ['#f59e0b', '#ef4444', '#a855f7', '#3b82f6']; if(pf > 0) { labels.push('Prowizja Partnera'); data.push(pf); colors.push('#10b981'); } if(cf > 0) { labels.push('Terminal (Karty)'); data.push(cf); colors.push('#0ea5e9'); } window.dCh1 = new Chart(ctx1, { type: 'doughnut', data: { labels: labels, datasets: [{ data: data, backgroundColor: colors, borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: '#a1a1aa', font: {size: 11, family:'Inter'} } } }, cutout: '75%' } }); }, 100);
     }
 
     if(t === 'set') {
-        APP.innerHTML = hdr + `<button class="btn" style="background:#222; color:#fff; border:1px solid #333; margin: 15px; width:calc(100% - 30px);" onclick="db.tab='term';render()">Powrót do aplikacji</button><div class="dash-hero" style="padding-bottom:0; padding-top:10px;"><p>KONTROLA TWOJEJ FIRMY</p></div><div class="panel" style="border-color:var(--success)"><div class="p-title" style="color:var(--success)">Personalizacja & Motywacja</div><div class="inp-row"><div class="inp-group"><label>Twoje Imię</label><input type="text" id="us-name" value="${db.userName}"></div><div class="inp-group"><label>Dzienny Cel Finansowy (zł)</label><input type="number" id="us-goal" value="${d.cfg.goal}"></div></div></div><div class="panel" style="border-color:rgba(59, 130, 246, 0.4)"><div class="p-title" style="color:var(--driver)">Parametry Stałe i Umowy</div><div class="inp-row"><div class="inp-group"><label>Koszt Auta (zł)</label><input type="number" id="us-cc" value="${d.cfg.cC}"></div><div class="inp-group"><label>Okres</label><select id="us-ctype" style="width:100%;padding:16px;background:#09090b;border:1px solid var(--border);color:#fff;border-radius:14px;font-size:1.1rem;box-sizing:border-box;"><option value="week" ${d.cfg.cType==='week'?'selected':''}>Tygodniowo</option><option value="month" ${d.cfg.cType==='month'?'selected':''}>Miesięcznie</option></select></div></div><div class="inp-row"><div class="inp-group"><label>Aplikacja zł/mc</label><input type="number" id="us-bc" value="${d.cfg.bC}"></div><div class="inp-group"><label>Inne Stałe Koszty zł/mc</label><input type="number" id="us-ic" value="${d.cfg.iC || 0}"></div></div><div style="border-top:1px solid #333; margin:15px 0; padding-top:15px;"><label style="font-size:0.7rem; color:var(--info); font-weight:bold; margin-bottom:8px; display:block;">ZUS ORAZ PARTNER</label><select id="us-etype" onchange="dTogglePType('us')" style="width:100%;padding:16px;background:#09090b;border:1px solid var(--border);color:#fff;border-radius:14px;margin-bottom:10px;"><option value="flat" ${d.cfg.eType==='flat'?'selected':''}>Stała kwota (ZUS / Wypis)</option><option value="pct" ${d.cfg.eType==='pct'?'selected':''}>Procent od utargu (Prowizja Partnera)</option></select><div id="us-p-flat-box" style="display:${d.cfg.eType==='flat'?'block':'none'}"><input type="number" id="us-ec" value="${d.cfg.eC}" placeholder="Kwota zł/mc" style="width:100%;padding:16px;background:#09090b;border:1px solid var(--border);color:#fff;border-radius:14px;"></div><div id="us-p-pct-box" style="display:${d.cfg.eType==='pct'?'block':'none'}"><input type="number" id="us-epct" value="${(d.cfg.ePct*100).toFixed(0)}" placeholder="np. 50%" style="width:100%;padding:16px;background:#09090b;border:1px solid var(--driver);color:var(--driver);border-radius:14px;font-weight:bold;"></div></div><div class="inp-row"><div class="inp-group"><label>Podatek (%)</label><input type="number" id="us-tx" value="${(d.cfg.tax*100).toFixed(1)}" step="0.1"></div><div class="inp-group"><label>Terminal (%)</label><input type="number" id="us-cf" value="${(d.cfg.cardF*100).toFixed(1)}" step="0.1" style="color:var(--info); border-color:rgba(14,165,233,0.5);"></div></div><div style="background:var(--bg); padding:15px; border-radius:12px; margin:15px 0; text-align:center;"><small style="color:var(--muted)">Twoja Dniówka stała wynosi:</small><br><strong style="color:var(--danger); font-size:1.5rem;">${d.cfg.fix.toFixed(2)} zł / dzień</strong></div><button class="btn btn-driver" onclick="dSaveUS()">ZAKTUALIZUJ KOSZTY</button></div><div class="panel" style="border-color:rgba(245, 158, 11, 0.4)"><div class="p-title" style="color:var(--fuel)">Korekta Paliwa</div><div class="inp-group" style="margin-bottom:10px;"><label>Koszt przejechania 1 KM (zł)</label><input type="number" id="us-fc" value="${d.cfg.fuelPx.toFixed(2)}" step="0.01"></div><button class="btn" style="background:var(--fuel); color:#000;" onclick="dSaveFuel()">NADUPISZ KOSZT 1 KM</button></div><div class="panel" style="border-color:var(--quote)"><div class="p-title" style="color:var(--quote)">Zarządzanie Danymi (Kopie)</div><div class="grid-2" style="margin-bottom:0;"><button class="btn" style="background:rgba(255,255,255,0.1); color:#fff; border:1px solid var(--border);" onclick="exportDb()">💾 Pobierz</button><button class="btn" style="background:rgba(255,255,255,0.1); color:#fff; border:1px solid var(--border);" onclick="importDb()">📂 Wgraj</button></div></div><div class="panel" style="border-color:rgba(239,68,68,0.2)"><div class="p-title" style="color:var(--danger)">Reset Systemu</div><button class="btn btn-danger" style="background:rgba(239,68,68,0.15); color:var(--danger); border:none;" onclick="hardReset()">TWARDY RESET APLIKACJI</button></div>`;
+        APP.innerHTML = hdr + `
+        <button class="btn" style="background:#222; color:#fff; border:1px solid #333; margin: 15px; width:calc(100% - 30px);" onclick="db.tab='term';render()">Powrót do aplikacji</button>
+        <div class="dash-hero" style="padding-bottom:0; padding-top:10px;"><p>KONTROLA TWOJEJ FIRMY</p></div>
+        
+        <div class="panel" style="border-color:var(--success)">
+            <div class="p-title" style="color:var(--success)">Personalizacja & Motywacja</div>
+            <div class="inp-row"><div class="inp-group"><label>Twoje Imię</label><input type="text" id="us-name" value="${db.userName}"></div><div class="inp-group"><label>Dzienny Cel Finansowy (zł)</label><input type="number" id="us-goal" value="${d.cfg.goal}"></div></div>
+        </div>
+
+        <div class="panel" style="border-color:rgba(59, 130, 246, 0.4)">
+            <div class="p-title" style="color:var(--driver)">Parametry Stałe i Umowy</div>
+            <div class="inp-row">
+                <div class="inp-group"><label>Koszt Auta (zł)</label><input type="number" id="us-cc" value="${d.cfg.cC}"></div>
+                <div class="inp-group"><label>Okres</label><select id="us-ctype" style="width:100%;padding:16px;background:#09090b;border:1px solid var(--border);color:#fff;border-radius:14px;font-size:1.1rem;box-sizing:border-box;"><option value="week" ${d.cfg.cType==='week'?'selected':''}>Tygodniowo</option><option value="month" ${d.cfg.cType==='month'?'selected':''}>Miesięcznie</option></select></div>
+            </div>
+            <div class="inp-row"><div class="inp-group"><label>Aplikacja zł/mc</label><input type="number" id="us-bc" value="${d.cfg.bC}"></div><div class="inp-group"><label>Inne Stałe Koszty zł/mc</label><input type="number" id="us-ic" value="${d.cfg.iC || 0}"></div></div>
+            
+            <div style="border-top:1px solid #333; margin:15px 0; padding-top:15px;">
+                <label style="font-size:0.7rem; color:var(--info); font-weight:bold; margin-bottom:8px; display:block;">ZUS ORAZ PARTNER</label>
+                <select id="us-etype" onchange="dTogglePType('us')" style="width:100%;padding:16px;background:#09090b;border:1px solid var(--border);color:#fff;border-radius:14px;margin-bottom:10px;"><option value="flat" ${d.cfg.eType==='flat'?'selected':''}>Stała kwota (ZUS / Wypis)</option><option value="pct" ${d.cfg.eType==='pct'?'selected':''}>Procent od utargu (Prowizja Partnera)</option></select>
+                <div id="us-p-flat-box" style="display:${d.cfg.eType==='flat'?'block':'none'}"><input type="number" id="us-ec" value="${d.cfg.eC}" placeholder="Kwota zł/mc" style="width:100%;padding:16px;background:#09090b;border:1px solid var(--border);color:#fff;border-radius:14px;"></div>
+                <div id="us-p-pct-box" style="display:${d.cfg.eType==='pct'?'block':'none'}"><input type="number" id="us-epct" value="${(d.cfg.ePct*100).toFixed(0)}" placeholder="np. 50%" style="width:100%;padding:16px;background:#09090b;border:1px solid var(--driver);color:var(--driver);border-radius:14px;font-weight:bold;"></div>
+            </div>
+
+            <div class="inp-row"><div class="inp-group"><label>Podatek (%)</label><input type="number" id="us-tx" value="${(d.cfg.tax*100).toFixed(1)}" step="0.1"></div><div class="inp-group"><label>Terminal (%)</label><input type="number" id="us-cf" value="${(d.cfg.cardF*100).toFixed(1)}" step="0.1" style="color:var(--info); border-color:rgba(14,165,233,0.5);"></div></div>
+            <div style="background:var(--bg); padding:15px; border-radius:12px; margin:15px 0; text-align:center;"><small style="color:var(--muted)">Twoja Dniówka stała wynosi:</small><br><strong style="color:var(--danger); font-size:1.5rem;">${d.cfg.fix.toFixed(2)} zł / dzień</strong></div>
+            <button class="btn btn-driver" onclick="dSaveUS()">ZAKTUALIZUJ KOSZTY</button>
+        </div>
+        
+        <div class="panel" style="border-color:rgba(245, 158, 11, 0.4)"><div class="p-title" style="color:var(--fuel)">Korekta Paliwa</div><div class="inp-group" style="margin-bottom:10px;"><label>Koszt przejechania 1 KM (zł)</label><input type="number" id="us-fc" value="${d.cfg.fuelPx.toFixed(2)}" step="0.01"></div><button class="btn" style="background:var(--fuel); color:#000;" onclick="dSaveFuel()">NADUPISZ KOSZT 1 KM</button></div>
+        <div class="panel" style="border-color:var(--quote)"><div class="p-title" style="color:var(--quote)">Zarządzanie Danymi (Kopie)</div><div class="grid-2" style="margin-bottom:0;"><button class="btn" style="background:rgba(255,255,255,0.1); color:#fff; border:1px solid var(--border);" onclick="exportDb()">💾 Pobierz</button><button class="btn" style="background:rgba(255,255,255,0.1); color:#fff; border:1px solid var(--border);" onclick="importDb()">📂 Wgraj</button></div></div>
+        <div class="panel" style="border-color:rgba(239,68,68,0.2)"><div class="p-title" style="color:var(--danger)">Reset Systemu</div><button class="btn btn-danger" style="background:rgba(239,68,68,0.15); color:var(--danger); border:none;" onclick="hardReset()">TWARDY RESET APLIKACJI</button></div>
+        `;
     }
 }
 
@@ -550,6 +1022,7 @@ function dAddCrm() { let n = document.getElementById('dc-n').value; let ph = doc
 function dCrmBl(id) { let c = db.drv.clients.find(x=>x.id===id); if(c) { c.bl = !c.bl; save(); render(); } }
 function dCrmDel(id) { if(confirm("Usunąć klienta z bazy?")) { db.drv.clients = db.drv.clients.filter(x=>x.id!==id); save(); render(); } }
 
+// ODPALENIE
 render();
 </script>
 </body>
