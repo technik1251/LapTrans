@@ -27,19 +27,14 @@
   body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
   .app-container { max-width: 500px; margin: 0 auto; min-height: 100vh; padding-bottom: 90px; position: relative; }
   
-  /* Nowoczesne, szklane panele */
   .panel { background: linear-gradient(145deg, #18181b, #121214); border: 1px solid var(--border); border-radius: 24px; margin: 15px; padding: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.4); }
   .p-title { font-size: 0.8rem; font-weight: 800; color: var(--muted); text-transform: uppercase; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px; display: flex; justify-content: space-between; align-items: center; letter-spacing: 1px;}
   .form-section { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 18px; border-radius: 16px; margin-bottom: 15px; }
   .fs-title { font-size: 0.75rem; text-transform: uppercase; font-weight: 800; margin-bottom: 12px; color: var(--muted); display:flex; align-items:center; gap:8px;}
 
-  /* Przyciski 3D */
   .btn { width: 100%; padding: 18px; border-radius: 16px; border: none; font-weight: 900; font-size: 1rem; cursor: pointer; text-transform: uppercase; transition: all 0.2s; margin-top: 10px; box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
   .btn:active { transform: translateY(2px) scale(0.98); box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
   .btn-driver { background: linear-gradient(135deg, #3b82f6, #2563eb); color: #fff; box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3); } 
-  .btn-fleet { background: linear-gradient(135deg, #10b981, #059669); color: #000; }
-  .btn-cargo { background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: #fff; } 
-  .btn-sped { background: linear-gradient(135deg, #f59e0b, #d97706); color: #000; }
   .btn-home { background: linear-gradient(135deg, #14b8a6, #0f766e); color: #fff; box-shadow: 0 6px 20px rgba(20, 184, 166, 0.3);} 
   .btn-quote { background: linear-gradient(135deg, #d946ef, #c026d3); color: #fff; } 
   .btn-danger { background: linear-gradient(135deg, #ef4444, #b91c1c); color: #fff; box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3);}
@@ -57,7 +52,6 @@
   .w-title { font-size: 2.8rem; font-weight: 900; text-align: center; margin-bottom: 8px; letter-spacing: -2px; }
   .w-sub { color: var(--muted); text-align: center; margin-bottom: 35px; font-size: 1rem; font-weight: 400;}
   .opt-card { background: linear-gradient(145deg, #18181b, #121214); border: 2px solid var(--border); border-radius: 20px; padding: 24px; margin-bottom: 15px; cursor: pointer; display: flex; align-items: center; transition: 0.2s; box-shadow: 0 6px 15px rgba(0,0,0,0.3);}
-  .opt-card:active { transform: scale(0.98); }
   .opt-card.selected { border-width: 2px; background: rgba(255,255,255,0.03); }
   .opt-icon { font-size: 2.8rem; margin-right: 20px; }
   .opt-text h3 { margin: 0 0 5px 0; font-size: 1.2rem; font-weight: 800;}
@@ -65,10 +59,8 @@
 
   header { padding: 15px 20px; background: rgba(9, 9, 11, 0.85); border-bottom: 1px solid rgba(255,255,255,0.05); position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);}
   .logo { font-weight: 900; font-size: 1.2rem; cursor:pointer; display:flex; align-items:center; gap:8px; padding:8px 14px; background:rgba(255,255,255,0.05); border-radius:14px; transition:0.2s; border:1px solid rgba(255,255,255,0.05);}
-  .logo:active { transform: scale(0.95); background:rgba(255,255,255,0.1); }
   .badge { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.05); padding: 8px 14px; border-radius: 12px; font-weight: 800; font-size:0.85rem; }
   .settings-btn { font-size: 1.3rem; cursor: pointer; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 6px 12px; border-radius: 12px; display:flex; align-items:center; justify-content:center; transition:0.2s;}
-  .settings-btn:active { background:rgba(255,255,255,0.1); }
   
   .dash-hero { text-align: center; padding: 40px 0 25px; }
   .dash-hero p { margin: 0 0 8px 0; font-size: 0.75rem; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 2px; }
@@ -105,7 +97,6 @@
   @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6); } 70% { box-shadow: 0 0 0 20px rgba(34, 197, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
   .btn-live { animation: pulse 2s infinite; background: linear-gradient(135deg, #10b981, #059669); color: #fff; border: 2px solid #34d399; font-size:1.2rem; padding:25px;}
   .highlight-input { border-color: var(--success) !important; background: rgba(34, 197, 94, 0.15) !important; transition: 0.5s; box-shadow: 0 0 15px rgba(34,197,94,0.4)!important;}
-  
   .section-lbl { font-size: 0.75rem; color: var(--driver); font-weight: 900; text-transform: uppercase; letter-spacing: 1px; margin: 30px 15px 10px; border-bottom: 1px solid rgba(59,130,246,0.3); padding-bottom: 8px;}
 </style>
 </head>
@@ -143,7 +134,7 @@ let defaultDb = {
 
 let db;
 try {
-    db = JSON.parse(localStorage.getItem('laptrans_v88_db')) || defaultDb;
+    db = JSON.parse(localStorage.getItem('laptrans_v89_db')) || defaultDb;
     if (!db.home || !db.drv || !db.drv.cfg) { db = defaultDb; }
 } catch(e) { db = defaultDb; }
 
@@ -151,7 +142,7 @@ let wData = { p: 'apps', c: 'rent', e: 'partner', mainProfile: null };
 window.hMem = null; 
 const APP = document.getElementById('app');
 
-function save() { localStorage.setItem('laptrans_v88_db', JSON.stringify(db)); }
+function save() { localStorage.setItem('laptrans_v89_db', JSON.stringify(db)); }
 
 let dTSrc = null; let dTPay = null; let dQM = 'taxi'; let dQN = false; let dQV=0; let dQK=0; let dQM_T=0;
 
@@ -219,7 +210,6 @@ function render() {
     return rWiz();
 }
 
-// MOCKUPY FIRMOWE
 function rFlt() { APP.innerHTML = `<header><div class="logo" onclick="openSwitcher()">ŁAPTRANS <span style="color:var(--fleet)">⏷</span></div></header><div class="dash-hero"><h1 style="color:var(--fleet)">Moduł Floty</h1><p>Rozbudowa panelu trw...</p></div>`; }
 function rCrg() { APP.innerHTML = `<header><div class="logo" onclick="openSwitcher()">ŁAPTRANS <span style="color:var(--cargo)">⏷</span></div></header><div class="dash-hero"><h1 style="color:var(--cargo)">Przewoźnik TMS</h1><p>Rozbudowa panelu trwa...</p></div>`; }
 function rSped() { APP.innerHTML = `<header><div class="logo" onclick="openSwitcher()">ŁAPTRANS <span style="color:var(--sped)">⏷</span></div></header><div class="dash-hero"><h1 style="color:var(--sped)">Spedycja</h1><p>Rozbudowa panelu trwa...</p></div>`; }
@@ -307,7 +297,6 @@ function dFin() {
     db.drv.cfg.bC = b; db.drv.cfg.cC = c; db.drv.cfg.cType = cType; db.drv.cfg.eC = e; db.drv.cfg.iC = i; db.drv.cfg.eType = eTy; db.drv.cfg.ePct = ePct; 
     let dailyCar = (cType === 'week') ? (c / 7) : (c / 30); let dailyOther = (b + e + i) / 30; db.drv.cfg.fix = dailyCar + dailyOther;
     
-    // Zawsze odczytujemy podatek
     db.drv.cfg.tax = safeVal('wd-tx-v', 8.5) / 100; 
     db.drv.cfg.cardF = 0.015; db.drv.cfg.goal = 350;
     
@@ -327,7 +316,6 @@ function rHome() {
     if(!window.hMem && h.members.length > 0) window.hMem = h.members[0];
 
     let nav = `<div class="nav"><div class="nav-item ${t==='dash'?'act-home':''}" onclick="db.tab='dash';render()"><i>🏠</i>Portfel</div><div class="nav-item ${t==='exp'?'act-home':''}" onclick="db.tab='exp';render()"><i>💸</i>Wydatki</div><div class="nav-item ${t==='inc'?'act-home':''}" onclick="db.tab='inc';render()"><i>💵</i>Wpływy</div><div class="nav-item ${t==='stats'?'act-home':''}" onclick="db.tab='stats';render()"><i>📊</i>Ranking</div><div class="nav-item ${t==='plan'?'act-home':''}" onclick="db.tab='plan';render()"><i>🔮</i>Plany</div></div>`; 
-    
     let hdr = `<header><div class="logo" onclick="openSwitcher()">ŁAPTRANS <span style="color:var(--life)">⏷</span></div><div class="header-actions"><div class="badge" style="color:var(--life); border-color:rgba(20,184,166,0.3); background:rgba(20,184,166,0.1);">Rodzina</div><div class="settings-btn" onclick="db.tab='set';render()">⚙️</div></div></header>`; 
     
     let now = new Date(); let currentMonthNum = now.getMonth() + 1;
@@ -535,7 +523,9 @@ function rDrv() {
         
         let g=0, k=0, fc=0, tx=0, ex=0, pf=0, cf=0;
         fs.forEach(x=>{g+=x.g; k+=x.k; fc+=x.fc; tx+=x.tx; pf+=(x.pF||0); cf+=(x.cF||0);}); 
-        fe.forEach(x=> { if(x.ty !== 'amort') ex+=x.v; });
+        
+        // POPRAWKA: P&L zlicza jako wydatek garażowy TYLKO inne wpisy, ignorując tankowania (bo paliwo jest wyliczane z 'fc')
+        fe.forEach(x=> { if(x.ty === 'e') ex+=x.v; });
         
         let uniqueDays = new Set(fs.map(s => new Date(s.rD).toLocaleDateString())).size;
         if(uniqueDays === 0 && d.sh.on && fM === 'today') uniqueDays = 1; 
@@ -550,7 +540,7 @@ function rDrv() {
             <button class="btn btn-home" onclick="dTransferToHomeUI()">💸 PRZELEJ ZYSKI DO BUDŻETU DOMOWEGO</button>
         </div>
 
-        <div class="panel" style="padding:25px;"><div class="p-title">Wodospad Finansowy (P&L)</div><div class="fin-row"><span class="fin-label">Utarg Brutto z aplikacji</span><span class="fin-val" style="color:var(--success)">${g.toFixed(2)} zł</span></div><div class="fin-row"><span class="fin-label">Wydatki Garażowe</span><span class="fin-val" style="color:var(--danger)">-${ex.toFixed(2)} zł</span></div><div class="fin-row"><span class="fin-label">Paliwo z tras</span><span class="fin-val" style="color:var(--fuel)">-${fc.toFixed(2)} zł</span></div>${cf > 0 ? `<div class="fin-row"><span class="fin-label" style="color:var(--info)">Terminal</span><span class="fin-val" style="color:var(--danger)">-${cf.toFixed(2)} zł</span></div>` : ''}${pf > 0 ? `<div class="fin-row"><span class="fin-label">Prowizja Partnera</span><span class="fin-val" style="color:var(--danger)">-${pf.toFixed(2)} zł</span></div>` : ''}<div class="fin-row"><span class="fin-label">Podatek (VAT/Ryczałt)</span><span class="fin-val" style="color:var(--danger)">-${tx.toFixed(2)} zł</span></div><div class="fin-row" style="align-items:flex-start;"><div style="display:flex; flex-direction:column; max-width:70%;"><span class="fin-label" style="color:#fff;">Koszty Stałe (Odpis)</span><small style="color:var(--muted); font-size:0.7rem; margin-top:4px; line-height:1.4;">Za przepracowane: <strong>${uniqueDays} dni</strong><br>Odpis: <strong>${d.cfg.fix.toFixed(2)} zł/dzień</strong><br>Auto: ${d.cfg.cC} | Baza: ${d.cfg.bC} | Inne: ${d.cfg.eC + d.cfg.iC}</small></div><span class="fin-val" style="color:var(--danger); padding-top:2px;">-${fix.toFixed(2)} zł</span></div><div class="fin-row" style="background:#000; margin-top:15px; padding:20px; border-radius:14px; border:1px solid rgba(255,255,255,0.05);"><span class="fin-label" style="color:#fff; font-size:1.1rem;">CZYSTY ZYSK</span><span class="fin-val" style="font-size:1.5rem; color:${n>=0?'var(--success)':'var(--danger)'}">${n.toFixed(2)} zł</span></div></div><div class="panel"><div class="p-title">Struktura Kosztów</div><div style="height:200px; position:relative;"><canvas id="ch-doughnut"></canvas></div></div><div class="panel"><div class="p-title">Dziennik Zmian</div>${fs.map(x=>`<div class="log-item" style="border-left-color:${x.n>=0?'var(--success)':'var(--danger)'}; flex-direction:column; align-items:flex-start; padding:15px;"><div style="display:flex; justify-content:space-between; width:100%; margin-bottom:5px;"><strong style="font-size:1.1rem;">${x.dt}</strong><strong style="color:${x.n>=0?'var(--success)':'var(--danger)'}; font-size:1.2rem;">${x.n.toFixed(2)} zł</strong></div><small style="color:var(--muted)">Utarg: ${x.g.toFixed(2)} zł | Przebieg: ${x.k}km</small></div>`).join('')||'<div style="text-align:center;color:var(--muted);font-size:0.85rem;padding:20px 0;">Brak danych w tym przedziale.</div>'}</div>` + nav;
+        <div class="panel" style="padding:25px;"><div class="p-title">Wodospad Finansowy (P&L)</div><div class="fin-row"><span class="fin-label">Utarg Brutto z aplikacji</span><span class="fin-val" style="color:var(--success)">${g.toFixed(2)} zł</span></div><div class="fin-row"><span class="fin-label">Wydatki Garażowe (Inne niż paliwo)</span><span class="fin-val" style="color:var(--danger)">-${ex.toFixed(2)} zł</span></div><div class="fin-row"><span class="fin-label">Paliwo z tras (km × ${(d.cfg.fuelPx).toFixed(2)} zł)</span><span class="fin-val" style="color:var(--fuel)">-${fc.toFixed(2)} zł</span></div>${cf > 0 ? `<div class="fin-row"><span class="fin-label" style="color:var(--info)">Terminal</span><span class="fin-val" style="color:var(--danger)">-${cf.toFixed(2)} zł</span></div>` : ''}${pf > 0 ? `<div class="fin-row"><span class="fin-label">Prowizja Partnera</span><span class="fin-val" style="color:var(--danger)">-${pf.toFixed(2)} zł</span></div>` : ''}<div class="fin-row"><span class="fin-label">Podatek (VAT/Ryczałt ${(d.cfg.tax*100).toFixed(1)}%)</span><span class="fin-val" style="color:var(--danger)">-${tx.toFixed(2)} zł</span></div><div class="fin-row" style="align-items:flex-start;"><div style="display:flex; flex-direction:column; max-width:70%;"><span class="fin-label" style="color:#fff;">Koszty Stałe (Odpis)</span><small style="color:var(--muted); font-size:0.7rem; margin-top:4px; line-height:1.4;">Za przepracowane: <strong>${uniqueDays} dni</strong><br>Odpis: <strong>${d.cfg.fix.toFixed(2)} zł/dzień</strong><br>Auto: ${d.cfg.cC} | Baza: ${d.cfg.bC} | Inne: ${d.cfg.eC + d.cfg.iC}</small></div><span class="fin-val" style="color:var(--danger); padding-top:2px;">-${fix.toFixed(2)} zł</span></div><div class="fin-row" style="background:#000; margin-top:15px; padding:20px; border-radius:14px; border:1px solid rgba(255,255,255,0.05);"><span class="fin-label" style="color:#fff; font-size:1.1rem;">CZYSTY ZYSK</span><span class="fin-val" style="font-size:1.5rem; color:${n>=0?'var(--success)':'var(--danger)'}">${n.toFixed(2)} zł</span></div></div><div class="panel"><div class="p-title">Struktura Kosztów</div><div style="height:200px; position:relative;"><canvas id="ch-doughnut"></canvas></div></div><div class="panel"><div class="p-title">Dziennik Zmian</div>${fs.map(x=>`<div class="log-item" style="border-left-color:${x.n>=0?'var(--success)':'var(--danger)'}; flex-direction:column; align-items:flex-start; padding:15px;"><div style="display:flex; justify-content:space-between; width:100%; margin-bottom:5px;"><strong style="font-size:1.1rem;">${x.dt}</strong><strong style="color:${x.n>=0?'var(--success)':'var(--danger)'}; font-size:1.2rem;">${x.n.toFixed(2)} zł</strong></div><small style="color:var(--muted)">Utarg: ${x.g.toFixed(2)} zł | Przebieg: ${x.k}km</small></div>`).join('')||'<div style="text-align:center;color:var(--muted);font-size:0.85rem;padding:20px 0;">Brak danych w tym przedziale.</div>'}</div>` + nav;
         
         setTimeout(() => { 
             if(window.dCh1) window.dCh1.destroy(); 
@@ -572,7 +562,7 @@ function rDrv() {
     if(t === 'garage') {
         let fS = calcFuelioStats();
         let todayStr = new Date().toISOString().split('T')[0];
-        APP.innerHTML = hdr + `<div class="dash-hero" style="padding-bottom:5px;"><p>ŚREDNIE SPALANIE (Od ostatniego tankowania)</p><h1 style="color:var(--fuel); font-size:4rem;">${fS.l1.toFixed(1)} <span style="font-size:1.5rem; color:var(--muted)">L/100</span></h1></div><div class="grid-2" style="padding:0 15px; margin-bottom:20px;"><div class="box" style="border-color:rgba(245,158,11,0.3); background:rgba(245,158,11,0.05); align-items:center;"><span style="color:var(--fuel)">Koszt 100 KM</span><strong style="color:#fff">${fS.c1.toFixed(2)} zł</strong></div><div class="box" style="border-color:rgba(245,158,11,0.3); background:rgba(245,158,11,0.05); align-items:center;"><span style="color:var(--fuel)">Koszt 1 KM</span><strong style="color:#fff">${d.cfg.fuelPx.toFixed(2)} zł</strong></div></div><div class="panel" style="border-color:var(--fuel); background: linear-gradient(180deg, #18181b 0%, #09090b 100%);"><div class="p-title" style="color:var(--fuel)">⛽ Inteligentny Dziennik Tankowań</div><div class="inp-row"><div class="inp-group"><label>Licznik Główny (KM)</label><input type="number" id="df-o" placeholder="np. 155000"></div><div class="inp-group"><label>Wlane Litry</label><input type="number" id="df-l" step="0.1" placeholder="0.0"></div></div><div class="inp-row"><div class="inp-group"><label>Rachunek (zł)</label><input type="number" id="df-v" placeholder="0.00"></div><div class="inp-group"><label>Data</label><input type="date" id="df-date" value="${todayStr}"></div></div><div class="inp-group" style="margin-bottom:15px;"><label>Pod korek?</label><select id="df-f"><option value="1">Tak (Oblicz dokładne spalanie)</option><option value="0">Nie</option></select></div><button class="btn" style="background:var(--fuel); color:#000;" onclick="dAF()">ZAPISZ PARAGON ZE STACJI</button></div><div class="panel" style="border-color:rgba(239,68,68,0.4)"><div class="p-title" style="color:var(--danger)">🔧 Inne Wydatki Operacyjne</div><div class="inp-row"><div class="inp-group" style="flex:2"><label>Kategoria Wydatku</label><select id="de-c"><option value="✨ Myjnia / Kosmetyka">✨ Myjnia / Kosmetyka</option><option value="🛠️ Serwis / Części">🛠️ Serwis / Części</option><option value="💧 Płyny / Eksploatacja">💧 Płyny / Eksploatacja</option><option value="🛡️ Ubezpieczenie">🛡️ Ubezpieczenie</option><option value="🅿️ Parking / Autostrada">🅿️ Parking / Autostrada</option><option value="📦 Inne koszty">📦 Inne koszty</option></select></div><div class="inp-group"><label>Kwota (zł)</label><input type="number" id="de-v" placeholder="0.00"></div></div><div class="inp-group" style="margin-bottom:15px;"><label>Data Wydatku</label><input type="date" id="de-date" value="${todayStr}"></div><button class="btn btn-danger" style="background:var(--danger); color:#fff;" onclick="dAE()">ZAPISZ WYDATEK W BAZIE</button></div><div class="section-lbl" style="color:#fff; border-color:rgba(255,255,255,0.1);">Historia Garażu</div><div style="padding: 0 15px;">${renderGarageHistory()}</div>` + nav;
+        APP.innerHTML = hdr + `<div class="dash-hero" style="padding-bottom:5px;"><p>ŚREDNIE SPALANIE (Ostatnie pełne)</p><h1 style="color:var(--fuel); font-size:4rem;">${fS.l1.toFixed(1)} <span style="font-size:1.5rem; color:var(--muted)">L/100</span></h1></div><div class="grid-2" style="padding:0 15px; margin-bottom:20px;"><div class="box" style="border-color:rgba(245,158,11,0.3); background:rgba(245,158,11,0.05); align-items:center;"><span style="color:var(--fuel)">Koszt 100 KM</span><strong style="color:#fff">${fS.c1.toFixed(2)} zł</strong></div><div class="box" style="border-color:rgba(245,158,11,0.3); background:rgba(245,158,11,0.05); align-items:center;"><span style="color:var(--fuel)">Koszt 1 KM</span><strong style="color:#fff">${d.cfg.fuelPx.toFixed(2)} zł</strong></div></div><div class="panel" style="border-color:var(--fuel); background: linear-gradient(180deg, #18181b 0%, #09090b 100%);"><div class="p-title" style="color:var(--fuel)">⛽ Inteligentny Dziennik Tankowań</div><div class="inp-row"><div class="inp-group"><label>Licznik Główny (KM)</label><input type="number" id="df-o" placeholder="np. 155000"></div><div class="inp-group"><label>Wlane Litry</label><input type="number" id="df-l" step="0.1" placeholder="0.0"></div></div><div class="inp-row"><div class="inp-group"><label>Rachunek (zł)</label><input type="number" id="df-v" placeholder="0.00"></div><div class="inp-group"><label>Data</label><input type="date" id="df-date" value="${todayStr}"></div></div><div class="inp-group" style="margin-bottom:15px;"><label>Pod korek?</label><select id="df-f"><option value="1">Tak (Oblicz dokładne spalanie)</option><option value="0">Nie</option></select></div><button class="btn" style="background:var(--fuel); color:#000;" onclick="dAF()">ZAPISZ PARAGON ZE STACJI</button></div><div class="panel" style="border-color:rgba(239,68,68,0.4)"><div class="p-title" style="color:var(--danger)">🔧 Inne Wydatki Operacyjne</div><div class="inp-row"><div class="inp-group" style="flex:2"><label>Kategoria Wydatku</label><select id="de-c"><option value="✨ Myjnia / Kosmetyka">✨ Myjnia / Kosmetyka</option><option value="🛠️ Serwis / Części">🛠️ Serwis / Części</option><option value="💧 Płyny / Eksploatacja">💧 Płyny / Eksploatacja</option><option value="🛡️ Ubezpieczenie">🛡️ Ubezpieczenie</option><option value="🅿️ Parking / Autostrada">🅿️ Parking / Autostrada</option><option value="📦 Inne koszty">📦 Inne koszty</option></select></div><div class="inp-group"><label>Kwota (zł)</label><input type="number" id="de-v" placeholder="0.00"></div></div><div class="inp-group" style="margin-bottom:15px;"><label>Data Wydatku</label><input type="date" id="de-date" value="${todayStr}"></div><button class="btn btn-danger" style="background:var(--danger); color:#fff;" onclick="dAE()">ZAPISZ WYDATEK W BAZIE</button></div><div class="section-lbl" style="color:#fff; border-color:rgba(255,255,255,0.1);">Historia Garażu</div><div style="padding: 0 15px;">${renderGarageHistory()}</div>` + nav;
     }
 
     if(t === 'crm') {
@@ -627,16 +617,35 @@ window.execTransfer = function() {
     }
 }
 
-// TAXI LOGIC
-function dTC(t,v,el) { if(t==='s') dTSrc=v; else dTPay=v; el.parentElement.querySelectorAll('.chip').forEach(c=>{ c.style.background='rgba(255,255,255,0.03)'; c.style.color='var(--muted)'; }); if(v==='Gotówka') { el.style.background='var(--success)'; el.style.color='#000'; } else if(v==='Karta') { el.style.background='var(--info)'; el.style.color='#fff'; } else { el.style.background='var(--driver)'; el.style.color='#fff'; } }
-function dStartS() { let o=safeVal('ds-o'); if(!o) return; db.drv.odo=o; db.drv.sh={on:true, o, t:Date.now(), tr:[]}; db.drv.liveRideStart=null; save(); render(); }
-function dQC() { let q=db.drv.q; let fC=db.drv.cfg.fuelPx; let tax=db.drv.cfg.tax; let v=0,k=0,m=0,f=0; if(dQM==='taxi') { let k1=safeVal('dqk1'); let k2=safeVal('dqk2'); m=safeVal('dqm'); let disc=safeVal('dqd'); k=k1+k2; let base=q.s+(k1*(dQN?q.t2:q.t1))+(k2*(dQN?q.t4:q.t3))+(m*(q.w/60)); v=base-(base*(disc/100)); } else { k=safeVal('dqfk'); let r=safeVal('dqfr', 3.00); v=k*r; } dQK=k; dQM_T=m; dQV=v; let elT=document.getElementById('dqt'); if(elT)elT.innerText=v.toFixed(2)+" zł"; }
-function dQB() { if(!db.drv.sh.on) return alert("Otwórz zmianę!"); if(dQV>0) { db.drv.sh.tr.unshift({id:Date.now(),v:dQV,k:dQK,m:dQM_T,s:'Wycena',p:'Gotówka'}); save(); db.tab='term'; render(); } }
-function dSaveQC() { db.drv.q = { s:safeVal('dcs'), w:safeVal('dcw'), t1:safeVal('dct1'), t2:safeVal('dct2'), t3:safeVal('dct3'), t4:safeVal('dct4') }; save(); }
+// ==========================================
+// PALIWO (FUELIO LOGIC) & WYDATKI GARAŻU
+// ==========================================
+function recalcFuelHistory() {
+    db.drv.fuel.sort((a,b) => a.o - b.o);
+    for(let i=0; i<db.drv.fuel.length; i++) {
+        let curr = db.drv.fuel[i];
+        let expRef = db.drv.exp.find(e => e.ty === 'f' && e.odo === curr.o);
+        if(!expRef) continue;
+        
+        if(i > 0) {
+            let prev = db.drv.fuel[i-1];
+            let dist = curr.o - prev.o;
+            if(dist > 0) {
+                expRef.dist = dist;
+                expRef.l100 = (curr.l / dist) * 100;
+                expRef.cpkm = curr.v / dist;
+                if(curr.isF === 1) db.drv.cfg.fuelPx = expRef.cpkm; 
+            } else {
+                expRef.dist = 0; expRef.l100 = 0; expRef.cpkm = 0;
+            }
+        } else {
+            expRef.dist = 0; expRef.l100 = 0; expRef.cpkm = 0;
+        }
+    }
+    db.drv.exp.sort((a,b) => new Date(b.rD) - new Date(a.rD));
+    save();
+}
 
-// -----------------------------------------------------
-// FUELIO LOGIC W GARAŻU (STATYSTYKI DLA POSZCZEGÓLNYCH TANKOWAŃ)
-// -----------------------------------------------------
 function calcFuelioStats() { 
     let l=db.drv.fuel; let s={l1:0,c1:0,ck:db.drv.cfg.fuelPx}; 
     if(l.length>=2){ 
@@ -659,32 +668,17 @@ function calcFuelioStats() {
 
 function dAF() { 
     let o=safeVal('df-o'); let l=safeVal('df-l'); let v=safeVal('df-v'); let fEl=document.getElementById('df-f'); let f=fEl?parseInt(fEl.value):1; 
-    if(!o||!l||!v) return alert("Wypełnij dane ze stacji!"); 
     let dVal = document.getElementById('df-date').value;
     let dObj = dVal ? new Date(dVal) : new Date(); if(dVal) dObj.setHours(12,0,0);
     
-    let dist = 0, l100 = 0, cpkm = 0;
-    let prevF = db.drv.fuel.filter(x => x.o < o).sort((a,b) => b.o - a.o)[0];
-    if (prevF) {
-        dist = o - prevF.o;
-        if(dist > 0) {
-            l100 = (l / dist) * 100;
-            cpkm = v / dist;
-            if(f === 1) db.drv.cfg.fuelPx = cpkm;
-        }
-    }
+    if(!o||!l||!v) return alert("Wypełnij kilometry, litry i kwotę!"); 
     
     db.drv.odo=o; 
     db.drv.fuel.push({o,l,v,isF:f, rD:dObj.toISOString()});
-    db.drv.fuel.sort((a,b) => b.o - a.o);
+    db.drv.exp.push({id:Date.now(), rD:dObj.toISOString(), d:`Tankowanie`, v, dt:dObj.toLocaleDateString('pl-PL'), ty:'f', l, odo:o, dist:0, l100:0, cpkm:0, isF:f}); 
     
-    db.drv.exp.push({
-        id:Date.now(), rD:dObj.toISOString(), 
-        d:`⛽ Tankowanie`, v, dt:dObj.toLocaleDateString('pl-PL'), ty:'f',
-        l, odo:o, dist, l100, cpkm, isF:f
-    }); 
-    db.drv.exp.sort((a,b) => new Date(b.rD) - new Date(a.rD));
-    save(); render(); 
+    recalcFuelHistory();
+    render(); 
 }
 
 function dAE() { 
@@ -698,35 +692,63 @@ function dAE() {
     } 
 }
 
+function dDelExp(id) {
+    if(confirm("Na pewno usunąć ten wpis? Aplikacja przeliczy koszty od nowa.")) {
+        let exp = db.drv.exp.find(x => x.id === id);
+        if(exp && exp.ty === 'f') {
+            db.drv.fuel = db.drv.fuel.filter(f => f.o !== exp.odo);
+        }
+        db.drv.exp = db.drv.exp.filter(x => x.id !== id);
+        recalcFuelHistory();
+        render();
+    }
+}
+
 function renderGarageHistory() { 
     return db.drv.exp.map(x => { 
         if(x.ty === 'f') {
             let dist = x.dist || 0; let l100 = x.l100 || 0; let cpkm = x.cpkm || 0; let l = x.l || 0; let odo = x.odo || 0; let full = x.isF === 1 ? 'Pod korek' : 'Częściowo';
-            let statsHtml = dist > 0 
-                ? `<div style="display:flex; justify-content:space-between; width:100%; margin-top:12px; padding-top:12px; border-top:1px dashed rgba(255,255,255,0.1); font-size:0.8rem;">
-                     <div style="text-align:center;"><span style="color:var(--muted); font-size:0.65rem; text-transform:uppercase;">Dystans</span><br><strong style="color:#fff;">${dist} km</strong></div>
-                     <div style="text-align:center;"><span style="color:var(--muted); font-size:0.65rem; text-transform:uppercase;">Spalanie</span><br><strong style="color:var(--info);">${l100.toFixed(1)} L</strong></div>
-                     <div style="text-align:center;"><span style="color:var(--muted); font-size:0.65rem; text-transform:uppercase;">Koszt/KM</span><br><strong style="color:var(--danger);">${cpkm.toFixed(2)} zł</strong></div>
-                   </div>` 
-                : `<div style="margin-top:10px; font-size:0.75rem; color:var(--muted); text-align:center; width:100%;">Zatankuj ponownie, aby obliczyć spalanie.</div>`;
+            let pricePerL = l > 0 ? (x.v / l).toFixed(2) : 0;
             
-            return `<div class="log-item" style="border-left-color:var(--fuel); flex-direction:column; align-items:flex-start; background:linear-gradient(145deg, #18181b, #121214);">
-                <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
-                    <div><strong style="color:#fff; font-size:1.1rem;">${x.d} <span style="color:var(--fuel)">${l}L</span></strong><br><small style="color:var(--muted)">${x.dt} • ODO: <span style="color:#fff">${odo}</span> (${full})</small></div>
-                    <strong style="color:var(--fuel); font-size:1.2rem;">-${x.v.toFixed(2)} zł</strong>
-                </div>${statsHtml}
+            return `<div class="panel" style="padding:15px; border-color:var(--fuel); background:linear-gradient(145deg, #18181b, #121214); margin:0 0 15px 0;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+                    <div style="display:flex; gap:12px; align-items:center;">
+                        <div style="background:rgba(245,158,11,0.1); color:var(--fuel); font-size:1.8rem; padding:10px; border-radius:50%; width:40px; height:40px; display:flex; align-items:center; justify-content:center;">⛽</div>
+                        <div>
+                            <strong style="color:#fff; font-size:1.1rem;">${x.dt}</strong>
+                            <br><small style="color:var(--muted)">ODO: ${odo} km ${dist > 0 ? `(+${dist} km)` : ''}</small>
+                        </div>
+                    </div>
+                    <div style="text-align:right;">
+                        <strong style="color:var(--fuel); font-size:1.3rem;">-${x.v.toFixed(2)} zł</strong>
+                        <br><button onclick="dDelExp(${x.id})" style="background:transparent; border:none; color:var(--danger); font-size:0.75rem; font-weight:bold; cursor:pointer; padding:5px 0;">USUŃ</button>
+                    </div>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:0.85rem; color:var(--text); margin-bottom:12px; padding-left:62px;">
+                    <span>💧 ${l} L</span>
+                    <span style="color:var(--muted)">${pricePerL} zł/L</span>
+                    <span style="color:var(--muted)">${full}</span>
+                </div>
+                ${dist > 0 ? `
+                <div style="display:flex; justify-content:space-between; padding-top:12px; border-top:1px dashed rgba(255,255,255,0.1); margin-left:62px;">
+                    <div style="text-align:left;"><span style="color:var(--muted); font-size:0.65rem; text-transform:uppercase;">Spalanie</span><br><strong style="color:var(--info); font-size:1rem;">${l100.toFixed(2)} L/100km</strong></div>
+                    <div style="text-align:right;"><span style="color:var(--muted); font-size:0.65rem; text-transform:uppercase;">Koszt / 1km</span><br><strong style="color:var(--danger); font-size:1rem;">${cpkm.toFixed(2)} zł/km</strong></div>
+                </div>` : `<div style="padding-top:10px; border-top:1px dashed rgba(255,255,255,0.1); margin-left:62px; font-size:0.75rem; color:var(--muted);">Kolejne tankowanie obliczy spalanie.</div>`}
             </div>`;
         } else {
             let col = x.ty==='amort' ? 'var(--info)' : 'var(--danger)'; let pref = x.ty==='amort' ? '' : '-';
-            return `<div class="log-item" style="border-left-color:${col}; background:linear-gradient(145deg, #18181b, #121214);"><div><strong style="color:#fff; font-size:1.05rem;">${x.d}</strong><br><small style="color:var(--muted)">${x.dt}</small></div><strong style="color:${col}">${pref}${x.v.toFixed(2)} zł</strong></div>`; 
+            return `<div class="panel" style="padding:15px; border-color:${col}; background:linear-gradient(145deg, #18181b, #121214); margin:0 0 15px 0; display:flex; justify-content:space-between; align-items:center;">
+                <div><strong style="color:#fff; font-size:1.1rem;">${x.d}</strong><br><small style="color:var(--muted)">${x.dt}</small></div>
+                <div style="text-align:right;"><strong style="color:${col}; font-size:1.2rem;">${pref}${x.v.toFixed(2)} zł</strong><br><button onclick="dDelExp(${x.id})" style="background:transparent; border:none; color:var(--danger); font-size:0.75rem; font-weight:bold; cursor:pointer; padding:5px 0;">USUŃ</button></div>
+            </div>`; 
         }
-    }).join('') || '<div style="text-align:center;color:var(--muted);padding:10px;font-size:0.8rem;">Brak wpisów z garażu.</div>'; 
+    }).join('') || '<div style="text-align:center;color:var(--muted);padding:10px;font-size:0.8rem;">Brak wpisów w garażu.</div>'; 
 }
 
+// INNE LOGIKI TAXI
 function dAddT() { let v=safeVal('dt-v'); let k=safeVal('dt-k'); let m=safeVal('dt-m'); let cIdel=document.getElementById('dt-cid'); let cId=cIdel ? parseInt(cIdel.value)||null : null; if(!v)return; db.drv.sh.tr.unshift({id:Date.now(),v,k,m,s:dTSrc,p:dTPay,c:cId}); save(); render(); }
 function dDelT(id) { db.drv.sh.tr=db.drv.sh.tr.filter(x=>x.id!==id); save(); render(); }
 
-// PIĘKNE POWIADOMIENIE O ZAKOŃCZENIU ZMIANY
 function dEndS() { 
     let e=safeVal('de-o'); 
     let odoInput = document.getElementById('de-o');
@@ -748,22 +770,11 @@ function dEndS() {
             <div style="font-size:4rem; margin-bottom:10px;">🏁</div>
             <h2 style="color:var(--success); margin:0 0 10px 0; font-weight:900; font-size:1.8rem; letter-spacing:-1px;">ZMIANA ZAKOŃCZONA</h2>
             <p style="color:var(--muted); font-size:0.9rem; margin-bottom:20px;">Dobra robota! Wyniki zostały zapisane w systemie.</p>
-            
             <div style="background:#000; border:1px solid rgba(255,255,255,0.05); padding:20px; border-radius:16px; margin-bottom:20px; box-shadow:inset 0 2px 10px rgba(0,0,0,0.5);">
-                <div style="display:flex; justify-content:space-between; margin-bottom:12px; align-items:center;">
-                    <span style="color:var(--muted); font-size:0.85rem; text-transform:uppercase; font-weight:bold;">Utarg Brutto:</span>
-                    <strong style="color:var(--success); font-size:1.3rem;">${g.toFixed(2)} zł</strong>
-                </div>
-                <div style="display:flex; justify-content:space-between; margin-bottom:12px; align-items:center;">
-                    <span style="color:var(--muted); font-size:0.85rem; text-transform:uppercase; font-weight:bold;">Przejechano:</span>
-                    <strong style="color:#fff; font-size:1.2rem;">${k} km</strong>
-                </div>
-                <div style="display:flex; justify-content:space-between; border-top:1px dashed rgba(255,255,255,0.1); padding-top:12px; align-items:center;">
-                    <span style="color:var(--muted); font-size:0.85rem; text-transform:uppercase; font-weight:bold;">Szacowany Zysk:</span>
-                    <strong style="color:${n>=0?'var(--success)':'var(--danger)'}; font-size:1.4rem;">${n.toFixed(2)} zł</strong>
-                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:12px; align-items:center;"><span style="color:var(--muted); font-size:0.85rem; text-transform:uppercase; font-weight:bold;">Utarg Brutto:</span><strong style="color:var(--success); font-size:1.3rem;">${g.toFixed(2)} zł</strong></div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:12px; align-items:center;"><span style="color:var(--muted); font-size:0.85rem; text-transform:uppercase; font-weight:bold;">Przejechano:</span><strong style="color:#fff; font-size:1.2rem;">${k} km</strong></div>
+                <div style="display:flex; justify-content:space-between; border-top:1px dashed rgba(255,255,255,0.1); padding-top:12px; align-items:center;"><span style="color:var(--muted); font-size:0.85rem; text-transform:uppercase; font-weight:bold;">Szacowany Zysk:</span><strong style="color:${n>=0?'var(--success)':'var(--danger)'}; font-size:1.4rem;">${n.toFixed(2)} zł</strong></div>
             </div>
-            
             <button class="btn" style="background:linear-gradient(135deg, var(--success), #059669); color:#000; font-size:1.1rem; padding:20px;" onclick="document.getElementById('m-summary').remove();">ZOBACZ STATYSTYKI</button>
         </div>
     </div>`;
