@@ -24,6 +24,13 @@ let db;
 try {
     db = JSON.parse(localStorage.getItem('styre_v101_db')) || defaultDb;
     if (!db.home || !db.drv || !db.drv.cfg) { db = defaultDb; }
+    
+    // BEZPIECZNIKI: Dodawanie brakujących tablic w przypadku starych zapisów w telefonie (To tu był błąd z przyciskiem startu!)
+    if (!db.drv.clients) db.drv.clients = [];
+    if (!db.drv.fuel) db.drv.fuel = [];
+    if (!db.drv.exp) db.drv.exp = [];
+    if (!db.drv.h) db.drv.h = [];
+    
     if (db.drv.sh && !db.drv.sh.shiftStart) { db.drv.sh.shiftStart = db.drv.sh.t || Date.now(); } 
     if (db.drv.sh && db.drv.sh.sPT === undefined) { db.drv.sh.sPT = 0; db.drv.sh.sPS = null; }
     if (db.drv.sh && db.drv.sh.rWT === undefined) { db.drv.sh.rWT = 0; db.drv.sh.rWS = null; }
@@ -197,8 +204,7 @@ window.dFin = function() {
     if(wData.e === 'partner') { let pTypeEl = document.getElementById('wd-p-type'); eTy = pTypeEl ? pTypeEl.value : 'flat'; if(eTy === 'flat') { e = window.safeVal('wd-p-v'); } else { ePct = window.safeVal('wd-p-pct') / 100; } } else { e = window.safeVal('wd-j-z'); } 
     db.drv.cfg.bC = b; db.drv.cfg.cC = c; db.drv.cfg.cType = cType; db.drv.cfg.eC = e; db.drv.cfg.iC = i; db.drv.cfg.eType = eTy; db.drv.cfg.ePct = ePct; 
     
-    // Zapisujemy "gołe" koszty do bazy. Przestajemy liczyć fix 30-dniowy. Będziemy to liczyć dynamicznie.
-    db.drv.cfg.fix = 0; // Usunięte stare, sztywne wyliczanie!
+    db.drv.cfg.fix = 0; // Usunięte stare, sztywne wyliczanie! (Wszystko liczymy na czysto w zakładce stats)
     
     db.drv.cfg.tax = window.safeVal('wd-tx-v', 8.5) / 100; db.drv.cfg.cardF = 0.015; db.drv.cfg.goal = 350;
     db.role = 'drv'; db.tab = 'term'; db.init = true; window.save(); window.dSessionInit(); window.render(); 
@@ -254,7 +260,7 @@ window.hDelMem = function(name) {
 
 // AUTOMATYZACJA - STAŁE KOSZTY I WPŁYWY
 window.hCheckAuto = function() {
-    let currentMonth = window.getLocalYMD().slice(0, 7); // Format: YYYY-MM używa lokalnej daty!
+    let currentMonth = window.getLocalYMD().slice(0, 7); 
     if(db.home.lastAuto !== currentMonth && db.home.recurring && db.home.recurring.length > 0) {
         let added = 0;
         let dObj = new Date();
@@ -443,7 +449,7 @@ window.rHome = function() {
                 <div style="width:${sumExp > 0 ? (sumFixed/sumExp)*100 : 0}%; background:#f59e0b; height:100%;"></div>
                 <div style="width:${sumExp > 0 ? (sumVar/sumExp)*100 : 0}%; background:#0ea5e9; height:100%;"></div>
             </div>
-            <p style="font-size:0.7rem; color:var(--muted); text-align:center; margin-top:10px;">Opłaty stałe (Czynsz, Media, Internet, Kredyt) stanowią ${(sumExp > 0 ? (sumFixed/sumExp)*100 : 0).toFixed(0)}% Twoich wydatków.</p>
+            <p style="font-size:0.7rem; color:var(--muted); text-align:center; margin-top:10px;">Opłaty stałe (Czynsz, Media, Internet, Kredyt, Oszczędności) stanowią ${(sumExp > 0 ? (sumFixed/sumExp)*100 : 0).toFixed(0)}% Twoich wydatków.</p>
         </div>
 
         <div class="panel" style="padding: 20px;">
@@ -591,7 +597,7 @@ if(!window.clockInt) {
 }
 
 // ----------------------------------------------------
-// MODAL ZAKOŃCZENIA ZMIANY (BEZ WIELKIEGO FORMULARZA)
+// MODAL ZAKOŃCZENIA ZMIANY (BEZ WIELKIEGO FORMULARZA NA DOLE)
 // ----------------------------------------------------
 window.openEndShiftModal = function() {
     let diffHrs = 0; let diffMins = 0; let autoHw = 0;
@@ -726,6 +732,7 @@ window.rDrv = function() {
 
             ${window.dInputMode !== 'weekly' ? `
                 <div class="form-section" style="padding:10px; margin-bottom:10px;"><div class="fs-title" style="margin-bottom:6px;">Źródło & Płatność</div><div class="chip-box" style="margin-bottom:8px; padding-bottom:0;">${ch1}</div>${otherSrcHtml}<div class="chip-box" style="margin-bottom:0; padding-bottom:0;">${ch2}</div></div>
+                <div class="inp-group" style="margin-bottom:15px;"><label>Zwiąż z Klientem VIP</label><select id="dt-cid"><option value="">-- Zwykły kurs --</option>${clientOpts}</select></div>
                 <div class="form-section" style="padding:15px; border-color:rgba(59,130,246,0.3); background:rgba(59,130,246,0.05);"><input type="number" id="dt-v" class="big-inp" placeholder="Kwota z apki (0.00)" style="color:var(--driver); border:none; background:rgba(0,0,0,0.5);"></div>
                 <div class="inp-row"><div class="inp-group"><input type="number" id="dt-m" placeholder="Czas (Min)"></div><div class="inp-group"><input type="number" id="dt-k" placeholder="Dystans (KM)"></div></div>
                 <button class="btn btn-driver" style="margin-top:10px; padding:15px;" onclick="window.dAddT()">DODAJ KURS DO PORTFELA</button>
@@ -842,7 +849,7 @@ window.rDrv = function() {
         
         <div class="dash-hero" style="padding-top:0;">
             <p>TWOJE PRAWDZIWE NETTO</p>
-            <h1 style="color:${n>=0?'var(--success)':'var(--danger)'}; font-size:3.5rem;">${n.toFixed(2)} zł</h1>
+            <h1 style="color:${n>=0?'var(--success)':'var(--danger)'}; font-size:3.8rem;">${n.toFixed(2)} zł</h1>
         </div>
         
         <div class="grid-2">
@@ -953,496 +960,4 @@ window.rDrv = function() {
         APP.innerHTML = hdr + `
         <div class="dash-hero" style="padding-bottom:5px;"><p>INTELIGENTNA WYCENA (MAPY)</p></div>
         <div class="panel" style="border-color:rgba(217, 70, 239, 0.4)">
-            <div class="form-section" style="padding:15px;">
-                <div class="inp-group" style="margin-bottom:10px;"><label style="color:var(--success)">🟢 Adres początkowy</label><input type="text" id="dq-start" placeholder="np. Dworzec Główny" style="border-color:var(--success);"></div>
-                <div class="inp-group"><label style="color:var(--danger)">🔴 Adres docelowy</label><input type="text" id="dq-end" placeholder="np. Powstańców Warszawy 1, Stargard" style="border-color:var(--danger);"></div>
-                <button class="btn btn-quote" style="margin-top:15px; padding:15px;" onclick="window.calculateRouteAuto()">🔍 WYZNACZ TRASĘ I CENĘ</button>
-            </div>
-            <div id="map-container" style="display:none; margin-top:20px;">
-                <div id="map" style="height: 250px; border-radius: 16px; border: 1px solid var(--border); box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);"></div>
-                <div style="display:flex; justify-content:space-between; margin-top:10px; padding:10px; background:rgba(255,255,255,0.02); border-radius:12px;">
-                    <div style="text-align:center; flex:1;"><span style="font-size:0.7rem; color:var(--muted); text-transform:uppercase;">Dystans</span><br><strong id="res-km" style="color:#fff; font-size:1.2rem;">0 km</strong></div>
-                    <div style="text-align:center; flex:1;"><span style="font-size:0.7rem; color:var(--muted); text-transform:uppercase;">Czas jazdy</span><br><strong id="res-min" style="color:#fff; font-size:1.2rem;">0 min</strong></div>
-                </div>
-                <div class="chip-box" style="margin-top:15px;">
-                    <div class="chip ${!dQN?'active':''}" style="background:${!dQN?'rgba(217,70,239,0.1)':'var(--bg)'};color:${!dQN?'var(--quote)':'var(--muted)'}; border-color:${!dQN?'var(--quote)':'transparent'}" onclick="dQN=false; window.updateRoutePrice();">Dzień (T1/T3)</div>
-                    <div class="chip ${dQN?'active':''}" style="background:${dQN?'rgba(217,70,239,0.1)':'var(--bg)'};color:${dQN?'var(--quote)':'var(--muted)'}; border-color:${dQN?'var(--quote)':'transparent'}" onclick="dQN=true; window.updateRoutePrice();">Noc/Święto (T2/T4)</div>
-                </div>
-                <div id="zone-split" style="display:none; margin-top:15px; background:#000; padding:15px; border-radius:16px; border:1px solid rgba(255,255,255,0.05);">
-                    <label style="color:var(--info); font-size:0.75rem; text-transform:uppercase; font-weight:bold; display:block; text-align:center;">Przesuń do granicy miasta</label>
-                    <input type="range" id="zone-slider" min="0" max="100" value="100" step="0.1" style="width:100%; margin:15px 0;" oninput="window.updateZoneSplit()">
-                    <div style="display:flex; justify-content:space-between; font-size:0.85rem;"><span style="color:var(--driver)">Miasto: <strong id="val-in">0.0</strong> km</span><span style="color:var(--warning)">Poza miastem: <strong id="val-out">0.0</strong> km</span></div>
-                </div>
-                <div style="background:#000; border-radius:16px; padding:20px; margin-top:20px; text-align:center; border:1px solid var(--quote); box-shadow:inset 0 5px 10px rgba(0,0,0,0.5);">
-                    <p style="margin:0 0 5px 0; color:var(--quote); font-size:0.75rem; font-weight:800;">PROPONOWANA CENA (BRUTTO)</p>
-                    <h1 id="dqt" style="margin:0; font-size:3.5rem; letter-spacing:-2px;">0.00 zł</h1>
-                </div>
-                <div class="inp-group" style="margin-top:15px;"><label>Klient VIP (Rabat)</label><select id="dq-c" onchange="window.updateRoutePrice()"><option value="">-- Zwykły kurs --</option>${clientOpts}</select></div>
-                <button class="btn btn-quote" style="margin-top:15px;" onclick="window.dQB()">ZAKSIĘGUJ KURS DO PANELU</button>
-            </div>
-        </div>
-        <div class="section-lbl" style="color:var(--quote); border-color:var(--quote);">Ustawienia Taryfikatora</div>
-        <div class="panel">
-            <div class="grid-2">
-                <div class="inp-group"><label>Start</label><input type="number" id="dcs" value="${q.s}"></div>
-                <div class="inp-group"><label>1h Postoju</label><input type="number" id="dcw" value="${q.w}"></div>
-            </div>
-            <div class="grid-4" style="grid-template-columns:1fr 1fr 1fr 1fr; gap:8px;">
-                <div class="inp-group"><label>T1</label><input type="number" id="dct1" value="${q.t1}"></div>
-                <div class="inp-group"><label>T2</label><input type="number" id="dct2" value="${q.t2}"></div>
-                <div class="inp-group"><label>T3</label><input type="number" id="dct3" value="${q.t3}"></div>
-                <div class="inp-group"><label>T4</label><input type="number" id="dct4" value="${q.t4}"></div>
-            </div>
-            <button class="btn" style="background:#222; color:#fff;" onclick="window.dSaveQC()">ZAPISZ TARYFY</button>
-        </div>` + nav; 
-    }
-
-    if(t === 'garage') { 
-        let fS = window.calcFuelioStats(); 
-        let todayStr = window.getLocalYMD(); 
-        APP.innerHTML = hdr + `
-        <div class="dash-hero" style="padding-bottom:5px;">
-            <p>ŚREDNIE SPALANIE (Od ost. tankowania)</p>
-            <h1 style="color:var(--fuel); font-size:4rem;">${fS.l1.toFixed(1)} <span style="font-size:1.5rem; color:var(--muted)">L/100</span></h1>
-        </div>
-        <div class="grid-2" style="padding:0 15px; margin-bottom:20px;">
-            <div class="box" style="border-color:rgba(245,158,11,0.3); background:rgba(245,158,11,0.05); align-items:center;"><span style="color:var(--fuel)">Koszt 100 KM</span><strong style="color:#fff">${fS.c1.toFixed(2)} zł</strong></div>
-            <div class="box" style="border-color:rgba(245,158,11,0.3); background:rgba(245,158,11,0.05); align-items:center;"><span style="color:var(--fuel)">Koszt 1 KM</span><strong style="color:#fff">${d.cfg.fuelPx.toFixed(2)} zł</strong></div>
-        </div>
-        <div class="panel" style="border-color:var(--fuel); background: linear-gradient(180deg, #18181b 0%, #09090b 100%);">
-            <div class="p-title" style="color:var(--fuel)">⛽ Dziennik Tankowań</div>
-            <div class="inp-row">
-                <div class="inp-group"><label>Licznik Główny (KM)</label><input type="number" id="df-o" placeholder="np. 155000"></div>
-                <div class="inp-group"><label>Wlane Litry</label><input type="number" id="df-l" step="0.1" placeholder="0.0"></div>
-            </div>
-            <div class="inp-row">
-                <div class="inp-group"><label>Rachunek (zł)</label><input type="number" id="df-v" placeholder="0.00"></div>
-                <div class="inp-group"><label>Data</label><input type="date" id="df-date" value="${todayStr}"></div>
-            </div>
-            <div class="inp-group" style="margin-bottom:15px;"><label>Pod korek?</label><select id="df-f"><option value="1">Tak (Oblicz dokładne spalanie)</option><option value="0">Nie</option></select></div>
-            <button class="btn" style="background:var(--fuel); color:#000;" onclick="window.dAF()">ZAPISZ PARAGON ZE STACJI</button>
-        </div>
-        <div class="panel" style="border-color:rgba(239,68,68,0.4)">
-            <div class="p-title" style="color:var(--danger)">🔧 Inne Wydatki Operacyjne</div>
-            <div class="inp-row">
-                <div class="inp-group" style="flex:2">
-                    <label>Kategoria Wydatku</label>
-                    <select id="de-c">
-                        <option value="✨ Myjnia / Kosmetyka">✨ Myjnia / Kosmetyka</option>
-                        <option value="🛠️ Serwis / Części">🛠️ Serwis / Części</option>
-                        <option value="💧 Płyny / Eksploatacja">💧 Płyny / Eksploatacja</option>
-                        <option value="🛡️ Ubezpieczenie">🛡️ Ubezpieczenie</option>
-                        <option value="🅿️ Parking / Autostrada">🅿️ Parking / Autostrada</option>
-                        <option value="📦 Inne koszty">📦 Inne koszty</option>
-                    </select>
-                </div>
-                <div class="inp-group"><label>Kwota (zł)</label><input type="number" id="de-v" placeholder="0.00"></div>
-            </div>
-            <div class="inp-group" style="margin-bottom:15px;"><label>Data Wydatku</label><input type="date" id="de-date" value="${todayStr}"></div>
-            <button class="btn btn-danger" style="background:var(--danger); color:#fff;" onclick="window.dAE()">ZAPISZ WYDATEK W BAZIE</button>
-        </div>
-        <div class="section-lbl" style="color:#fff; border-color:rgba(255,255,255,0.1);">Historia Garażu</div>
-        <div style="padding: 0 15px; margin-bottom: 20px;">${window.renderGarageHistory()}</div>` + nav; 
-    }
-
-    if(t === 'set') { 
-        APP.innerHTML = hdr + `
-        <div class="dash-hero" style="padding-bottom:0; padding-top:10px;"><p>KONTROLA TWOJEJ FIRMY</p></div>
-        <div class="section-lbl" style="color:var(--success); border-color:var(--success);">👤 Personalizacja i Miasto</div>
-        <div class="panel">
-            <div class="inp-row">
-                <div class="inp-group"><label>Twoje Imię</label><input type="text" id="us-name" value="${db.userName}"></div>
-                <div class="inp-group"><label>Cel Dzienny (zł)</label><input type="number" id="us-goal" value="${d.cfg.goal}"></div>
-            </div>
-            <div class="inp-group" style="margin-top:10px;"><label>Domyślne Miasto (Dla nawigacji)</label><input type="text" id="us-city" value="${d.cfg.defCity || 'Szczecin'}" style="border-color:var(--success);"></div>
-        </div>
-        <div class="section-lbl" style="color:var(--driver); border-color:var(--driver);">🚗 Koszty Auta i Bazy</div>
-        <div class="panel">
-            <div class="inp-row">
-                <div class="inp-group"><label>Rata / Wynajem (zł)</label><input type="number" id="us-cc" value="${d.cfg.cC}"></div>
-                <div class="inp-group"><label>Okres Rozliczenia</label><select id="us-ctype"><option value="week" ${d.cfg.cType==='week'?'selected':''}>Tygodniowo</option><option value="month" ${d.cfg.cType==='month'?'selected':''}>Miesięcznie</option></select></div>
-            </div>
-            <div class="inp-row">
-                <div class="inp-group"><label>Baza / Aplikacje (zł/mc)</label><input type="number" id="us-bc" value="${d.cfg.bC}"></div>
-                <div class="inp-group"><label>Inne Stałe (zł/mc)</label><input type="number" id="us-ic" value="${d.cfg.iC || 0}"></div>
-            </div>
-        </div>
-        <div class="section-lbl" style="color:var(--info); border-color:var(--info);">⚖️ Podatki i Prowizje</div>
-        <div class="panel">
-            <div class="inp-group" style="margin-bottom:15px;"><label>Rodzaj Rozliczenia (ZUS / Partner)</label><select id="us-etype" onchange="window.dTogglePType('us')"><option value="flat" ${d.cfg.eType==='flat'?'selected':''}>Stała kwota (np. ZUS)</option><option value="pct" ${d.cfg.eType==='pct'?'selected':''}>Procent (np. dla Partnera)</option></select></div>
-            <div id="us-p-flat-box" style="display:${d.cfg.eType==='flat'?'block':'none'}; margin-bottom:15px;"><div class="inp-group"><label>Kwota stała (zł/mc)</label><input type="number" id="us-ec" value="${d.cfg.eC}"></div></div>
-            <div id="us-p-pct-box" style="display:${d.cfg.eType==='pct'?'block':'none'}; margin-bottom:15px;"><div class="inp-group"><label>Prowizja Partnera (%)</label><input type="number" id="us-epct" value="${(d.cfg.ePct*100).toFixed(0)}" style="color:var(--driver); border-color:var(--driver);"></div></div>
-            <div class="inp-row">
-                <div class="inp-group"><label>Podatek / VAT (%)</label><input type="number" id="us-tx" value="${(d.cfg.tax*100).toFixed(1)}" step="0.1"></div>
-                <div class="inp-group"><label>Prow. Terminala (%)</label><input type="number" id="us-cf" value="${(d.cfg.cardF*100).toFixed(1)}" step="0.1"></div>
-            </div>
-        </div>
-
-        <div class="section-lbl" style="color:var(--quote); border-color:var(--quote);">👥 Baza Klientów VIP (CRM)</div>
-        <div class="panel">
-            <div class="inp-row">
-                <div class="inp-group"><label>Imię / Nazwa Firmy</label><input type="text" id="dc-n" placeholder="np. Jan Kowalski"></div>
-                <div class="inp-group"><label>Telefon</label><input type="text" id="dc-p" placeholder="np. 500 600 700"></div>
-            </div>
-            <div class="inp-group" style="margin-bottom:15px;">
-                <label>Stały Rabat (%)</label><input type="number" id="dc-d" placeholder="np. 10">
-            </div>
-            <button class="btn btn-quote" onclick="window.dAddCrm()">+ DODAJ DO BAZY</button>
-            
-            <div style="margin-top:20px; border-top:1px dashed rgba(255,255,255,0.1); padding-top:15px;">
-                ${d.clients.map(c => `
-                <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.05); padding:12px 15px; border-radius:12px; margin-bottom:10px; border-left:4px solid var(--quote);">
-                    <div>
-                        <strong style="color:#fff; font-size:1rem;">${c.n}</strong>
-                        <span style="background:var(--quote); color:#fff; font-size:0.7rem; padding:2px 6px; border-radius:6px; margin-left:8px; font-weight:bold;">-${c.d||0}%</span><br>
-                        <small style="color:var(--muted)">${c.ph || 'Brak numeru'}</small>
-                    </div>
-                    <button style="background:rgba(239,68,68,0.15); color:var(--danger); border:none; padding:8px 12px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="window.dCrmDel(${c.id})">USUŃ</button>
-                </div>
-                `).join('') || '<div style="text-align:center; color:var(--muted); font-size:0.85rem; padding:10px;">Brak klientów w bazie.</div>'}
-            </div>
-        </div>
-
-        <div style="padding: 0 15px;"><button class="btn btn-driver" style="margin-bottom:30px;" onclick="window.dSaveUS()">💾 ZAKTUALIZUJ KOSZTY</button></div>
-
-        <div class="section-lbl" style="color:var(--danger); border-color:var(--danger);">⚠️ Strefa Niebezpieczna</div>
-        <div class="panel" style="border-color:rgba(239,68,68,0.4)"><button class="btn btn-danger" style="background:rgba(239,68,68,0.15); color:var(--danger); border:none; box-shadow:none;" onclick="window.hardReset()">TWARDY RESET APLIKACJI</button></div>
-        ` + nav; 
-    }
-}
-
-// ==========================================
-// 5. FUNKCJE TAXI (Zapisywanie zmiany z okienka)
-// ==========================================
-window.dEndS = function() { 
-    let d1 = document.getElementById('de-d1').value;
-    let dtStr = new Date(d1).toLocaleDateString('pl-PL');
-    let saveDate = new Date(d1);
-    saveDate.setHours(12,0,0); // Środek dnia dla pewności
-
-    let k = window.safeVal('de-k');
-    if(!k || k <= 0) {
-        let el = document.getElementById('de-k');
-        if(el) { el.style.borderBottom = '2px solid var(--danger)'; el.classList.add('shake-anim'); setTimeout(()=>el.classList.remove('shake-anim'), 300); }
-        return window.sysAlert("Brak Dystansu", "Proszę, wpisz ile łącznie przejechałeś kilometrów na tej zmianie (ODO Koniec - ODO Start)."); 
-    }
-
-    let hW = window.safeVal('de-h', 0);
-
-    let g=0; let pk=0; let cf=0; 
-    db.drv.sh.tr.forEach(x=>{ g+=x.v; pk+=parseFloat(x.k)||0; if(x.p==='Karta') cf += x.v * db.drv.cfg.cardF; }); 
-    
-    let emptyK = Math.max(0, k - pk); 
-    
-    let fc = k * db.drv.cfg.fuelPx; 
-    let tax = g * db.drv.cfg.tax; 
-    let pFee = db.drv.cfg.eType === 'pct' ? g * db.drv.cfg.ePct : 0; 
-    
-    // Zysk operacyjny per zmiana (BEZ KOSZTÓW ZUS/AUTO - to liczymy w STATYSTYKACH jako dokładną dniówkę)
-    let n_operacyjny = g - fc - tax - pFee - cf; 
-    
-    if(db.drv.sh.o > 0) db.drv.odo = db.drv.sh.o + k; 
-    
-    db.drv.h.unshift({
-        id: Date.now(), 
-        rD: saveDate.toISOString(), 
-        dt: dtStr, 
-        hW: hW,
-        g, n: n_operacyjny, k, pk, emptyK, fc, tx:tax, pF:pFee, cF:cf, 
-        tr:[...db.drv.sh.tr]
-    }); 
-
-    db.drv.h.sort((a,b) => new Date(b.rD) - new Date(a.rD));
-    
-    db.drv.sh.on = false; db.drv.sh.tr = []; db.drv.liveRideStart = null; 
-    db.drv.sh.t = null; db.drv.sh.shiftStart = null; db.drv.sh.sPS = null; db.drv.sh.sPT = 0; db.drv.sh.rWT = 0; db.drv.sh.rWS = null;
-    
-    window.save(); 
-    
-    let modalEl = document.getElementById('m-end-shift');
-    if(modalEl) modalEl.remove();
-    
-    db.tab='stats'; window.render(); 
-    
-    let mHtml = `
-    <div id="m-summary" class="modal-overlay" style="z-index: 30000; animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);">
-        <div class="panel" style="width:100%; max-width:380px; border-color:var(--success); text-align:center; padding:30px 20px; background: linear-gradient(145deg, #18181b, #09090b);">
-            <div style="font-size:4rem; margin-bottom:10px;">🏁</div>
-            <h2 style="color:var(--success); margin:0 0 10px 0; font-weight:900; font-size:1.8rem; letter-spacing:-1px;">ZMIANA ZAKOŃCZONA</h2>
-            <p style="color:var(--muted); font-size:0.9rem; margin-bottom:20px;">Zapisano w dacie: <strong style="color:#fff">${dtStr}</strong></p>
-            
-            <div style="background:#000; border:1px solid rgba(255,255,255,0.05); padding:20px; border-radius:16px; margin-bottom:20px; box-shadow:inset 0 2px 10px rgba(0,0,0,0.5);">
-                <div style="display:flex; justify-content:space-between; margin-bottom:12px; align-items:center;">
-                    <span style="color:var(--muted); font-size:0.85rem; text-transform:uppercase; font-weight:bold;">Utarg Brutto:</span>
-                    <strong style="color:var(--success); font-size:1.3rem;">${g.toFixed(2)} zł</strong>
-                </div>
-                <div style="display:flex; justify-content:space-between; margin-bottom:12px; align-items:center;">
-                    <span style="color:var(--muted); font-size:0.85rem; text-transform:uppercase; font-weight:bold;">Z pasażerem (Płatne):</span>
-                    <strong style="color:#fff; font-size:1.2rem;">${pk.toFixed(1)} km</strong>
-                </div>
-                <div style="display:flex; justify-content:space-between; margin-bottom:12px; align-items:center;">
-                    <span style="color:var(--muted); font-size:0.85rem; text-transform:uppercase; font-weight:bold;">Dojazdy (Puste):</span>
-                    <strong style="color:var(--warning); font-size:1.2rem;">${emptyK.toFixed(1)} km</strong>
-                </div>
-                <div style="display:flex; justify-content:space-between; border-top:1px dashed rgba(255,255,255,0.1); padding-top:12px; align-items:center;">
-                    <span style="color:var(--muted); font-size:0.85rem; text-transform:uppercase; font-weight:bold;">Zysk Operacyjny:</span>
-                    <strong style="color:${n_operacyjny >= 0 ? 'var(--success)' : 'var(--danger)'}; font-size:1.4rem;">${n_operacyjny.toFixed(2)} zł</strong>
-                </div>
-            </div>
-            <button class="btn" style="background:linear-gradient(135deg, var(--success), #059669); color:#000; font-size:1.1rem; padding:20px;" onclick="document.getElementById('m-summary').remove();">ZOBACZ STATYSTYKI P&L</button>
-        </div>
-    </div>`;
-    document.body.insertAdjacentHTML('beforeend', mHtml);
-}
-
-window.dTransferToHomeUI = function() { 
-    let accOpts = db.home.accs.map(a => `<option value="${a.id}">${a.n}</option>`).join(''); 
-    let mHtml = `
-    <div id="m-transfer" class="modal-overlay" style="z-index: 30000; animation: fadeIn 0.3s;">
-        <div class="panel" style="width:100%; max-width:380px; border-color:var(--life); text-align:center; background: linear-gradient(145deg, #18181b, #09090b);">
-            <div style="font-size:3.5rem; margin-bottom:10px;">💸</div>
-            <h3 style="color:var(--life); margin:0 0 10px 0; font-size:1.5rem; font-weight:900;">PRZELEW DO DOMU</h3>
-            <p style="color:var(--muted); font-size:0.85rem; margin-bottom:20px;">Zdejmij gotówkę z Taxi i przekaż na konto w Budżecie Domowym.</p>
-            <input type="number" id="transfer-amt" class="big-inp" placeholder="0.00" style="margin-bottom:15px; border-color:var(--life); color:var(--life); background:#000;">
-            <select id="transfer-acc" style="width:100%; padding:15px; background:#000; border:1px solid var(--border); color:#fff; border-radius:12px; margin-bottom:20px; font-size:1.1rem; text-align:center;">${accOpts}</select>
-            <button class="btn btn-home" onclick="window.execTransfer()">POTWIERDŹ PRZELEW</button>
-            <button class="btn" style="background:transparent; color:var(--muted); border:1px solid rgba(255,255,255,0.1); box-shadow:none;" onclick="document.getElementById('m-transfer').remove()">ANULUJ</button>
-        </div>
-    </div>`; 
-    document.body.insertAdjacentHTML('beforeend', mHtml); 
-    setTimeout(() => document.getElementById('transfer-amt').focus(), 100); 
-}
-
-window.execTransfer = function() { 
-    let el = document.getElementById('transfer-amt'); 
-    let acc = document.getElementById('transfer-acc').value; 
-    if(!el || !el.value) return window.sysAlert("Błąd", "Wpisz kwotę do przelewu."); 
-    let amt = parseFloat(el.value); 
-    if(amt > 0) { 
-        db.home.trans.push({id:Date.now(), type:'inc', cat:'Utarg z Taxi', acc:acc, d:'Wypłata z Taxi', v:amt, who:db.userName, dt:new Date().toLocaleDateString('pl-PL'), rD:new Date().toISOString()}); 
-        window.save(); 
-        document.getElementById('m-transfer').remove(); 
-        window.sysAlert("SUKCES!", `Kwota ${amt.toFixed(2)} zł wylądowała bezpiecznie w Budżecie Domowym.`, "success");
-    } 
-}
-
-window.calculateRouteAuto = async function() { 
-    let start = document.getElementById('dq-start').value; 
-    let end = document.getElementById('dq-end').value; 
-    if(!start || !end) return window.sysAlert("Błąd", "Podaj adres startowy i docelowy!"); 
-    
-    let defCity = db.drv.cfg.defCity || 'Szczecin'; 
-    let sQ = start.toLowerCase().includes(defCity.toLowerCase()) ? start : start + ', ' + defCity; 
-    let eQ = end.toLowerCase().includes(defCity.toLowerCase()) ? end : end + ', ' + defCity; 
-    
-    let btn = document.querySelector('button[onclick="window.calculateRouteAuto()"]'); 
-    let origBtnText = btn.innerText; 
-    btn.innerText = "⏳ OBLICZANIE..."; 
-    btn.style.opacity = 0.7; 
-    
-    try { 
-        let resS = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(sQ)}`); 
-        let dataS = await resS.json(); 
-        
-        let resE = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(eQ)}`); 
-        let dataE = await resE.json(); 
-        
-        if(!dataS.length || !dataE.length) { 
-            btn.innerText = origBtnText; btn.style.opacity = 1; 
-            return window.sysAlert("Błąd Mapy", "Nie odnaleziono podanego adresu."); 
-        } 
-        
-        let routeRes = await fetch(`https://router.project-osrm.org/route/v1/driving/${dataS[0].lon},${dataS[0].lat};${dataE[0].lon},${dataE[0].lat}?overview=full&geometries=geojson`); 
-        let routeData = await routeRes.json(); 
-        
-        let distKm = routeData.routes[0].distance / 1000; 
-        let timeMin = routeData.routes[0].duration / 60; 
-        
-        document.getElementById('map-container').style.display = 'block'; 
-        if(!window.lmap) { 
-            window.lmap = L.map('map').setView([dataS[0].lat, dataS[0].lon], 13); 
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(window.lmap); 
-        } 
-        
-        window.lmap.invalidateSize(); 
-        if(window.routeLayer) window.lmap.removeLayer(window.routeLayer); 
-        
-        window.routeLayer = L.geoJSON(routeData.routes[0].geometry, {style: {color: '#d946ef', weight: 6}}).addTo(window.lmap); 
-        window.lmap.fitBounds(window.routeLayer.getBounds(), {padding: [20, 20]}); 
-        
-        dQK = distKm; dQM_T = Math.round(timeMin); 
-        document.getElementById('res-km').innerText = distKm.toFixed(1) + ' km'; 
-        document.getElementById('res-min').innerText = dQM_T + ' min'; 
-        
-        let isOut = !end.toLowerCase().includes(defCity.toLowerCase()); 
-        let slider = document.getElementById('zone-slider'); 
-        slider.max = distKm.toFixed(1); 
-        
-        if(isOut) { 
-            slider.value = Math.min(10, distKm); 
-            document.getElementById('zone-split').style.display = 'block'; 
-        } else { 
-            slider.value = distKm.toFixed(1); 
-            document.getElementById('zone-split').style.display = 'none'; 
-        } 
-        window.updateZoneSplit(); 
-    } catch(e) { 
-        window.sysAlert("Błąd Serwera", "Błąd połączenia z serwerem map GPS."); 
-    } finally { 
-        btn.innerText = origBtnText; btn.style.opacity = 1; 
-    } 
-}
-
-window.updateZoneSplit = function() { 
-    let slider = document.getElementById('zone-slider'); 
-    let inDist = parseFloat(slider.value); 
-    let outDist = parseFloat(slider.max) - inDist; 
-    document.getElementById('val-in').innerText = inDist.toFixed(1); 
-    document.getElementById('val-out').innerText = outDist.toFixed(1); 
-    window.updateRoutePrice(inDist, outDist); 
-}
-
-window.updateRoutePrice = function(inDist = null, outDist = null) { 
-    if(inDist === null) { 
-        let slider = document.getElementById('zone-slider'); 
-        inDist = parseFloat(slider.value); 
-        outDist = parseFloat(slider.max) - inDist; 
-    } 
-    let q = db.drv.q; 
-    let discSel = document.getElementById('dq-c'); 
-    let disc = (discSel && discSel.selectedIndex > 0) ? parseFloat(discSel.options[discSel.selectedIndex].getAttribute('data-d')) : 0; 
-    
-    let expectedTime = (dQK / 20) * 60; 
-    let trafficTime = Math.max(0, dQM_T - expectedTime);
-    
-    let base = q.s + (inDist * (dQN ? q.t2 : q.t1)) + (outDist * (dQN ? q.t4 : q.t3)) + (trafficTime * (q.w / 60)); 
-    dQV = base - (base * (disc / 100)); 
-    document.getElementById('dqt').innerText = dQV.toFixed(2) + " zł"; 
-}
-
-window.dQB = function() { 
-    if(!db.drv.sh.on) return window.sysAlert("Błąd", "Najpierw otwórz zmianę na stronie głównej!"); 
-    if(dQV>0) { 
-        let timeNow = new Date().toLocaleTimeString('pl-PL', {hour: '2-digit', minute:'2-digit'});
-        db.drv.sh.tr.unshift({id:Date.now(), v:dQV, k:dQK.toFixed(1), m:dQM_T, s:'Z Mapy', p:'Gotówka', time: timeNow}); 
-        window.save(); db.tab='term'; window.render(); window.sysAlert("Sukces", "Zaksięgowano kurs z Wyceny!", "success"); 
-    } 
-}
-
-window.dSaveQC = function() { 
-    db.drv.q = { 
-        s:window.safeVal('dcs'), w:window.safeVal('dcw'), 
-        t1:window.safeVal('dct1'), t2:window.safeVal('dct2'), 
-        t3:window.safeVal('dct3'), t4:window.safeVal('dct4') 
-    }; 
-    window.save(); window.sysAlert("Sukces", "Zapisano własne Taryfy Taksometru!", "success"); 
-}
-
-window.calcFuelioStats = function() { 
-    let l=db.drv.fuel; let s={l1:0,c1:0,ck:db.drv.cfg.fuelPx}; 
-    if(l.length>=2){ 
-        let lF=l.findIndex(x=>x.isF===1); 
-        if(lF!==-1){ 
-            let pF=l.findIndex((x,i)=>i>lF&&x.isF===1); 
-            if(pF!==-1){ 
-                let d=l[lF].o-l[pF].o; 
-                if(d>0){ 
-                    let tL=0,tC=0; 
-                    for(let i=lF;i<pF;i++){tL+=l[i].l;tC+=l[i].v;} 
-                    s.l1=(tL/d)*100; s.c1=(tC/d)*100; s.ck=tC/d; 
-                    db.drv.cfg.fuelPx=s.ck; window.save(); 
-                } 
-            } 
-        } 
-    } 
-    return s; 
-}
-
-window.dAF = function() { 
-    let o=window.safeVal('df-o'); let l=window.safeVal('df-l'); let v=window.safeVal('df-v'); 
-    let fEl=document.getElementById('df-f'); let f=fEl?parseInt(fEl.value):1; 
-    if(!o||!l||!v) return window.sysAlert("Błąd Formularza", "Wypełnij wszystkie dane ze stacji!"); 
-    
-    let dVal = document.getElementById('df-date').value; 
-    let dObj = dVal ? new Date(dVal) : new Date(); 
-    if(dVal) dObj.setHours(12,0,0); 
-    
-    let dist = 0, l100 = 0, cpkm = 0; 
-    let prevF = db.drv.fuel.filter(x => x.o < o).sort((a,b) => b.o - a.o)[0]; 
-    if (prevF) { 
-        dist = o - prevF.o; 
-        if(dist > 0) { 
-            l100 = (l / dist) * 100; cpkm = v / dist; 
-            if(f === 1) db.drv.cfg.fuelPx = cpkm; 
-        } 
-    } 
-    db.drv.odo=o; 
-    db.drv.fuel.push({o,l,v,isF:f, rD:dObj.toISOString()}); 
-    db.drv.fuel.sort((a,b) => b.o - a.o); 
-    db.drv.exp.push({id:Date.now(), rD:dObj.toISOString(), d:`⛽ Tankowanie`, v, dt:dObj.toLocaleDateString('pl-PL'), ty:'f', l, odo:o, dist, l100, cpkm, isF:f}); 
-    db.drv.exp.sort((a,b) => new Date(b.rD) - new Date(a.rD)); 
-    window.save(); window.render(); 
-}
-
-window.dAE = function() { 
-    let v=window.safeVal('de-v'); let cEl=document.getElementById('de-c'); let c=cEl?cEl.value:'Wydatki'; 
-    if(!v) return window.sysAlert("Błąd", "Wpisz kwotę wydatku!"); 
-    
-    let dVal = document.getElementById('de-date').value; 
-    let dObj = dVal ? new Date(dVal) : new Date(); 
-    if(dVal) dObj.setHours(12,0,0); 
-    
-    db.drv.exp.push({id:Date.now(), rD:dObj.toISOString(), d:c, v, dt:dObj.toLocaleDateString('pl-PL'), ty:'e'}); 
-    db.drv.exp.sort((a,b) => new Date(b.rD) - new Date(a.rD)); 
-    window.save(); window.render(); 
-}
-
-window.renderGarageHistory = function() { 
-    return db.drv.exp.map(x => { 
-        if(x.ty === 'f') { 
-            let dist = x.dist || 0; let l100 = x.l100 || 0; let cpkm = x.cpkm || 0; let l = x.l || 0; let odo = x.odo || 0; let full = x.isF === 1 ? 'Pod korek' : 'Częściowo'; 
-            let statsHtml = dist > 0 ? `
-            <div style="display:flex; justify-content:space-between; width:100%; margin-top:12px; padding-top:12px; border-top:1px dashed rgba(255,255,255,0.1); font-size:0.8rem;">
-                <div style="text-align:center;"><span style="color:var(--muted); font-size:0.65rem; text-transform:uppercase;">Dystans</span><br><strong style="color:#fff;">${dist} km</strong></div>
-                <div style="text-align:center;"><span style="color:var(--muted); font-size:0.65rem; text-transform:uppercase;">Spalanie</span><br><strong style="color:var(--info);">${l100.toFixed(1)} L</strong></div>
-                <div style="text-align:center;"><span style="color:var(--muted); font-size:0.65rem; text-transform:uppercase;">Koszt/KM</span><br><strong style="color:var(--danger);">${cpkm.toFixed(2)} zł</strong></div>
-            </div>` : `<div style="margin-top:10px; font-size:0.75rem; color:var(--muted); text-align:center; width:100%;">Zatankuj ponownie, aby obliczyć spalanie.</div>`; 
-            
-            return `
-            <div class="log-item" style="border-left-color:var(--fuel); flex-direction:column; align-items:flex-start;">
-                <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
-                    <div><strong style="color:#fff; font-size:1.1rem;">${x.d} <span style="color:var(--fuel)">${l}L</span></strong><br><small style="color:var(--muted)">${x.dt} • ODO: <span style="color:#fff">${odo}</span> (${full})</small></div>
-                    <strong style="color:var(--fuel); font-size:1.2rem;">-${x.v.toFixed(2)} zł</strong>
-                </div>
-                ${statsHtml}
-            </div>`; 
-        } else { 
-            let col = x.ty==='amort' ? 'var(--info)' : 'var(--danger)'; let pref = x.ty==='amort' ? '' : '-'; 
-            return `
-            <div class="log-item" style="border-left-color:${col};">
-                <div><strong style="color:#fff; font-size:1.05rem;">${x.d}</strong><br><small style="color:var(--muted)">${x.dt}</small></div>
-                <strong style="color:${col}">${pref}${x.v.toFixed(2)} zł</strong>
-            </div>`; 
-        } 
-    }).join('') || '<div style="text-align:center;color:var(--muted);padding:10px;">Brak wpisów.</div>'; 
-}
-
-window.dAddCrm = function() { 
-    let n = document.getElementById('dc-n').value; 
-    let ph = document.getElementById('dc-p').value; 
-    let d = window.safeVal('dc-d'); 
-    if(!n) return window.sysAlert("Błąd", "Wpisz imię lub nazwę klienta!");
-    
-    db.drv.clients.unshift({id:Date.now(), n, ph, d, bl: false}); 
-    window.save(); window.render(); 
-    window.sysAlert("Sukces", "Klient VIP dodany do bazy!", "success");
-}
-
-window.dCrmDel = function(id) { 
-    window.sysConfirm("Baza Klientów", "Usunąć klienta z bazy?", () => { 
-        db.drv.clients = db.drv.clients.filter(x=>x.id!==id); 
-        window.save(); window.render(); 
-    }); 
-}
-
-window.render();
+            <div class="form-section" style="padding:15px
