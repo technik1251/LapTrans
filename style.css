@@ -10,9 +10,6 @@
   --taxi: #eab308; --life: #14b8a6; --driver: #3b82f6; --fleet: #10b981; --cargo: #8b5cf6; 
   --sped: #f59e0b; --quote: #d946ef; --fuel: #f59e0b; --plan: #a855f7;
   --success: #22c55e; --danger: #ef4444; --warning: #eab308; --info: #0ea5e9;
-  
-  --cat-food: #22c55e; --cat-home: #0ea5e9; --cat-shop: #ef4444; --cat-car: #f59e0b; 
-  --cat-fun: #a855f7; --cat-cloth: #ec4899; --cat-health: #14b8a6; --cat-other: #64748b;
 }
 
 html, body {
@@ -44,23 +41,21 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 .inp-group input:focus, .inp-group select:focus { border-color: var(--driver); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
 .big-inp { font-size: 1.8rem !important; padding: 15px !important; font-weight: 900 !important; text-align: center !important; letter-spacing:-1px; width: 100%; max-width: 100%; }
 
-/* --- WIZARD RESTORED --- */
+/* --- PRZYWRÓCONE PIĘKNE KARTY (WIZARD) --- */
 .wiz-screen { display: none; padding: 20px; min-height: 95vh; flex-direction: column; justify-content: center; animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1); width: 100%; max-width: 100%; }
 .wiz-screen.active { display: flex; }
 @keyframes fadeIn { from {opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
 
-.w-title { font-size: 2.2rem; font-weight: 900; text-align: center; margin-bottom: 5px; letter-spacing: -1.5px; color:#fff;}
-.w-sub { color: var(--muted); text-align: center; margin-bottom: 25px; font-size: 0.9rem; font-weight: 600; text-transform:uppercase; letter-spacing:1px;}
-.premium-input { background: rgba(255,255,255,0.03); border: 2px solid rgba(255,255,255,0.1); color: #fff; font-size: 1.8rem; font-weight: 900; text-align: center; padding: 15px; border-radius: 16px; width: 100%; max-width: 100%; box-sizing: border-box; transition: all 0.3s; box-shadow: inset 0 5px 15px rgba(0,0,0,0.3); letter-spacing: -1px; margin-bottom: 15px;}
+.w-title { font-size: 2.5rem; font-weight: 900; text-align: center; margin-bottom: 5px; letter-spacing: -1.5px; color:#fff;}
+.w-sub { color: var(--muted); text-align: center; margin-bottom: 30px; font-size: 1rem; font-weight: 600; text-transform:uppercase; letter-spacing:1px;}
+.premium-input { background: rgba(255,255,255,0.03); border: 2px solid rgba(255,255,255,0.1); color: #fff; font-size: 2rem; font-weight: 900; text-align: center; padding: 20px; border-radius: 20px; width: 100%; max-width: 100%; box-sizing: border-box; transition: all 0.3s; box-shadow: inset 0 5px 15px rgba(0,0,0,0.3); letter-spacing: -1px; margin-bottom: 20px;}
 .premium-input:focus { border-color: var(--driver); background: rgba(59,130,246,0.05); box-shadow: 0 0 20px rgba(59,130,246,0.3); outline: none; }
-
-.opt-card { background: linear-gradient(145deg, #1e1e22, #121214); border: 2px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 15px; margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; transition: all 0.3s; box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
-.opt-card h3 { margin:0 0 4px 0; font-size:1.1rem; color:#fff;}
-.opt-card p { margin:0; font-size:0.8rem; color:var(--muted);}
+.opt-card { background: linear-gradient(145deg, #1e1e22, #121214); border: 2px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 20px; margin-bottom: 15px; cursor: pointer; display: flex; align-items: center; transition: all 0.3s; box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
 .opt-card.selected { border-color: var(--driver); background: linear-gradient(145deg, #1e293b, #121214); box-shadow: 0 10px 30px rgba(59,130,246,0.3); }
-.opt-icon { font-size: 1.8rem; margin-right: 15px; background: rgba(255,255,255,0.05); width: 55px; height: 55px; display: flex; align-items: center; justify-content: center; border-radius: 14px; transition: 0.3s; flex-shrink: 0;}
+.opt-icon { font-size: 2.2rem; margin-right: 18px; background: rgba(255,255,255,0.05); width: 65px; height: 65px; display: flex; align-items: center; justify-content: center; border-radius: 18px; transition: 0.3s; flex-shrink: 0;}
 .opt-card.selected .opt-icon { background: rgba(59,130,246,0.2); }
-/* ------------------------- */
+.opt-text h3 { margin: 0 0 4px 0; color: #fff; font-size: 1.2rem;}
+.opt-text p { margin: 0; color: var(--muted); font-size: 0.85rem;}
 
 header { padding: 12px 15px; background: rgba(9, 9, 11, 0.85); border-bottom: 1px solid rgba(255,255,255,0.05); position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(16px); width: 100%; max-width: 100%; }
 .logo { font-weight: 900; font-size: 1.1rem; cursor:pointer; display:flex; align-items:center; gap:8px; padding:6px 12px; background:transparent; border-radius:12px; border:none; color:#fff;}
