@@ -25,15 +25,18 @@ try {
     db = JSON.parse(localStorage.getItem('styre_v101_db')) || defaultDb;
     if (!db.home || !db.drv || !db.drv.cfg) { db = defaultDb; }
     
-    // BEZPIECZNIKI: Dodawanie brakujących tablic w przypadku starych zapisów w telefonie (To tu był błąd z przyciskiem startu!)
+    // BEZPIECZNIKI: Jeśli w pamięci telefonu brakuje nowych tablic, stwórz je (To blokowało czarny ekran!)
     if (!db.drv.clients) db.drv.clients = [];
     if (!db.drv.fuel) db.drv.fuel = [];
     if (!db.drv.exp) db.drv.exp = [];
     if (!db.drv.h) db.drv.h = [];
+    if (!db.drv.sh) db.drv.sh = {on: false, o: 0, t: null, shiftStart: null, sPT: 0, sPS: null, rWT: 0, rWS: null, tr: []};
+    if (!db.drv.q) db.drv.q = {s:9, w:39, t1:3.2, t2:4, t3:6.4, t4:8};
     
     if (db.drv.sh && !db.drv.sh.shiftStart) { db.drv.sh.shiftStart = db.drv.sh.t || Date.now(); } 
     if (db.drv.sh && db.drv.sh.sPT === undefined) { db.drv.sh.sPT = 0; db.drv.sh.sPS = null; }
     if (db.drv.sh && db.drv.sh.rWT === undefined) { db.drv.sh.rWT = 0; db.drv.sh.rWS = null; }
+    
     if (!db.home.accs) db.home.accs = defaultDb.home.accs;
     if (!db.home.trans) db.home.trans = [];
     if (!db.home.budgets) db.home.budgets = {};
@@ -164,7 +167,26 @@ window.openSwitcher = function() {
 }
 
 window.switchApp = function(newRole) { db.role = newRole; db.tab = (newRole==='drv') ? 'term' : 'dash'; window.save(); document.getElementById('m-switcher').classList.add('hidden'); window.render(); }
-window.render = function() { if(!db || !db.init) return window.rWiz(); window.dSessionInit(); if(db.role === 'drv') return window.rDrv(); if(db.role === 'home') { window.hCheckAuto(); return window.rHome(); } return window.rWiz(); }
+
+// Kuloodporna funkcja renderująca
+window.render = function() { 
+    try {
+        if(!db || !db.init) return window.rWiz(); 
+        window.dSessionInit(); 
+        if(db.role === 'drv') return window.rDrv(); 
+        if(db.role === 'home') { window.hCheckAuto(); return window.rHome(); } 
+        return window.rWiz(); 
+    } catch(err) {
+        // TARCZA OCHRONNA: Jeśli kiedykolwiek znów coś zawiedzie, zobaczysz ten komunikat z opcją naprawy, a nie czarny ekran!
+        if(APP) APP.innerHTML = `<div style="padding: 20px; text-align: center; color: var(--text);">
+            <h2 style="color: var(--danger);">Błąd krytyczny 🚨</h2>
+            <p style="color: var(--muted); font-size: 0.8rem; word-wrap: break-word;">${err.message}</p>
+            <button class="btn btn-danger" style="margin-top: 20px;" onclick="localStorage.clear(); location.reload();">TWARDY RESET APLIKACJI</button>
+            <p style="color: var(--muted); font-size: 0.7rem; margin-top: 15px;">Uwaga: Reset skasuje bieżące wpisy. Problem wynika najpewniej z uszkodzonych plików Pamięci Cache po aktualizacji.</p>
+        </div>`;
+        console.error(err);
+    }
+}
 
 // ==========================================
 // 2. KREATOR STARTOWY (WIZARD)
@@ -237,7 +259,6 @@ const FIXED_EXP_CATS = ['Stałe opłaty / Czynsz', 'Prąd / Gaz / Woda', 'Intern
 
 window.hGetBal = function() { let b = {}; db.home.accs.forEach(a => b[a.id] = a.startBal || 0); db.home.trans.forEach(x => { if(x.type === 'inc' && b[x.acc] !== undefined) b[x.acc] += x.v; if(x.type === 'exp' && b[x.acc] !== undefined) b[x.acc] -= x.v; if(x.type === 'transfer') { if(b[x.fromAcc] !== undefined) b[x.fromAcc] -= x.v; if(b[x.toAcc] !== undefined) b[x.toAcc] += x.v; } }); return b; }
 
-// LOGIKA CZŁONKÓW RODZINY
 window.hAddMem = function() {
     let val = document.getElementById('h-new-mem').value.trim();
     if(val && !db.home.members.includes(val)) {
@@ -258,24 +279,16 @@ window.hDelMem = function(name) {
     });
 }
 
-// AUTOMATYZACJA - STAŁE KOSZTY I WPŁYWY
 window.hCheckAuto = function() {
     let currentMonth = window.getLocalYMD().slice(0, 7); 
     if(db.home.lastAuto !== currentMonth && db.home.recurring && db.home.recurring.length > 0) {
         let added = 0;
-        let dObj = new Date();
-        dObj.setHours(12,0,0);
+        let dObj = new Date(); dObj.setHours(12,0,0);
         db.home.recurring.forEach(r => {
             db.home.trans.push({
-                id: Date.now() + Math.random(),
-                type: r.t,
-                cat: r.c,
-                acc: r.a,
-                d: r.n + ' (Automat)',
-                v: parseFloat(r.v),
-                who: 'System',
-                dt: dObj.toLocaleDateString('pl-PL'),
-                rD: dObj.toISOString()
+                id: Date.now() + Math.random(), type: r.t, cat: r.c, acc: r.a,
+                d: r.n + ' (Automat)', v: parseFloat(r.v), who: 'System',
+                dt: dObj.toLocaleDateString('pl-PL'), rD: dObj.toISOString()
             });
             added++;
         });
@@ -283,11 +296,10 @@ window.hCheckAuto = function() {
         if(added > 0) {
             db.home.trans.sort((a,b) => new Date(b.rD) - new Date(a.rD));
             window.save();
-            setTimeout(() => window.sysAlert("Automatyzacja", `Zaksięgowano ${added} stałych transakcji (kosztów/wpływów) na ten miesiąc!`, "success"), 500);
+            setTimeout(() => window.sysAlert("Automatyzacja", `Zaksięgowano ${added} stałych transakcji na ten miesiąc!`, "success"), 500);
         }
     } else if (db.home.lastAuto !== currentMonth) {
-        db.home.lastAuto = currentMonth;
-        window.save();
+        db.home.lastAuto = currentMonth; window.save();
     }
 }
 
@@ -295,37 +307,23 @@ window.hAddRecurring = function() {
     let n = document.getElementById('hr-name').value;
     let v = parseFloat(document.getElementById('hr-val').value);
     if(!n || !v || v <= 0) return window.sysAlert("Błąd", "Wpisz poprawną nazwę i kwotę!");
-    
-    db.home.recurring.push({
-        id: Date.now(),
-        n: n,
-        v: v,
-        t: window.hRecType,
-        c: window.hRecCat,
-        a: window.hRecAcc
-    });
-    window.save(); window.render();
-    window.sysAlert("Sukces", "Dodano do automatu! W każdym nowym miesiącu system sam to zaksięguje.", "success");
+    db.home.recurring.push({ id: Date.now(), n: n, v: v, t: window.hRecType, c: window.hRecCat, a: window.hRecAcc });
+    window.save(); window.render(); window.sysAlert("Sukces", "Dodano do automatu!", "success");
 }
+
 window.hDelRecurring = function(id) {
     db.home.recurring = db.home.recurring.filter(r => r.id !== id);
     window.save(); window.render();
 }
 
-// ZESZYT DŁUGÓW
 window.hAddDebt = function() {
     let n = document.getElementById('hd-name').value;
     let v = parseFloat(document.getElementById('hd-val').value);
     if(!n || !v || v <= 0) return window.sysAlert("Błąd", "Wpisz osobę i poprawną kwotę!");
-    db.home.debts.push({
-        id: Date.now(),
-        person: n,
-        amount: v,
-        type: window.hDebtType,
-        date: new Date().toLocaleDateString('pl-PL')
-    });
+    db.home.debts.push({ id: Date.now(), person: n, amount: v, type: window.hDebtType, date: new Date().toLocaleDateString('pl-PL') });
     window.save(); window.render();
 }
+
 window.hDelDebt = function(id) {
     db.home.debts = db.home.debts.filter(d => d.id !== id);
     window.save(); window.render();
@@ -335,7 +333,7 @@ window.rHome = function() {
     let h = db.home; let t = db.tab; 
     if(!window.hMem) window.hMem = h.members[0] || db.userName;
 
-    let nav = `<div class="nav"><div class="nav-item ${t==='dash'?'act-home':''}" onclick="db.tab='dash';window.render()"><i>🏠</i>Przegląd</div><div class="nav-item ${t==='acc'?'act-home':''}" onclick="db.tab='acc';window.render()"><i>💳</i>Konta/Długi</div><div class="nav-item" style="transform:translateY(-15px);"><div style="background:var(--life); width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto; box-shadow:0 5px 15px rgba(20,184,166,0.4); color:#000; font-size:1.8rem;" onclick="db.tab='add';window.render()">+</div></div><div class="nav-item ${t==='stats'?'act-home':''}" onclick="db.tab='stats';window.render()"><i>📊</i>Wykresy</div><div class="nav-item ${t==='cal'?'act-home':''}" onclick="db.tab='cal';window.render()"><i>📅</i>Historia</div></div>`; 
+    let nav = `<div class="nav"><div class="nav-item ${t==='dash'?'act-home':''}" onclick="db.tab='dash';window.render()"><i>🏠</i>Przegląd</div><div class="nav-item ${t==='acc'?'act-home':''}" onclick="db.tab='acc';window.render()"><i>💳</i>Konta</div><div class="nav-item" style="transform:translateY(-15px);"><div style="background:var(--life); width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto; box-shadow:0 5px 15px rgba(20,184,166,0.4); color:#000; font-size:1.8rem;" onclick="db.tab='add';window.render()">+</div></div><div class="nav-item ${t==='stats'?'act-home':''}" onclick="db.tab='stats';window.render()"><i>📊</i>Wykresy</div><div class="nav-item ${t==='cal'?'act-home':''}" onclick="db.tab='cal';window.render()"><i>📅</i>Historia</div></div>`; 
     let hdr = `<header><button class="logo" onclick="window.openSwitcher()">${STYRE_LOGO}</button><div class="header-actions"><div class="settings-btn" style="background:transparent; border:none; padding:0; display:flex; flex-direction:column; align-items:center;" onclick="db.tab='set';window.render()"><span style="font-size:1.4rem; line-height:1;">⚙️</span><span style="font-size:0.5rem; font-weight:900; color:var(--muted); text-transform:uppercase;">Ustawienia</span></div></div></header>`; 
     let balances = window.hGetBal(); let globalBalance = Object.values(balances).reduce((a,b)=>a+b, 0); 
     let now = new Date(); let currExp=0; let currInc=0;
@@ -359,7 +357,7 @@ window.rHome = function() {
         <div class="section-lbl" style="color:#fff; border-color:rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center; margin-top:20px;">Zasoby / Długi <span style="color:var(--life); cursor:pointer;" onclick="db.tab='acc';window.render()">Zarządzaj ></span></div><div style="padding: 0 15px;">${h.accs.slice(0,3).map(a => `<div class="acc-card"><div style="display:flex; align-items:center; gap:12px;"><div style="font-size:1.5rem;">${a.i}</div><div><span style="color:#fff; font-weight:bold; font-size:1rem;">${a.n}</span><br><small style="color:var(--muted); font-size:0.75rem;">Zwykłe</small></div></div><strong style="color:${balances[a.id]>=0?'var(--success)':'var(--danger)'}; font-size:1.15rem;">${balances[a.id].toFixed(2)} zł</strong></div>`).join('')}</div><div class="section-lbl" style="color:#fff; border-color:rgba(255,255,255,0.1);">Ostatnie Transakcje</div><div style="padding: 0 15px;">${[...h.trans].sort((a,b)=>new Date(b.rD)-new Date(a.rD)).slice(0,8).map(x=>{ let isExp = x.type === 'exp'; let isTrans = x.type === 'transfer'; let cd = isExp ? (C_EXP[x.cat] || {c:'#ef4444',i:'💸'}) : (isTrans ? {c:'#8b5cf6',i:'🔄'} : (C_INC[x.cat] || {c:'#22c55e',i:'💵'})); let accName = isTrans ? `Z ${h.accs.find(a=>a.id===x.fromAcc)?.n} na ${h.accs.find(a=>a.id===x.toAcc)?.n}` : (h.accs.find(a=>a.id===x.acc)?.n || 'Konto'); let catName = isTrans ? 'Przelew własny' : x.cat; let sign = isExp ? '-' : (isTrans ? '' : '+'); let color = isExp ? 'var(--danger)' : (isTrans ? '#fff' : 'var(--success)'); return `<div class="log-item" style="border:none; border-bottom:1px solid rgba(255,255,255,0.05); border-radius:0; margin-bottom:0; background:transparent; padding:15px 5px;"><div style="display:flex; align-items:center; gap:15px;"><div style="width:45px; height:45px; border-radius:50%; background:${cd.c}22; border:1px solid ${cd.c}55; display:flex; align-items:center; justify-content:center; font-size:1.5rem; flex-shrink:0;">${cd.i}</div><div><strong style="font-size:1rem; color:#fff; display:flex; align-items:center; gap:6px;">${catName} <span style="background:rgba(20,184,166,0.15); color:var(--life); padding:2px 6px; border-radius:6px; font-size:0.6rem; font-weight:900;">👤 ${x.who||'Nieznany'}</span></strong><br><small style="color:var(--muted);">${accName} • ${x.dt}</small></div></div><strong style="color:${color}; font-size:1.1rem;">${sign}${x.v.toFixed(2)} zł</strong></div>`; }).join('') || '<div style="text-align:center;color:var(--muted);padding:20px 0; font-size:0.8rem;">Brak operacji na koncie.</div>'}</div>` + nav; } 
     if(t === 'acc') { APP.innerHTML = hdr + `
         <div class="dash-hero" style="padding-bottom:10px;"><p>ZARZĄDZANIE KONTAMI</p><h1 style="color:#fff; font-size:3.5rem;">${globalBalance.toFixed(2)} zł</h1></div>
-        <div style="padding: 0 15px;">${h.accs.map(a => `<div class="panel" style="padding:20px; border-left:5px solid ${a.c}; background:linear-gradient(145deg, #18181b, #09090b); margin-bottom:15px;"><div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px dashed rgba(255,255,255,0.1); padding-bottom:15px; margin-bottom:15px;"><div style="display:flex; align-items:center; gap:15px;"><div style="font-size:2.5rem;">${a.i}</div><div><strong style="font-size:1.3rem;">${a.n}</strong><br><small style="color:var(--muted)">Bieżące saldo</small></div></div><strong style="color:${balances[a.id]>=0?'#fff':'var(--danger)'}; font-size:1.5rem;">${balances[a.id].toFixed(2)} zł</strong></div><div class="inp-row" style="margin-bottom:0;"><div class="inp-group"><label>Edytuj Nazwę</label><input type="text" id="edit_n_${a.id}" value="${a.n}" style="padding:12px; font-size:0.9rem;"></div><div class="inp-group"><label>Saldo początkowe (zł)</label><input type="number" id="edit_b_${a.id}" value="${a.startBal||0}" style="padding:12px; font-size:0.9rem;"></div></div><div style="display:flex; gap:10px; margin-top:10px;"><button class="btn btn-home" style="padding:10px; font-size:0.8rem; border-radius:10px;" onclick="window.hSaveAcc('${a.id}')">ZAPISZ ZMIANY</button><button class="btn btn-danger" style="padding:10px; font-size:0.8rem; border-radius:10px; box-shadow:none; flex:0.4;" onclick="window.hDelAcc('${a.id}')">USUŃ</button></div></div>`).join('')}<button class="btn" style="background:rgba(255,255,255,0.05); color:#fff; border:1px dashed rgba(255,255,255,0.2); margin-top:10px;" onclick="window.hAddNewAcc()">+ DODAJ NOWE KONTO</button></div>
+        <div style="padding: 0 15px;">${h.accs.map(a => `<div class="panel" style="padding:20px; border-left:5px solid ${a.c}; background:linear-gradient(145deg, #18181b, #09090b); margin-bottom:15px;"><div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px dashed rgba(255,255,255,0.1); padding-bottom:15px; margin-bottom:15px;"><div style="display:flex; align-items:center; gap:15px;"><div style="font-size:2.5rem;">${a.i}</div><div><strong style="font-size:1.3rem;">${a.n}</strong><br><small style="color:var(--muted)">Bieżące saldo</small></div></div><strong style="color:${balances[a.id]>=0?'#fff':'var(--danger)'}; font-size:1.5rem;">${balances[a.id].toFixed(2)} zł</strong></div><div class="inp-row" style="margin-bottom:0;"><div class="inp-group"><label>Edytuj Nazwę</label><input type="text" id="edit_n_${a.id}" value="${a.n}"></div><div class="inp-group"><label>Saldo początkowe</label><input type="number" id="edit_b_${a.id}" value="${a.startBal||0}"></div></div><div style="display:flex; gap:10px; margin-top:10px;"><button class="btn btn-home" style="padding:10px; font-size:0.8rem; border-radius:10px;" onclick="window.hSaveAcc('${a.id}')">ZAPISZ ZMIANY</button><button class="btn btn-danger" style="padding:10px; font-size:0.8rem; border-radius:10px; box-shadow:none; flex:0.4;" onclick="window.hDelAcc('${a.id}')">USUŃ</button></div></div>`).join('')}<button class="btn" style="background:rgba(255,255,255,0.05); color:#fff; border:1px dashed rgba(255,255,255,0.2); margin-top:10px;" onclick="window.hAddNewAcc()">+ DODAJ NOWE KONTO</button></div>
         
         <div class="section-lbl" style="color:var(--warning); border-color:var(--warning); margin-top:30px;">🤝 Zeszyt Długów</div>
         <div class="panel" style="border-color:var(--warning);">
@@ -391,16 +389,10 @@ window.rHome = function() {
         ` + nav; }
     if(t === 'add') { 
         let isExp = window.hTransType === 'exp'; let isTrans = window.hTransType === 'transfer'; let col = isExp ? 'var(--danger)' : (isTrans ? 'var(--info)' : 'var(--success)'); let topBg = isExp ? 'var(--bg-exp)' : (isTrans ? 'linear-gradient(180deg, #0ea5e9 0%, #09090b 100%)' : 'var(--bg-inc)'); let todayStr = window.getLocalYMD(); let catSrc = isExp ? C_EXP : C_INC; if(!isTrans && (!window.hSelCat || !catSrc[window.hSelCat])) window.hSelCat = Object.keys(catSrc)[0]; let accOptions = h.accs.map(a => `<option value="${a.id}" ${window.hSelAcc===a.id?'selected':''}>${a.n} (${balances[a.id].toFixed(0)} zł)</option>`).join(''); let gridHtml = !isTrans ? `<div class="cat-grid">` + Object.keys(catSrc).map(k => `<div class="cat-item ${window.hSelCat===k?'active':''}" onclick="window.hSelCat='${k}'; window.render();" style="${window.hSelCat===k?`background:${catSrc[k].c}22; border-color:${catSrc[k].c};`:''}"><span class="cat-icon">${catSrc[k].i}</span><span class="cat-lbl">${k}</span></div>`).join('') + `</div>` : ''; 
-        
         let memChips = h.members.map(m => `<div class="chip ${window.hMem === m ? 'active' : ''}" style="${window.hMem === m ? 'background:var(--life);color:#fff;border-color:var(--life)' : 'color:var(--muted)'}" onclick="window.hMem='${m}'; window.render();">${m}</div>`).join('');
 
         APP.innerHTML = hdr + `<div style="background: ${topBg}; padding: 20px 15px; border-bottom: 1px solid rgba(255,255,255,0.1);"><div class="mode-switch" style="background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.1);"><div class="m-btn" style="${isExp?'background:var(--danger); color:#fff;':'color:var(--muted)'}" onclick="window.hTransType='exp';window.render()">WYDATEK</div><div class="m-btn" style="${!isExp&&!isTrans?'background:var(--success); color:#fff;':'color:var(--muted)'}" onclick="window.hTransType='inc';window.render()">WPŁYW</div><div class="m-btn" style="${isTrans?'background:var(--info); color:#fff;':'color:var(--muted)'}" onclick="window.hTransType='transfer';window.render()">TRANSFER</div></div><div style="text-align:center; padding: 10px 0;"><label style="color:#fff; font-size:0.8rem; font-weight:bold; text-transform:uppercase; opacity:0.8;">Wprowadź Kwotę</label><div style="display:flex; justify-content:center; align-items:center; gap:5px; margin-top:5px;"><input type="number" id="h-v" style="background:transparent; border:none; border-bottom:2px solid #fff; color:#fff; font-size:4rem!important; font-weight:900; text-align:center; width:200px; padding:5px; outline:none;" placeholder="0"><span style="font-size:2rem; font-weight:900; color:#fff;">zł</span></div></div></div><div style="padding: 20px 15px;">
-        
-        <div class="form-section" style="padding:12px; margin-bottom:15px; border-color:var(--life);">
-            <div class="fs-title" style="margin-bottom:8px; color:var(--life);">Kto wykonuje operację?</div>
-            <div class="chip-box" style="margin-bottom:0; padding-bottom:0;">${memChips}</div>
-        </div>
-
+        <div class="form-section" style="padding:12px; margin-bottom:15px; border-color:var(--life);"><div class="fs-title" style="margin-bottom:8px; color:var(--life);">Kto wykonuje operację?</div><div class="chip-box" style="margin-bottom:0; padding-bottom:0;">${memChips}</div></div>
         ${isTrans ? `<div class="inp-group" style="margin-bottom:15px;"><label>Z konta (Wypływ)</label><select id="h-acc-from" style="background:#18181b;">${accOptions}</select></div><div class="inp-group" style="margin-bottom:20px;"><label>Na konto (Wpływ)</label><select id="h-acc-to" style="background:#18181b;">${accOptions}</select></div>` : `<div class="inp-group" style="margin-bottom:20px;"><label>Wybierz Konto</label><select id="h-acc" onchange="window.hSelAcc=this.value" style="background:#18181b;">${accOptions}</select></div><label style="font-size:0.75rem; color:var(--muted); font-weight:800; text-transform:uppercase; margin-bottom:10px; display:block; padding-left:5px;">Wybierz Kategorię</label>${gridHtml}`}<div class="inp-group" style="margin-bottom:15px;"><label>Notatka (Opcjonalnie)</label><input type="text" id="h-d" placeholder="Wpisz krótki opis" style="background:#18181b;"></div><div class="inp-group" style="margin-bottom:20px;"><label>Data operacji</label><input type="date" id="h-date" value="${todayStr}" style="background:#18181b;"></div><button class="btn" style="background:${col}; color:#fff; font-size:1.2rem; padding:20px;" onclick="window.hAction()">${isTrans?'WYKONAJ PRZELEW':'ZAPISZ TRANSAKCJĘ'}</button></div>` + nav; 
     } 
     if(t === 'stats') { 
@@ -412,13 +404,10 @@ window.rHome = function() {
             if(d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear()) { 
                 if(x.type === 'exp') {
                     if(!cats[x.cat]) cats[x.cat] = 0; 
-                    cats[x.cat] += x.v; 
-                    sumExp += x.v; 
+                    cats[x.cat] += x.v; sumExp += x.v; 
                     if(FIXED_EXP_CATS.includes(x.cat)) sumFixed += x.v; else sumVar += x.v;
                 }
-                if(x.type === 'inc') {
-                    sumInc += x.v;
-                }
+                if(x.type === 'inc') sumInc += x.v;
             } 
         }); 
         
@@ -592,12 +581,12 @@ window.toggleRideWait = function() {
 
 if(!window.clockInt) {
     window.clockInt = setInterval(() => {
-        if(db && db.role === 'drv' && db.tab === 'term' && db.drv.sh.on) window.render();
+        if(db && db.role === 'drv' && db.tab === 'term' && db.drv.sh && db.drv.sh.on) window.render();
     }, 60000);
 }
 
 // ----------------------------------------------------
-// MODAL ZAKOŃCZENIA ZMIANY (BEZ WIELKIEGO FORMULARZA NA DOLE)
+// MODAL ZAKOŃCZENIA ZMIANY
 // ----------------------------------------------------
 window.openEndShiftModal = function() {
     let diffHrs = 0; let diffMins = 0; let autoHw = 0;
@@ -700,7 +689,7 @@ window.rDrv = function() {
         }
 
         let diffHrs = 0; let diffMins = 0;
-        if(d.sh.shiftStart) {
+        if(d.sh && d.sh.shiftStart) {
             let activeShiftMs = Date.now() - d.sh.shiftStart;
             if(d.sh.sPT) activeShiftMs -= d.sh.sPT;
             diffHrs = Math.floor(activeShiftMs / 3600000);
@@ -791,9 +780,9 @@ window.rDrv = function() {
         
         // --- PRECYZYJNA LOGIKA DNI I KOSZTÓW ---
         let daysInCurrentMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-        let monthlyCosts = d.cfg.bC + (d.cfg.iC || 0) + (d.cfg.eType === 'flat' ? d.cfg.eC : 0) + (d.cfg.cType === 'month' ? d.cfg.cC : 0);
+        let monthlyCosts = (parseFloat(d.cfg.bC)||0) + (parseFloat(d.cfg.iC)||0) + (d.cfg.eType === 'flat' ? (parseFloat(d.cfg.eC)||0) : 0) + (d.cfg.cType === 'month' ? (parseFloat(d.cfg.cC)||0) : 0);
         let dailyFromMonth = monthlyCosts / daysInCurrentMonth;
-        let dailyFromWeek = (d.cfg.cType === 'week' ? d.cfg.cC : 0) / 7;
+        let dailyFromWeek = (d.cfg.cType === 'week' ? (parseFloat(d.cfg.cC)||0) : 0) / 7;
         let exactDailyRate = dailyFromMonth + dailyFromWeek; // Co do grosza na 1 dzień!
 
         let daysToCharge = 1;
@@ -828,8 +817,6 @@ window.rDrv = function() {
             let dLbl = new Date(s.rD).toLocaleDateString('pl-PL', {day:'numeric', month:'numeric'});
             if(!dailyStats[dLbl]) dailyStats[dLbl] = {g:0, n:0};
             dailyStats[dLbl].g += s.g;
-            
-            // Do wykresu odejmujemy proporcjonalny stały koszt z 1 dnia od zysku operacyjnego
             dailyStats[dLbl].n += (s.n - exactDailyRate); 
         });
         
@@ -1125,7 +1112,7 @@ window.dEndS = function() {
     let d1 = document.getElementById('de-d1').value;
     let dtStr = new Date(d1).toLocaleDateString('pl-PL');
     let saveDate = new Date(d1);
-    saveDate.setHours(12,0,0); // Środek dnia dla pewności
+    saveDate.setHours(12,0,0);
 
     let k = window.safeVal('de-k');
     if(!k || k <= 0) {
@@ -1145,7 +1132,6 @@ window.dEndS = function() {
     let tax = g * db.drv.cfg.tax; 
     let pFee = db.drv.cfg.eType === 'pct' ? g * db.drv.cfg.ePct : 0; 
     
-    // Zysk operacyjny per zmiana (BEZ KOSZTÓW ZUS/AUTO - to liczymy w STATYSTYKACH jako dokładną dniówkę)
     let n_operacyjny = g - fc - tax - pFee - cf; 
     
     if(db.drv.sh.o > 0) db.drv.odo = db.drv.sh.o + k; 
@@ -1202,6 +1188,7 @@ window.dEndS = function() {
     document.body.insertAdjacentHTML('beforeend', mHtml);
 }
 
+// Funkcje pomocnicze
 window.dTransferToHomeUI = function() { 
     let accOpts = db.home.accs.map(a => `<option value="${a.id}">${a.n}</option>`).join(''); 
     let mHtml = `
